@@ -5,4 +5,19 @@ if(NOT EXISTS ${PROJECT_SOURCE_DIR}/cmake_utilities/FindCMakeUtilities.cmake)
     WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})
 endif()
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_utilities)
-find_package(CMakeUtilities)
+
+find_package(CMakeUtilities REQUIRED)
+find_package(nlohmann_json REQUIRED)
+find_package(nlohmann_json_schema_validator REQUIRED)
+
+if(lbm_USE_MPI)
+  find_package(MPI REQUIRED)
+endif()
+
+if(lbm_USE_THREADS)
+  find_package(Threads REQUIRED)
+endif()
+
+if(lbm_USE_OPENMP)
+  find_package(OpenMP REQUIRED)
+endif()

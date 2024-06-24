@@ -8,6 +8,7 @@ acceleration techniques to the Lattice Boltzmann Method (LBM).
 
 ## Implementations
 ### C++
+#### Naive
 #### Serial
 #### Multithreading
 #### MPI
@@ -17,9 +18,12 @@ acceleration techniques to the Lattice Boltzmann Method (LBM).
 #### Z-ordering
 #### Vector Folding
 #### Vector stacking
+#### Array Compression
 ### Python
-### Python + JAX
-### Cython
+#### Naive
+#### Cython
+#### JAX
 ### OCaml
-### OCaml Owl
+#### Naive
+#### Owl
 

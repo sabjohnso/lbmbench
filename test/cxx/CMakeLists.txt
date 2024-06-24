@@ -7,8 +7,11 @@ macro(lbmbench_add_test test_name)
   target_link_libraries(${exe_name} PRIVATE
     lbmbench::header
     Catch2::Catch2WithMain)
-  set_target_properties(${exe_name}
-    PROPERTIES
-    CXX_STANDARD ${lbmbench_CXX_STANDARD})
+  target_compile_features(${exe_name} PRIVATE ${lbmbench_CXX_FEATURES})
   add_test(${test_name} ${exe_name})
 endmacro()
+
+lbmbench_add_test(fixed_array_index)
+lbmbench_add_test(fixed_array_order)
+lbmbench_add_test(fixed_array)
+lbmbench_add_test(D2Q9)

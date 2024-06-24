@@ -1,0 +1,3 @@
+#pragma once
+
+namespace lbm::config {} // end of namespace lbm::config
