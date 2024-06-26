@@ -11,7 +11,12 @@ macro(lbmbench_add_test test_name)
   add_test(${test_name} ${exe_name})
 endmacro()
 
+lbmbench_add_test(array)
 lbmbench_add_test(fixed_array_index)
 lbmbench_add_test(fixed_array_order)
 lbmbench_add_test(fixed_array)
+lbmbench_add_test(index)
+lbmbench_add_test(lexical)
+lbmbench_add_test(shape)
+
 lbmbench_add_test(D2Q9)
