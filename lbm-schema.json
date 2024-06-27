@@ -1,0 +1,96 @@
+{
+    "$schema" : "https://json-schema.org/draft/2020-12/schema#",
+    "$id" : "https://sabjohnso.github.io/2024/schema/lbm-schema.json",
+    "oneOf" : [
+        {"$ref" : "#/$defs/D2Q9Input"},
+        {"$ref" : "#/$defs/D2CheckPoint"},
+        {"$ref" : "#/$defs/D2Q9Output"}
+    ],
+    "$defs" : {
+        "D2Q9Input" : {
+            "type" : "object",
+            "properties" : {
+                "viscosity" : {"type" : "number"},
+                "lattice" : {"$ref" : "#/$defs/D2Lattice"},
+                "boundaryConditions" : {"$ref" : "#/$defs/D2BoundaryConditions"},
+                "obstacles" : {"$ref" : "#/$defs/D2Obstacles"}
+            },
+            "required" : ["viscosity", "lattice", "boundaryConditions", "obstacles"],
+            "additionalProperties" : false
+        },
+        "D2Q9Checkpoint" : {
+            "type" : "object",
+            "properties" : {
+                "input" : {"$ref" : "#/$defs/D2Input"},
+                "timestep" : {"type" : "integer"},
+                "densities" : {"$ref" : "#/$defs/D2Q9LatticeDensities"}
+            },
+            "required" : ["input", "timestep", "densities"],
+            "additionalProperties" : false
+        },
+        "D2Q9Output" : {
+            "type" : "object",
+            "properties" : {
+                "velocity" : {"type" : "array", "items" : {"$ref" : "#/$defs/D2Velocity"}},
+                "density"  : {"type" : "array", "items" : {"type" : "number"}},
+                "pressure" : ("type" : "array", "items" : {"type" : "number"}}
+            },
+            "required" : ["velocity", "density", "pressure"],
+            "additionalProperties" : false
+        },
+        "D2Lattice" : {
+            "type" : "object",
+            "properties" : {
+                "gridSize" : {"$ref" : "#/$defs/D2GridSize"},
+                "scale" : {"type" : "number"}
+            },
+            "required" : ["gridSize", "scale"],
+            "additionalProperties" : false
+        },
+        "D2BoundaryConditions" : {
+            "type" : "array",
+            "items" : "D2BoundaryCondition"
+        },
+        "D2BoundaryCondition" : {
+        },
+        "D2BoundaryConditionType" : {
+            "type" : "string",
+            "enum" : ["NoSlip", "FreeSlip", "Periodic", "PressureDifference"]
+        },
+        "D2Obstacles" : {
+            "type" : "array",
+            "items" : {"$ref" : "#/$defs/D2Expr"}
+        },
+        "D2Expr" : {
+            "oneOf" : [
+                {"type" : "number"},
+                {"const" : "x"},
+                {"const" : "y"},
+                {"$ref" : "#/$defs/D2BinaryApplication"},
+                {"$ref" : "#/$defs/D2UnaryApplication"},
+            ]
+        },
+        "D2UnaryApplication" : {
+            "type" : "object",
+            "patternProperties" : {
+                "^(negate|reciprocal|cos|sin|tan|acos|asin|atan|cosh|sinh|tanh|acosh|asinh|atanh|heaviside|sqr|exp|log|log10|log2)$" : {"$ref" : "#/$defs/D2Expr"}
+            }
+        },
+        "D2BinaryApplication" : {
+            "type" : "object",
+            "patternProperties" : {
+                "^(add|subtract|multiply|divide|pow|atan2|hypot)$" : {"type" : "array", "items" : {"$ref" : "#/$defs/D2Expr"}}
+            }
+        },
+        "D2Q9LatticeDensities" : {
+            "type" : "array",
+            "items" : {"$ref" : "#/$defs/D2Q9NodeDensities"}
+        },
+        "D2Q9NodeDensities" : {
+            "type" : "array",
+            "items"  : {"type": "number"},
+            "minItems" : 9,
+            "maxItems" : 9
+        }
+    }    
+}
