@@ -14,11 +14,11 @@
 
 namespace lbm::details {
 
-  template <class T, class Shape>
+  template <class T, class Order>
   class Fixed_Array;
 
   template <class T, size_type... N>
-  class Fixed_Array<T, std::index_sequence<N...>> {
+  class Fixed_Array<T, Fixed_Lexical<N...>> {
   public:
     using value_type = T;
     using reference = T &;

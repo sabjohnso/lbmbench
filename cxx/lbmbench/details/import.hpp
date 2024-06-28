@@ -16,7 +16,9 @@
 #include <numeric>
 #include <sstream>
 #include <stdexcept>
+#include <type_traits>
 #include <utility>
+#include <variant>
 #include <vector>
 
 namespace lbm::details {
@@ -61,5 +63,12 @@ namespace lbm::details {
   // from utility
   using std::index_sequence;
   using std::make_index_sequence;
+
+  // from variant
+  using std::variant;
+  using std::visit;
+
+  // from type_traits
+  using std::is_default_constructible_v;
 
 } // end of namespace lbm::details
