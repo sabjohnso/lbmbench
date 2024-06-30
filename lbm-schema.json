@@ -9,13 +9,20 @@
     "$defs" : {
         "D2Q9Input" : {
             "type" : "object",
-            "properties" : {
-                "viscosity" : {"type" : "number"},
-                "lattice" : {"$ref" : "#/$defs/D2Lattice"},
-                "boundaryConditions" : {"$ref" : "#/$defs/D2BoundaryConditions"},
-                "obstacles" : {"$ref" : "#/$defs/D2Obstacles"}
+            "properties": {
+                "D2Q9Input" : {
+                    "type" : "object",
+                    "properties" : {
+                        "viscosity" : {"type" : "number"},
+                        "lattice" : {"$ref" : "#/$defs/D2Lattice"},
+                        "boundaryConditions" : {"$ref" : "#/$defs/D2BoundaryConditions"},
+                        "obstacles" : {"$ref" : "#/$defs/D2Obstacles"}
+                    },
+                    "required" : ["viscosity", "lattice", "boundaryConditions", "obstacles"],
+                    "additionalProperties" : false
+                }
             },
-            "required" : ["viscosity", "lattice", "boundaryConditions", "obstacles"],
+            "required" : ["D2Q9"],
             "additionalProperties" : false
         },
         "D2Q9Checkpoint" : {
@@ -41,17 +48,12 @@
         "D2Lattice" : {
             "type" : "object",
             "properties" : {
-                "gridSize" : {"$ref" : "#/$defs/D2GridSize"},
-                "scale" : {"type" : "number"}
+                "width" : {"type" : "number"},
+                "height" : {"type" : "number"},
+                "latticeSpacing" : {"type" : "number"}
             },
-            "required" : ["gridSize", "scale"],
+            "required" : ["width", "height", "latticeSpacing"],
             "additionalProperties" : false
-        },
-        "D2GridSize" : {
-            "type" : "array",
-            "items" : {"type" : "integer"},
-            "minItems" : 2,
-            "maxItems" : 2
         },
         "D2BoundaryConditions" : {
             "type" : "array",
@@ -63,6 +65,7 @@
                 {"$ref" : "#/$defs/D2Symmetry"},
                 {"$ref" : "#/$defs/D2Periodic"},
                 {"$ref" : "#/$defs/D2Inlet"},
+                {"$ref" : "#/$defs/D2Outlet"},
                 {"$ref" : "#/$defs/D2PressureDrop"}
                
             ]
@@ -128,6 +131,22 @@
             "required" : ["inlet"],
             "additionalProperties" : false
         },
+        "D2Outlet" : {
+            "type" : "object",
+            "properties" : {
+                "outlet" : {
+                    "type" : "object",
+                    "properties" : {
+                        "outletSpeed" : {"type" : "number"},
+                        "boundary" : {"$ref" : "#/$defs/D2BoundaryID"}
+                    },
+                    "required" : [],
+                    "additionalProperties" : false
+                }
+            },
+            "required" : ["outlet"],
+            "additionalProperties" : false
+        },       
         "D2PressureDrop" : {
             "type" : "object",
             "properties" :  {
@@ -174,7 +193,7 @@
         "D2BinaryApplication" : {
             "type" : "object",
             "patternProperties" : {
-                "^(add|subtract|multiply|divide|pow|atan2|hypot)$" : {"type" : "array", "items" : {"$ref" : "#/$defs/D2Expr"}}
+                "^(add|subtract|multiply|divide|pow|atan2|hypot)$" : {"type" : "array", "items" : {"$ref" : "#/$defs/D2Expr"}, "minItems" : 2, "maxItems" : 2}
             }
         },
         "D2Q9LatticeDensities" : {
