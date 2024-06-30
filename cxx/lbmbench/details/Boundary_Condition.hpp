@@ -129,8 +129,48 @@ namespace lbm::details {
   template <size_type N>
   Inlet(Boundary_ID<N>, double) -> Inlet<N>;
 
-  static_assert(is_default_constructible_v<Inlet<2>>);
-  static_assert(is_default_constructible_v<Inlet<3>>);
+  template <size_type N>
+  class Outlet {
+  public:
+    constexpr Outlet() = default;
+    constexpr Outlet(Boundary_ID<N> boundary, double outlet_speed)
+        : boundary_{boundary}, outlet_speed_{outlet_speed} {}
+
+    friend void
+    to_json(json &j, const Outlet outlet) {
+      j = json::object();
+      j["outlet"] = json::object();
+      j["outlet"].update(outlet.boundary_);
+      j["outlet"]["outletSpeed"] = outlet.outlet_speed_;
+    }
+
+    friend void
+    from_json(const json &j, Outlet &outlet) {
+      outlet.boundary_ = j["outlet"];
+      outlet.outlet_speed_ = j["outlet"]["outletSpeed"];
+    }
+
+    friend ostream &
+    operator<<(ostream &os, const Outlet &outlet) {
+      return os << json(outlet);
+    }
+
+    friend istream &
+    operator>>(istream &is, Outlet &outlet) {
+      outlet = json::parse(is);
+      return is;
+    }
+
+    friend bool
+    operator<=>(const Outlet &Outlet1, const Outlet &Outlet2) = default;
+
+  private:
+    Boundary_ID<N> boundary_{};
+    double outlet_speed_{};
+  };
+
+  template <size_type N>
+  Outlet(Boundary_ID<N>, double) -> Outlet<N>;
 
   template <size_type N>
   class Pressure_Drop {
@@ -176,9 +216,10 @@ namespace lbm::details {
   Pressure_Drop(Boundary_ID<N>, double) -> Pressure_Drop<N>;
 
   template <size_type N>
-  class Boundary_Condition : public variant<Wall<N>, Symmetry<N>, Inlet<N>, Pressure_Drop<N>> {
+  class Boundary_Condition
+      : public variant<Wall<N>, Symmetry<N>, Inlet<N>, Outlet<N>, Pressure_Drop<N>> {
   public:
-    using Base = variant<Wall<N>, Symmetry<N>, Inlet<N>, Pressure_Drop<N>>;
+    using Base = variant<Wall<N>, Symmetry<N>, Inlet<N>, Outlet<N>, Pressure_Drop<N>>;
     using Base::Base;
 
     Boundary_Condition() = default;
@@ -196,6 +237,8 @@ namespace lbm::details {
         boundary_condition = Symmetry<N>(j);
       } else if (j.contains("inlet")) {
         boundary_condition = Inlet<N>(j);
+      } else if (j.contains("outlet")) {
+        boundary_condition = Outlet<N>(j);
       } else if (j.contains("pressureDrop")) {
         boundary_condition = Pressure_Drop<N>(j);
       }
@@ -235,6 +278,9 @@ namespace lbm::details {
 
   template <size_type N>
   Boundary_Condition(Inlet<N>) -> Boundary_Condition<N>;
+
+  template <size_type N>
+  Boundary_Condition(Outlet<N>) -> Boundary_Condition<N>;
 
   template <size_type N>
   Boundary_Condition(Pressure_Drop<N>) -> Boundary_Condition<N>;

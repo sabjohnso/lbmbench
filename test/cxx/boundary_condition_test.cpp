@@ -63,6 +63,23 @@ namespace lbm::details {
       }
     }
 
+    SECTION("Outlet") {
+      Boundary_Condition boundary_condition{
+          Outlet{Boundary_ID{Boundary::NA, Boundary::Lower}, 3.0}};
+      SECTION("Conversion to and from json") {
+        json json_boundary_condition = boundary_condition;
+        Boundary_Condition<2> boundary_condition_from_json = json_boundary_condition;
+        CHECK(boundary_condition_from_json == boundary_condition);
+      }
+      SECTION("Conversion to and from text") {
+        std::stringstream ss{};
+        ss << boundary_condition;
+        Boundary_Condition<2> boundary_condition_from_text{};
+        ss >> boundary_condition_from_text;
+        CHECK(boundary_condition_from_text == boundary_condition);
+      }
+    }
+
     SECTION("Pressure Drop") {
       Boundary_Condition boundary_condition{
           Pressure_Drop{Boundary_ID{Boundary::Upper, Boundary::NA}, 3.0}};
