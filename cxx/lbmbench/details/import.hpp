@@ -10,12 +10,14 @@
 //
 #include <algorithm>
 #include <array>
+#include <cmath>
 #include <concepts>
 #include <functional>
 #include <iostream>
 #include <numeric>
 #include <sstream>
 #include <stdexcept>
+#include <string>
 #include <type_traits>
 #include <utility>
 #include <variant>
@@ -33,11 +35,19 @@ namespace lbm::details {
   // from algorithm
   using std::array;
 
+  // from functional
+  using std::function;
+
   // from vector
   using std::vector;
 
   // from concepts
   using std::convertible_to;
+  using std::derived_from;
+
+  // from string
+  using std::string;
+  using std::to_string;
 
   // from iostream
   using std::istream;
@@ -70,5 +80,11 @@ namespace lbm::details {
 
   // from type_traits
   using std::is_default_constructible_v;
+
+  // from memory
+  using std::make_shared;
+  using std::make_unique;
+  using std::shared_ptr;
+  using std::unique_ptr;
 
 } // end of namespace lbm::details

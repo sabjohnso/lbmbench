@@ -6,6 +6,7 @@
 #include <lbmbench/details/Array.hpp>
 #include <lbmbench/details/Boundary_Condition.hpp>
 #include <lbmbench/details/Boundary_ID.hpp>
+#include <lbmbench/details/Expression.hpp>
 #include <lbmbench/details/Fixed_Array.hpp>
 #include <lbmbench/details/Fixed_Array_Index.hpp>
 #include <lbmbench/details/Fixed_Lexical.hpp>
@@ -27,5 +28,59 @@ namespace lbm {
   using details::Lexical;
   using details::Shape;
   using details::size_type;
+
+  using details::parse_json_expr;
+
+  using details::Expression;
+
+  // Constants and coordinates
+  using details::Constant;
+  using details::X;
+  using details::Y;
+  using details::Z;
+
+  // Binary arithmetic functions
+  using details::Add;
+  using details::Divide;
+  using details::Multiply;
+  using details::Power;
+  using details::Subtract;
+
+  // Binary special functions
+  using details::Atan2;
+  using details::Hypot;
+
+  // Unary arithmetic functions
+  using details::Negate;
+  using details::Reciprocal;
+
+  // Trig functions
+  using details::Cos;
+  using details::Sin;
+  using details::Tan;
+
+  // Inverse trig functions
+  using details::Acos;
+  using details::Asin;
+  using details::Atan;
+
+  // Hyperbolic functions
+  using details::Cosh;
+  using details::Sinh;
+  using details::Tanh;
+
+  // Inverse hyperbolic functions
+  using details::Acosh;
+  using details::Asinh;
+  using details::Atanh;
+
+  // Exponential and logarithmic functions
+  using details::Cbrt;
+  using details::Cube;
+  using details::Exp;
+  using details::Log;
+  using details::Log10;
+  using details::Sqrt;
+  using details::Square;
 
 } // end of namespace lbm
