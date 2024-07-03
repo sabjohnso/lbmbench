@@ -12,6 +12,8 @@
 #include <lbmbench/details/import.hpp>
 #include <lbmbench/details/misc.hpp>
 
+#include <lbmbench/details/D2_Lattice.hpp>
+
 namespace lbm::details::D2Q9 {
 
   template <class T>
@@ -175,64 +177,6 @@ namespace lbm::details::D2Q9 {
     Velocity velocity_{};
     Density density_{};
     bool obstacle_{};
-  };
-
-  class Lattice final : public JSON_Convertible {
-  public:
-    Lattice() = default;
-    Lattice(double width, double height, double spacing)
-        : width_(width), height_(height), spacing_(spacing) {}
-
-    size_type
-    nx() const {
-      return static_cast<size_type>(std::ceil(width_ / spacing_));
-    }
-
-    size_type
-    ny() const {
-      return static_cast<size_type>(std::ceil(height_ / spacing_));
-    }
-
-    double
-    width() const {
-      return width_;
-    }
-
-    double
-    height() const {
-      return height_;
-    }
-
-    double
-    spacing() const {
-      return spacing_;
-    }
-
-    friend bool
-    operator==(const Lattice &l1, const Lattice &l2) {
-      return l1.width_ == l2.width_ && l1.height_ == l2.height_ && l1.spacing_ == l2.spacing_;
-    }
-
-  private:
-    json
-    get_json() const override {
-      json j = json::object();
-      j["width"] = width();
-      j["height"] = height();
-      j["spacing"] = spacing();
-      return j;
-    }
-
-    void
-    set_json(const json &j) override {
-      width_ = j["width"];
-      height_ = j["height"];
-      spacing_ = j["spacing"];
-    }
-
-    double width_{};
-    double height_{};
-    double spacing_{};
   };
 
   class D2Q9_Input final : public JSON_Convertible {

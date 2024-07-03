@@ -1,7 +1,7 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/D2Q9.hpp>
+#include <lbmbench/utility.hpp>
 
 //
 // ... Testing header files

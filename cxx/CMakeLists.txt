@@ -9,7 +9,16 @@ target_include_directories(lbmbench_header INTERFACE
 )
 add_library(lbmbench::header ALIAS lbmbench_header)
 
-install(TARGETS lbmbench_header
+
+add_library(lbmbench_library
+  lbmbench/details/D2_Lattice.cpp)
+target_link_libraries(lbmbench_library
+  PRIVATE lbmbench::header nlohmann_json::nlohmann_json)
+target_compile_features(lbmbench_library PUBLIC ${lbmbench_CXX_FEATURES})
+set_target_properties(lbmbench_header PROPERTIES EXPORT_NAME library)
+add_library(lbmbench::library ALIAS lbmbench_library)
+
+install(TARGETS lbmbench_header lbmbench_library
   EXPORT lbmbench_EXPORTS
   RUNTIME DESTINATION ${lbmbench_INSTALL_BINDIR}
   LIBRARY DESTINATION ${lbmbench_INSTALL_LIBDIR}

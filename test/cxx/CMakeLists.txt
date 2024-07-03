@@ -6,6 +6,7 @@ macro(lbmbench_add_test test_name)
   add_executable(${exe_name} ${src_name})
   target_link_libraries(${exe_name} PRIVATE
     lbmbench::header
+    lbmbench::library
     Catch2::Catch2WithMain)
   target_compile_features(${exe_name} PRIVATE ${lbmbench_CXX_FEATURES})
   add_test(${test_name} ${exe_name})
