@@ -6,19 +6,23 @@
 #include <lbmbench/details/Array.hpp>
 #include <lbmbench/details/Boundary_Condition.hpp>
 #include <lbmbench/details/Boundary_ID.hpp>
+#include <lbmbench/details/D2Q9.hpp>
 #include <lbmbench/details/Expression.hpp>
 #include <lbmbench/details/Fixed_Array.hpp>
 #include <lbmbench/details/Fixed_Array_Index.hpp>
 #include <lbmbench/details/Fixed_Lexical.hpp>
 #include <lbmbench/details/Index.hpp>
+#include <lbmbench/details/Initial_Conditions.hpp>
+#include <lbmbench/details/JSON_Convertible.hpp>
 #include <lbmbench/details/Lexical.hpp>
 #include <lbmbench/details/Shape.hpp>
+#include <lbmbench/details/Vector.hpp>
 
 namespace lbm {
+
+  using details::JSON_Convertible;
+
   using details::Array;
-  using details::Boundary;
-  using details::Boundary_Condition;
-  using details::Boundary_ID;
   using details::Fixed_Array;
   using details::Fixed_Array_Index;
   using details::Fixed_Lexical;
@@ -28,6 +32,13 @@ namespace lbm {
   using details::Lexical;
   using details::Shape;
   using details::size_type;
+  using details::Vector;
+
+  using details::Boundary;
+  using details::Boundary_Condition;
+  using details::Boundary_ID;
+
+  using details::Initial_Conditions;
 
   using details::parse_json_expr;
 
@@ -82,5 +93,7 @@ namespace lbm {
   using details::Log10;
   using details::Sqrt;
   using details::Square;
+
+  namespace D2Q9 = details::D2Q9;
 
 } // end of namespace lbm

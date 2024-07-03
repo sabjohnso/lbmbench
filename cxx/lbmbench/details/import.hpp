@@ -29,14 +29,24 @@ namespace lbm::details {
 
   using namespace std::literals;
 
+  // from utility
+  using std::index_sequence;
+  using std::make_index_sequence;
+
   // from array
   using std::array;
 
   // from algorithm
-  using std::array;
+  using std::fill;
+  using std::reduce;
+  using std::transform_reduce;
 
   // from functional
+  using std::equal_to;
   using std::function;
+  using std::logical_and;
+  using std::multiplies;
+  using std::plus;
 
   // from vector
   using std::vector;
@@ -79,6 +89,7 @@ namespace lbm::details {
   using std::visit;
 
   // from type_traits
+  using std::common_type_t;
   using std::is_default_constructible_v;
 
   // from memory

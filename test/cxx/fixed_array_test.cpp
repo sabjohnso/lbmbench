@@ -26,7 +26,6 @@ namespace lbm::testing {
       CHECK(array.size() == 9);
       for (size_type i = 0; i < 3; ++i) {
         for (size_type j = 0; j < 3; ++j) {
-          std::cout << "(" << i << "," << j << ")" << std::endl;
           array[i, j] = double(i * 3 + j);
         }
       }
@@ -36,6 +35,10 @@ namespace lbm::testing {
             ++i;
           });
     }
+    SECTION("fill") {
+      Fixed_Array<double, Fixed_Lexical<3, 3>> array{};
+      array.fill(4.0);
+      std::for_each(std::begin(array), std::end(array), [](const auto x) { CHECK(x == 4.0); });
+    }
   }
-
 } // end of namespace lbm::testing

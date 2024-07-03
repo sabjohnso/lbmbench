@@ -3,6 +3,7 @@
 //
 // ... LBM Bench header files
 //
+#include <lbmbench/details/JSON_Convertible.hpp>
 #include <lbmbench/details/import.hpp>
 
 namespace lbm::details {
@@ -13,44 +14,31 @@ namespace lbm::details {
     Upper = 1,
   };
 
-  template <size_type N>
-  class Boundary_ID : public array<Boundary, N> {
+  class Boundary_ID : public vector<Boundary>, public JSON_Convertible {
   public:
-    using Base = array<Boundary, N>;
+    using Base = vector<Boundary>;
 
     constexpr Boundary_ID() = default;
     constexpr Boundary_ID(auto i, auto j, auto... ks)
-        : Base{{Boundary(i), Boundary(j), Boundary(ks)...}} {}
+        : Base{Boundary(i), Boundary(j), Boundary(ks)...} {}
 
-    friend void
-    to_json(json &j, const Boundary_ID id) {
-      j = json::object();
-      j["boundary"] = json::array();
-      transform(std::begin(id), std::end(id), back_inserter(j["boundary"]), [](const Boundary &x) {
+  private:
+    json
+    get_json() const override {
+      json j = json::array();
+
+      transform(std::begin(*this), std::end(*this), back_inserter(j), [](const Boundary &x) {
         return int(x);
       });
+      return j;
     }
 
-    friend void
-    from_json(const json &j, Boundary_ID &id) {
-      transform(std::begin(j["boundary"]),
-                std::end(j["boundary"]),
-                std::begin(id),
-                [](const auto &x) { return Boundary(x); });
-    }
-
-    friend ostream &
-    operator<<(ostream &os, const Boundary_ID &id) {
-      return os << json(id);
-    }
-
-    friend istream &
-    operator>>(istream &is, Boundary_ID &id) {
-      id = json::parse(is);
-      return is;
+    void
+    set_json(const json &j) override {
+      this->clear();
+      transform(std::begin(j), std::end(j), back_inserter(*this), [](const auto &x) {
+        return Boundary(x);
+      });
     }
   };
-
-  Boundary_ID(auto i, auto j, auto... ks) -> Boundary_ID<2 + sizeof...(ks)>;
-
 } // end of namespace lbm::details

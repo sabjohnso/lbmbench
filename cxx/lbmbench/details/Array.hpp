@@ -8,8 +8,9 @@
 
 namespace lbm::details {
 
-  template <class T, size_type N, class Order = Lexical<N>>
+  template <class T, size_type N, class Order_Type = Lexical<N>>
   class Array {
+
   public:
     using value_type = T;
     using reference = T &;
@@ -18,6 +19,8 @@ namespace lbm::details {
     using Storage = vector<T>;
     using iterator = Storage::iterator;
     using const_iterator = Storage::const_iterator;
+
+    using Order = Order_Type;
 
     Array() = default;
     Array(Order order, T init = T{})

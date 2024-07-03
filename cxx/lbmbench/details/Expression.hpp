@@ -24,8 +24,9 @@ namespace lbm::details {
       return !(a == b);
     }
   };
+  using Expression = shared_ptr<Expr>;
 
-  shared_ptr<Expr>
+  Expression
   parse_json_expr(json j);
 
   class Constant final : public Expr {
@@ -700,7 +701,7 @@ namespace lbm::details {
     }
   }
 
-  inline shared_ptr<Expr>
+  inline Expression
   parse_json_expr(json j) {
     std::cout << j << std::endl;
     if (j.is_number()) {
@@ -730,7 +731,5 @@ namespace lbm::details {
       throw runtime_error("Failed to parse JSON expression: "s + j.dump(4));
     }
   }
-
-  using Expression = shared_ptr<Expr>;
 
 } // end of namespace lbm::details

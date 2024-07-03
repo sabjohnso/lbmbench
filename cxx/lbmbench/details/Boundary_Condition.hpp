@@ -8,218 +8,175 @@
 
 namespace lbm::details {
 
-  template <size_type N>
-  class Wall {
+  class Wall final : public JSON_Convertible {
   public:
     constexpr Wall() = default;
-    constexpr Wall(Boundary_ID<N> boundary) : boundary_{boundary} {}
-
-    friend void
-    to_json(json &j, const Wall &wall) {
-      j = json::object();
-      j["wall"] = json::object();
-      j["wall"].update(wall.boundary_);
-    }
-
-    friend void
-    from_json(const json &j, Wall &wall) {
-      wall.boundary_ = j["wall"];
-    }
-
-    friend ostream &
-    operator<<(ostream &os, const Wall &wall) {
-      return os << json(wall);
-    }
-
-    friend istream &
-    operator>>(istream &is, Wall &wall) {
-      wall = json::parse(is);
-      return is;
-    }
+    constexpr Wall(Boundary_ID boundary) : boundary_{boundary} {}
 
     friend bool
-    operator<=>(const Wall &wall1, const Wall &wall2) = default;
+    operator==(const Wall &wall1, const Wall &wall2) {
+      return wall1.boundary_ == wall2.boundary_;
+    }
 
   private:
-    Boundary_ID<N> boundary_{};
+    json
+    get_json() const override {
+      json j = json::object();
+      j["wall"] = json::object();
+      j["wall"]["boundary"] = boundary_;
+      return j;
+    }
+
+    void
+    set_json(const json &j) override {
+      boundary_ = j["wall"]["boundary"];
+    }
+
+    Boundary_ID boundary_{};
   };
 
-  template <size_type N>
-  Wall(Boundary_ID<N>) -> Wall<N>;
-
-  template <size_type N>
-  class Symmetry {
+  class Symmetry final : public JSON_Convertible {
   public:
     constexpr Symmetry() = default;
-    constexpr Symmetry(Boundary_ID<N> boundary) : boundary_{boundary} {}
+    constexpr Symmetry(Boundary_ID boundary) : boundary_{boundary} {}
 
-    friend void
-    to_json(json &j, const Symmetry &symmetry) {
-      j = json::object();
-      j["symmetry"] = json::object();
-      j["symmetry"].update(symmetry.boundary_);
-    }
-
-    friend void
-    from_json(const json &j, Symmetry &symmetry) {
-      symmetry.boundary_ = j["symmetry"];
-    }
-
-    friend ostream &
-    operator<<(ostream &os, const Symmetry &symmetry) {
-      return os << json(symmetry);
-    }
-
-    friend istream &
-    operator>>(istream &is, Symmetry &symmetry) {
-      symmetry = json::parse(is);
-      return is;
+    friend bool
+    operator==(const Symmetry &symmetry1, const Symmetry &symmetry2) {
+      return symmetry1.boundary_ == symmetry2.boundary_;
     }
 
     friend bool
-    operator<=>(const Symmetry &symmetry1, const Symmetry &symmetry2) = default;
+    operator!=(const Symmetry &symmetry1, const Symmetry &symmetry2) {
+      return !(symmetry1 == symmetry2);
+    }
 
   private:
-    Boundary_ID<N> boundary_;
+    json
+    get_json() const override {
+      json j = json::object();
+      j["symmetry"] = boundary_;
+      return j;
+    }
+
+    void
+    set_json(const json &j) override {
+      boundary_ = j["symmetry"];
+    }
+
+    Boundary_ID boundary_;
   };
 
-  template <size_type N>
-  Symmetry(Boundary_ID<N>) -> Symmetry<N>;
-
-  template <size_type N>
-  class Inlet {
+  class Inlet final : public JSON_Convertible {
   public:
     constexpr Inlet() = default;
-    constexpr Inlet(Boundary_ID<N> boundary, double inlet_speed)
+    constexpr Inlet(Boundary_ID boundary, double inlet_speed)
         : boundary_{boundary}, inlet_speed_{inlet_speed} {}
 
-    friend void
-    to_json(json &j, const Inlet inlet) {
-      j = json::object();
-      j["inlet"] = json::object();
-      j["inlet"].update(inlet.boundary_);
-      j["inlet"]["inletSpeed"] = inlet.inlet_speed_;
-    }
-
-    friend void
-    from_json(const json &j, Inlet &inlet) {
-      inlet.boundary_ = j["inlet"];
-      inlet.inlet_speed_ = j["inlet"]["inletSpeed"];
-    }
-
-    friend ostream &
-    operator<<(ostream &os, const Inlet &inlet) {
-      return os << json(inlet);
-    }
-
-    friend istream &
-    operator>>(istream &is, Inlet &inlet) {
-      inlet = json::parse(is);
-      return is;
+    friend bool
+    operator==(const Inlet &inlet1, const Inlet &inlet2) {
+      return inlet1.boundary_ == inlet2.boundary_ && inlet1.inlet_speed_ == inlet2.inlet_speed_;
     }
 
     friend bool
-    operator<=>(const Inlet &Inlet1, const Inlet &Inlet2) = default;
+    operator!=(const Inlet &inlet1, const Inlet &inlet2) {
+      return !(inlet1 == inlet2);
+    }
 
   private:
-    Boundary_ID<N> boundary_{};
+    json
+    get_json() const override {
+      json j = json::object();
+      j["inlet"]["boundary"] = boundary_;
+      j["inlet"]["inletSpeed"] = inlet_speed_;
+      return j;
+    }
+
+    void
+    set_json(const json &j) override {
+      boundary_ = j["inlet"]["boundary"];
+      inlet_speed_ = j["inlet"]["inletSpeed"];
+    }
+
+    Boundary_ID boundary_{};
     double inlet_speed_{};
   };
 
-  template <size_type N>
-  Inlet(Boundary_ID<N>, double) -> Inlet<N>;
-
-  template <size_type N>
-  class Outlet {
+  class Outlet final : public JSON_Convertible {
   public:
     constexpr Outlet() = default;
-    constexpr Outlet(Boundary_ID<N> boundary, double outlet_speed)
+    constexpr Outlet(Boundary_ID boundary, double outlet_speed)
         : boundary_{boundary}, outlet_speed_{outlet_speed} {}
 
-    friend void
-    to_json(json &j, const Outlet outlet) {
-      j = json::object();
-      j["outlet"] = json::object();
-      j["outlet"].update(outlet.boundary_);
-      j["outlet"]["outletSpeed"] = outlet.outlet_speed_;
-    }
-
-    friend void
-    from_json(const json &j, Outlet &outlet) {
-      outlet.boundary_ = j["outlet"];
-      outlet.outlet_speed_ = j["outlet"]["outletSpeed"];
-    }
-
-    friend ostream &
-    operator<<(ostream &os, const Outlet &outlet) {
-      return os << json(outlet);
-    }
-
-    friend istream &
-    operator>>(istream &is, Outlet &outlet) {
-      outlet = json::parse(is);
-      return is;
-    }
-
     friend bool
-    operator<=>(const Outlet &Outlet1, const Outlet &Outlet2) = default;
+    operator==(const Outlet &outlet1, const Outlet &outlet2) {
+      return outlet1.boundary_ == outlet2.boundary_ &&
+             outlet1.outlet_speed_ == outlet2.outlet_speed_;
+    }
+    friend bool
+    operator!=(const Outlet &outlet1, const Outlet &outlet2) {
+      return !(outlet1 == outlet2);
+    }
 
   private:
-    Boundary_ID<N> boundary_{};
+    json
+    get_json() const override {
+      json j = json::object();
+      j["outlet"] = json::object();
+      j["outlet"]["boundary"] = boundary_;
+      j["outlet"]["outletSpeed"] = outlet_speed_;
+      return j;
+    }
+
+    void
+    set_json(const json &j) override {
+      boundary_ = j["outlet"]["boundary"];
+      outlet_speed_ = j["outlet"]["outletSpeed"];
+    }
+
+    Boundary_ID boundary_{};
     double outlet_speed_{};
   };
 
-  template <size_type N>
-  Outlet(Boundary_ID<N>, double) -> Outlet<N>;
-
-  template <size_type N>
-  class Pressure_Drop {
+  class Pressure_Drop final : public JSON_Convertible {
   public:
     constexpr Pressure_Drop() = default;
-    constexpr Pressure_Drop(Boundary_ID<N> boundary, double value)
+    constexpr Pressure_Drop(Boundary_ID boundary, double value)
         : boundary_(boundary), value_(value) {}
 
-    friend void
-    to_json(json &j, const Pressure_Drop &pressure_drop) {
-      j = json::object();
-      j["pressureDrop"] = json::object();
-      j["pressureDrop"].update(pressure_drop.boundary_);
-      j["pressureDrop"]["value"] = pressure_drop.value_;
-    }
-
-    friend void
-    from_json(const json &j, Pressure_Drop &pressure_drop) {
-      pressure_drop.boundary_ = j["pressureDrop"];
-      pressure_drop.value_ = j["pressureDrop"]["value"];
-    }
-
-    friend ostream &
-    operator<<(ostream &os, const Pressure_Drop &pressure_drop) {
-      return os << json(pressure_drop);
-    }
-
-    friend istream &
-    operator<<(istream &is, Pressure_Drop &pressure_drop) {
-      pressure_drop = json::parse(is);
-      return is;
+    friend bool
+    operator==(const Pressure_Drop &pressure_drop1, const Pressure_Drop &pressure_drop2) {
+      return pressure_drop1.boundary_ == pressure_drop2.boundary_ &&
+             pressure_drop1.value_ == pressure_drop2.value_;
     }
 
     friend bool
-    operator<=>(const Pressure_Drop &pressure_drop1, const Pressure_Drop &pressure_drop2) = default;
+    operator!=(const Pressure_Drop &pressure_drop1, const Pressure_Drop &pressure_drop2) {
+      return !(pressure_drop1 == pressure_drop2);
+    }
 
   private:
-    Boundary_ID<N> boundary_{};
+    json
+    get_json() const override {
+      json j = json::object();
+      j["pressureDrop"] = json::object();
+      j["pressureDrop"]["boundary"] = boundary_;
+      j["pressureDrop"]["value"] = value_;
+      return j;
+    }
+
+    void
+    set_json(const json &j) override {
+      boundary_ = j["pressureDrop"]["boundary"];
+      value_ = j["pressureDrop"]["value"];
+    }
+
+    Boundary_ID boundary_{};
     double value_{};
   };
 
-  template <size_type N>
-  Pressure_Drop(Boundary_ID<N>, double) -> Pressure_Drop<N>;
-
-  template <size_type N>
-  class Boundary_Condition
-      : public variant<Wall<N>, Symmetry<N>, Inlet<N>, Outlet<N>, Pressure_Drop<N>> {
+  class Boundary_Condition : public variant<Wall, Symmetry, Inlet, Outlet, Pressure_Drop> {
   public:
-    using Base = variant<Wall<N>, Symmetry<N>, Inlet<N>, Outlet<N>, Pressure_Drop<N>>;
+    using Base = variant<Wall, Symmetry, Inlet, Outlet, Pressure_Drop>;
     using Base::Base;
 
     Boundary_Condition() = default;
@@ -232,15 +189,15 @@ namespace lbm::details {
     friend void
     from_json(const json &j, Boundary_Condition &boundary_condition) {
       if (j.contains("wall")) {
-        boundary_condition = Wall<N>(j);
+        boundary_condition = Wall(j);
       } else if (j.contains("symmetry")) {
-        boundary_condition = Symmetry<N>(j);
+        boundary_condition = Symmetry(j);
       } else if (j.contains("inlet")) {
-        boundary_condition = Inlet<N>(j);
+        boundary_condition = Inlet(j);
       } else if (j.contains("outlet")) {
-        boundary_condition = Outlet<N>(j);
+        boundary_condition = Outlet(j);
       } else if (j.contains("pressureDrop")) {
-        boundary_condition = Pressure_Drop<N>(j);
+        boundary_condition = Pressure_Drop(j);
       }
     }
 
@@ -269,20 +226,5 @@ namespace lbm::details {
           bc2);
     }
   };
-
-  template <size_type N>
-  Boundary_Condition(Wall<N>) -> Boundary_Condition<N>;
-
-  template <size_type N>
-  Boundary_Condition(Symmetry<N>) -> Boundary_Condition<N>;
-
-  template <size_type N>
-  Boundary_Condition(Inlet<N>) -> Boundary_Condition<N>;
-
-  template <size_type N>
-  Boundary_Condition(Outlet<N>) -> Boundary_Condition<N>;
-
-  template <size_type N>
-  Boundary_Condition(Pressure_Drop<N>) -> Boundary_Condition<N>;
 
 } // end of namespace lbm::details

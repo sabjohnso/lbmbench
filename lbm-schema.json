@@ -16,6 +16,7 @@
                         "viscosity" : {"type" : "number"},
                         "lattice" : {"$ref" : "#/$defs/D2Lattice"},
                         "boundaryConditions" : {"$ref" : "#/$defs/D2BoundaryConditions"},
+                        "initialConditions" : {"$ref" : "#/$defs/D2InitialConditions"}
                         "obstacles" : {"$ref" : "#/$defs/D2Obstacles"}
                     },
                     "required" : ["viscosity", "lattice", "boundaryConditions", "obstacles"],
@@ -55,6 +56,18 @@
             "required" : ["width", "height", "latticeSpacing"],
             "additionalProperties" : false
         },
+        "D2InitialConditions"  : {
+            "type" : "object",
+            "properties"  : {
+                "desity" : {"$ref" : "#/$defs/D2Expr"},
+                "velocity" : {
+                    "type" : "array"
+                    "items" : {"$ref" : "#/$defs/D2Expr"}
+                    "minItems" : 2,
+                    "maxItems" : 2
+                }
+            }
+        },                
         "D2BoundaryConditions" : {
             "type" : "array",
             "items" : {"$ref" : "#/$defs/D2BoundaryCondition"}
