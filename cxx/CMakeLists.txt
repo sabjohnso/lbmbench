@@ -11,7 +11,8 @@ add_library(lbmbench::header ALIAS lbmbench_header)
 
 
 add_library(lbmbench_library
-  lbmbench/details/D2_Lattice.cpp)
+  lbmbench/details/D2_Lattice.cpp
+  lbmbench/details/Expression.cpp)
 target_link_libraries(lbmbench_library
   PRIVATE lbmbench::header nlohmann_json::nlohmann_json)
 target_compile_features(lbmbench_library PUBLIC ${lbmbench_CXX_FEATURES})

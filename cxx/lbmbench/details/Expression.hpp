@@ -4,6 +4,7 @@
 // ... LBM Bench header files
 //
 #include <lbmbench/details/JSON_Convertible.hpp>
+#include <lbmbench/details/base_types.hpp>
 #include <lbmbench/details/import.hpp>
 
 namespace lbm::details {
@@ -15,14 +16,10 @@ namespace lbm::details {
     virtual ~Expr() = default;
 
     friend bool
-    operator==(const Expr &a, const Expr &b) {
-      return json(a) == json(b);
-    }
+    operator==(const Expr &a, const Expr &b);
 
     friend bool
-    operator!=(const Expr &a, const Expr &b) {
-      return !(a == b);
-    }
+    operator!=(const Expr &a, const Expr &b);
   };
   using Expression = shared_ptr<Expr>;
 
@@ -33,23 +30,17 @@ namespace lbm::details {
   public:
     using Base = Expr;
     Constant() = default;
-    Constant(double value) : value_(value) {}
+    Constant(double value);
 
     double
-    eval(const vector<double> &) const override {
-      return value_;
-    }
+    eval(const vector<double> &) const override;
 
   private:
     json
-    get_json() const override {
-      return value_;
-    }
+    get_json() const override;
 
     void
-    set_json(const json &j) override {
-      value_ = j;
-    }
+    set_json(const json &j) override;
 
     double value_;
   };
@@ -88,9 +79,7 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "x"s;
-    }
+    name() const override;
   };
 
   class Y final : public Coord<1> {
@@ -99,9 +88,7 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "y"s;
-    }
+    name() const override;
   };
 
   class Z final : public Coord<2> {
@@ -110,9 +97,7 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "z"s;
-    }
+    name() const override;
   };
 
   class Binary_Operator : public Expr {
@@ -125,15 +110,12 @@ namespace lbm::details {
     Binary_Operator(const T &arg1, const U &arg2)
         : arg1_(make_shared<T>(arg1)), arg2_(make_shared<U>(arg2)) {}
 
-    Binary_Operator(Pointer arg1, Pointer arg2) : arg1_(arg1), arg2_(arg2) {}
+    Binary_Operator(Pointer arg1, Pointer arg2);
 
-    Binary_Operator(const json &arg1, const json &arg2)
-        : arg1_(parse_json_expr(arg1)), arg2_(parse_json_expr(arg2)) {}
+    Binary_Operator(const json &arg1, const json &arg2);
 
     double
-    eval(const vector<double> &coord) const override {
-      return operate(arg1_->eval(coord), arg2_->eval(coord));
-    }
+    eval(const vector<double> &coord) const override;
 
   private:
     virtual double
@@ -143,22 +125,10 @@ namespace lbm::details {
     name() const = 0;
 
     json
-    get_json() const override {
-
-      json j = json::object();
-      j[name()] = json::array();
-      json arg1_json = *arg1_;
-      json arg2_json = *arg2_;
-      j[name()].push_back(arg1_json);
-      j[name()].push_back(arg2_json);
-      return j;
-    };
+    get_json() const override;
 
     void
-    set_json(const json &j) override {
-      arg1_ = parse_json_expr(j[name()][0]);
-      arg2_ = parse_json_expr(j[name()][1]);
-    };
+    set_json(const json &j) override;
 
     Pointer arg1_{};
     Pointer arg2_{};
@@ -170,14 +140,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "add"s;
-    }
+    name() const override;
 
     double
-    operate(double arg1, double arg2) const override {
-      return arg1 + arg2;
-    }
+    operate(double arg1, double arg2) const override;
   };
 
   class Subtract final : public Binary_Operator {
@@ -186,14 +152,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "subtract"s;
-    }
+    name() const override;
 
     double
-    operate(double arg1, double arg2) const override {
-      return arg1 - arg2;
-    }
+    operate(double arg1, double arg2) const override;
   };
 
   class Multiply final : public Binary_Operator {
@@ -202,14 +164,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "mutliply"s;
-    }
+    name() const override;
 
     double
-    operate(double arg1, double arg2) const override {
-      return arg1 * arg2;
-    }
+    operate(double arg1, double arg2) const override;
   };
 
   class Divide final : public Binary_Operator {
@@ -218,14 +176,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "mutliply"s;
-    }
+    name() const override;
 
     double
-    operate(double arg1, double arg2) const override {
-      return arg1 / arg2;
-    }
+    operate(double arg1, double arg2) const override;
   };
 
   class Power final : public Binary_Operator {
@@ -234,14 +188,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "pow"s;
-    }
+    name() const override;
 
     double
-    operate(double arg1, double arg2) const override {
-      return std::pow(arg1, arg2);
-    }
+    operate(double arg1, double arg2) const override;
   };
 
   class Atan2 final : public Binary_Operator {
@@ -250,14 +200,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "atan2"s;
-    }
+    name() const override;
 
     double
-    operate(double arg1, double arg2) const override {
-      return std::atan2(arg1, arg2);
-    }
+    operate(double arg1, double arg2) const override;
   };
 
   class Hypot final : public Binary_Operator {
@@ -266,14 +212,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "hypot"s;
-    }
+    name() const override;
 
     double
-    operate(double arg1, double arg2) const override {
-      return std::hypot(arg1, arg2);
-    }
+    operate(double arg1, double arg2) const override;
   };
 
   class Unary_Operator : public Expr {
@@ -285,7 +227,7 @@ namespace lbm::details {
     template <derived_from<Expr> T>
     explicit Unary_Operator(const T &arg) : arg_(make_shared<T>(arg)) {}
 
-    explicit Unary_Operator(Pointer arg) : arg_(arg) {}
+    explicit Unary_Operator(Pointer arg);
 
     double
     eval(const vector<double> &coord) const override {
@@ -300,18 +242,10 @@ namespace lbm::details {
     name() const = 0;
 
     json
-    get_json() const override {
-      json j = json::object();
-      j[name()] = json(*arg_);
-
-      return j;
-    };
+    get_json() const override;
 
     void
-    set_json(const json &j) override {
-      arg_ = parse_json_expr(j.at(name()));
-    }
-
+    set_json(const json &j) override;
     Pointer arg_{};
   };
 
@@ -321,14 +255,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "negate"s;
-    }
+    name() const override;
 
     double
-    operate(double arg) const override {
-      return -arg;
-    }
+    operate(double arg) const override;
   };
 
   class Reciprocal final : public Unary_Operator {
@@ -337,14 +267,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "reciprocal"s;
-    }
+    name() const override;
 
     double
-    operate(double arg) const override {
-      return 1.0 / arg;
-    }
+    operate(double arg) const override;
   };
 
   class Cos final : public Unary_Operator {
@@ -353,14 +279,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "cos"s;
-    }
+    name() const override;
 
     double
-    operate(double arg) const override {
-      return std::cos(arg);
-    }
+    operate(double arg) const override;
   };
 
   class Sin final : public Unary_Operator {
@@ -369,14 +291,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "sin"s;
-    }
+    name() const override;
 
     double
-    operate(double arg) const override {
-      return std::sin(arg);
-    }
+    operate(double arg) const override;
   };
 
   class Tan final : public Unary_Operator {
@@ -385,14 +303,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "tan"s;
-    }
+    name() const override;
 
     double
-    operate(double arg) const override {
-      return std::tan(arg);
-    }
+    operate(double arg) const override;
   };
 
   class Acos final : public Unary_Operator {
@@ -401,14 +315,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "acos"s;
-    }
+    name() const override;
 
     double
-    operate(double arg) const override {
-      return std::acos(arg);
-    }
+    operate(double arg) const override;
   };
 
   class Asin final : public Unary_Operator {
@@ -417,14 +327,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "asin"s;
-    }
+    name() const override;
 
     double
-    operate(double arg) const override {
-      return std::asin(arg);
-    }
+    operate(double arg) const override;
   };
 
   class Atan final : public Unary_Operator {
@@ -433,14 +339,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "atan"s;
-    }
+    name() const override;
 
     double
-    operate(double arg) const override {
-      return std::atan(arg);
-    }
+    operate(double arg) const override;
   };
 
   class Cosh final : public Unary_Operator {
@@ -449,14 +351,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "cosh"s;
-    }
+    name() const override;
 
     double
-    operate(double arg) const override {
-      return std::cosh(arg);
-    }
+    operate(double arg) const override;
   };
 
   class Sinh final : public Unary_Operator {
@@ -465,14 +363,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "sinh"s;
-    }
+    name() const override;
 
     double
-    operate(double arg) const override {
-      return std::sinh(arg);
-    }
+    operate(double arg) const override;
   };
 
   class Tanh final : public Unary_Operator {
@@ -481,14 +375,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "tanh"s;
-    }
+    name() const override;
 
     double
-    operate(double arg) const override {
-      return std::tanh(arg);
-    }
+    operate(double arg) const override;
   };
 
   class Acosh final : public Unary_Operator {
@@ -497,14 +387,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "acosh"s;
-    }
+    name() const override;
 
     double
-    operate(double arg) const override {
-      return std::acosh(arg);
-    }
+    operate(double arg) const override;
   };
 
   class Asinh final : public Unary_Operator {
@@ -513,14 +399,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "asinh"s;
-    }
+    name() const override;
 
     double
-    operate(double arg) const override {
-      return std::asinh(arg);
-    }
+    operate(double arg) const override;
   };
 
   class Atanh final : public Unary_Operator {
@@ -529,14 +411,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "atanh"s;
-    }
+    name() const override;
 
     double
-    operate(double arg) const override {
-      return std::atanh(arg);
-    }
+    operate(double arg) const override;
   };
 
   class Exp final : public Unary_Operator {
@@ -545,14 +423,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "exp"s;
-    }
+    name() const override;
 
     double
-    operate(double arg) const override {
-      return std::exp(arg);
-    }
+    operate(double arg) const override;
   };
 
   class Log final : public Unary_Operator {
@@ -561,14 +435,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "log"s;
-    }
+    name() const override;
 
     double
-    operate(double arg) const override {
-      return std::log(arg);
-    }
+    operate(double arg) const override;
   };
 
   class Log10 final : public Unary_Operator {
@@ -577,14 +447,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "log10"s;
-    }
+    name() const override;
 
     double
-    operate(double arg) const override {
-      return std::log10(arg);
-    }
+    operate(double arg) const override;
   };
 
   class Sqrt final : public Unary_Operator {
@@ -593,14 +459,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "sqrt"s;
-    }
+    name() const override;
 
     double
-    operate(double arg) const override {
-      return std::sqrt(arg);
-    }
+    operate(double arg) const override;
   };
 
   class Cbrt final : public Unary_Operator {
@@ -609,14 +471,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "cbrt"s;
-    }
+    name() const override;
 
     double
-    operate(double arg) const override {
-      return std::cbrt(arg);
-    }
+    operate(double arg) const override;
   };
 
   class Square final : public Unary_Operator {
@@ -625,14 +483,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "square"s;
-    }
+    name() const override;
 
     double
-    operate(double arg) const override {
-      return arg * arg;
-    }
+    operate(double arg) const override;
   };
 
   class Cube final : public Unary_Operator {
@@ -641,14 +495,10 @@ namespace lbm::details {
 
   private:
     string
-    name() const override {
-      return "cube"s;
-    }
+    name() const override;
 
     double
-    operate(double arg) const override {
-      return arg * arg * arg;
-    }
+    operate(double arg) const override;
   };
 
   static const std::map<string, function<shared_ptr<Expr>(const json &)>> operator_map = {
