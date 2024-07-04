@@ -204,6 +204,7 @@ namespace lbm::details::D2Q9 {
       return lattice_.ny();
     }
 
+  private:
     json
     get_json() const override {
       json j = json::object();
@@ -216,7 +217,7 @@ namespace lbm::details::D2Q9 {
                 back_inserter(j["D2Q9Input"]["obstacles"]),
                 [](Expression expr) -> json { return *expr; });
 
-      j["D2Q9Input"].update(lattice_);
+      j["D2Q9Input"]["lattice"] = lattice_;
       return j;
     }
 
@@ -234,10 +235,9 @@ namespace lbm::details::D2Q9 {
                      std::end(j["D2Q9Input"]["obstacles"]),
                      back_inserter(obstacles_),
                      [](json obstacle) { return parse_json_expr(obstacle); });
-      lattice_ = j["D2Q9Input"];
+      lattice_ = j["D2Q9Input"]["lattice"];
     }
 
-  private:
     Lattice lattice_{};
     Initial_Conditions initial_conditions_{};
     Boundary_Conditions boundary_conditions_{};
