@@ -553,7 +553,6 @@ namespace lbm::details {
 
   inline Expression
   parse_json_expr(json j) {
-    std::cout << j << std::endl;
     if (j.is_number()) {
       return make_shared<Constant>(Constant{j.get<double>()});
 
