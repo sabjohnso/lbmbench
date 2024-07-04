@@ -89,7 +89,18 @@ namespace lbm::testing {
     }
   }
 
-  TEST_CASE("D2Q9 Input") { D2Q9_Input input{Lattice{}, Initial_Conditions{}, {}, {}, 0.1}; }
+  TEST_CASE("D2Q9 Input") {
+    D2Q9_Input input{
+        Lattice{200.0, 100.0, 1.0},
+        Initial_Conditions{parse_json_expr(1.0), {parse_json_expr(2.0), parse_json_expr(3.0)}},
+        {},
+        {parse_json_expr({{"subtract",
+                           {25,
+                            {{"add",
+                              {{{"square", {{"subtract", {"x", 50}}}}},
+                               {{"square", {{"subtract", {"y", 50}}}}}}}}}}})},
+        0.1};
+  }
 
   TEST_CASE("D2Q9 State") {}
 
