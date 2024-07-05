@@ -3,31 +3,29 @@
 //
 // ... LBM Bench header files
 //
+#include <lbmbench/details/Bounding_Box.hpp>
 #include <lbmbench/details/JSON_Convertible.hpp>
 #include <lbmbench/details/base_types.hpp>
 #include <lbmbench/details/import.hpp>
 
-namespace lbm::details::D2Q9 {
+namespace lbm::details {
 
   class Lattice final : public JSON_Convertible {
   public:
     Lattice() = default;
-    Lattice(double width, double height, double spacing);
+    Lattice(Bounding_Box bounding_box, double lattice_spacing);
 
     size_type
-    nx() const;
+    size() const;
 
     size_type
-    ny() const;
+    size(size_type idim) const;
 
     double
-    width() const;
+    extent(size_type idim) const;
 
     double
-    height() const;
-
-    double
-    spacing() const;
+    lattice_spacing() const;
 
     friend bool
     operator==(const Lattice &l1, const Lattice &l2);
@@ -39,8 +37,7 @@ namespace lbm::details::D2Q9 {
     void
     set_json(const json &j) override;
 
-    double width_{};
-    double height_{};
-    double spacing_{};
+    Bounding_Box bounding_box_{};
+    double lattice_spacing_{};
   };
-} // namespace lbm::details::D2Q9
+} // namespace lbm::details

@@ -6,6 +6,7 @@
 #include <lbmbench/details/Array.hpp>
 #include <lbmbench/details/Boundary_Condition.hpp>
 #include <lbmbench/details/Boundary_ID.hpp>
+#include <lbmbench/details/Bounding_Box.hpp>
 #include <lbmbench/details/D2Q9.hpp>
 #include <lbmbench/details/Expression.hpp>
 #include <lbmbench/details/Fixed_Array.hpp>
@@ -14,11 +15,15 @@
 #include <lbmbench/details/Index.hpp>
 #include <lbmbench/details/Initial_Conditions.hpp>
 #include <lbmbench/details/JSON_Convertible.hpp>
+#include <lbmbench/details/Lattice.hpp>
 #include <lbmbench/details/Lexical.hpp>
 #include <lbmbench/details/Shape.hpp>
 #include <lbmbench/details/Vector.hpp>
 
 namespace lbm {
+
+  using details::Bounding_Box;
+  using details::Lattice;
 
   using details::JSON_Convertible;
 

@@ -8,11 +8,10 @@
 #include <lbmbench/details/Initial_Conditions.hpp>
 
 #include <lbmbench/details/JSON_Convertible.hpp>
+#include <lbmbench/details/Lattice.hpp>
 #include <lbmbench/details/Vector.hpp>
 #include <lbmbench/details/import.hpp>
 #include <lbmbench/details/misc.hpp>
-
-#include <lbmbench/details/D2_Lattice.hpp>
 
 namespace lbm::details::D2Q9 {
 
@@ -195,13 +194,8 @@ namespace lbm::details::D2Q9 {
           boundary_conditions_(boundary_conditions), obstacles_(obstacles), viscosity_(viscosity) {}
 
     size_type
-    nx() const {
-      return lattice_.nx();
-    }
-
-    size_type
-    ny() const {
-      return lattice_.ny();
+    size() const {
+      return lattice_.size();
     }
 
   private:
@@ -252,8 +246,6 @@ namespace lbm::details::D2Q9 {
     using Order = Nodes::Order;
 
   public:
-    D2Q9_State(Input input) : input_(input), nodes_(Order{Shape{input.nx(), input.ny()}}) {}
-
   private:
     void
     setup_nodes() {}

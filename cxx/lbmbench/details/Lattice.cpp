@@ -1,57 +1,55 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/details/D2_Lattice.hpp>
+#include <lbmbench/details/Lattice.hpp>
 
-namespace lbm::details::D2Q9 {
+namespace lbm::details {
 
-  Lattice::Lattice(double width, double height, double spacing)
-      : width_(width), height_(height), spacing_(spacing) {}
-
-  size_type
-  Lattice::nx() const {
-    return static_cast<size_type>(std::ceil(width_ / spacing_));
-  }
+  Lattice::Lattice(Bounding_Box bounding_box, double lattice_spacing)
+      : bounding_box_(bounding_box), lattice_spacing_(lattice_spacing) {}
 
   size_type
-  Lattice::ny() const {
-    return static_cast<size_type>(std::ceil(height_ / spacing_));
+  Lattice::size(size_type idim) const {
+    return static_cast<size_type>(std::ceil(bounding_box_.at(idim) / lattice_spacing_));
+  }
+
+  size_type
+  Lattice::size() const {
+    size_type accum = 1;
+    for (size_type i = 0; i < static_cast<size_type>(bounding_box_.size()); ++i) {
+      accum *= size(i);
+    }
+    return accum;
   }
 
   double
-  Lattice::width() const {
-    return width_;
+  Lattice::extent(size_type idim) const {
+    return bounding_box_.at(idim);
   }
 
   double
-  Lattice::height() const {
-    return height_;
-  }
-
-  double
-  Lattice::spacing() const {
-    return spacing_;
+  Lattice::lattice_spacing() const {
+    return lattice_spacing_;
   }
 
   bool
-  operator==(const Lattice &l1, const Lattice &l2) {
-    return l1.width_ == l2.width_ && l1.height_ == l2.height_ && l1.spacing_ == l2.spacing_;
+  operator==(const Lattice &lattice1, const Lattice &lattice2) {
+    return lattice1.bounding_box_ == lattice2.bounding_box_ &&
+           lattice1.lattice_spacing_ == lattice2.lattice_spacing_;
   }
 
   json
   Lattice::get_json() const {
     json j = json::object();
-    j["width"] = width();
-    j["height"] = height();
-    j["spacing"] = spacing();
+    j["boundingBox"] = bounding_box_;
+    j["latticeSpacing"] = lattice_spacing_;
     return j;
   }
 
   void
   Lattice::set_json(const json &j) {
-    width_ = j["width"];
-    height_ = j["height"];
-    spacing_ = j["spacing"];
+    bounding_box_ = j["boundingBox"];
+    lattice_spacing_ = j["latticeSpacing"];
   }
 
-} // end of namespace lbm::details::D2Q9
+} // namespace lbm::details

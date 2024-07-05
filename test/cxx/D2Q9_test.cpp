@@ -66,32 +66,9 @@ namespace lbm::testing {
     }
   }
 
-  TEST_CASE("D2Q9 Lattice") {
-    const Lattice lattice{30, 10, 0.3};
-
-    SECTION("lattice info") {
-      CHECK(lattice.nx() == 100);
-      CHECK(lattice.ny() == 34);
-    }
-
-    SECTION("Conversion to and from JSON") {
-      const json json_lattice = lattice;
-      const Lattice lattice_from_json = json_lattice;
-      CHECK(lattice == lattice_from_json);
-    }
-
-    SECTION("Conversion to and from text") {
-      std::stringstream ss{};
-      ss << lattice;
-      Lattice lattice_from_text{};
-      ss >> lattice_from_text;
-      CHECK(lattice == lattice_from_text);
-    }
-  }
-
   TEST_CASE("D2Q9 Input") {
     D2Q9_Input input{
-        Lattice{200.0, 100.0, 1.0},
+        Lattice{Bounding_Box{200.0, 100.0}, 1.0},
         Initial_Conditions{parse_json_expr(1.0), {parse_json_expr(2.0), parse_json_expr(3.0)}},
         {},
         {parse_json_expr({{"subtract",
