@@ -53,6 +53,54 @@ namespace lbm::details {
       return pexpr_->eval(coord);
     }
 
+    friend Expression
+    operator+(Expression e0, Expression e1);
+
+    friend Expression
+    operator+(double e0, Expression e1);
+
+    friend Expression
+    operator+(Expression e0, double e1);
+
+    friend Expression
+    operator-(Expression e0, Expression e1);
+
+    friend Expression
+    operator-(double e0, Expression e1);
+
+    friend Expression
+    operator-(Expression e0, double e1);
+
+    friend Expression
+    operator*(Expression e0, Expression e1);
+
+    friend Expression
+    operator*(double e0, Expression e1);
+
+    friend Expression
+    operator*(Expression e0, double e1);
+
+    friend Expression
+    operator/(Expression e0, Expression e1);
+
+    friend Expression
+    operator/(double e0, Expression e1);
+
+    friend Expression
+    operator/(Expression e0, double e1);
+
+    friend Expression
+    pow(Expression e0, Expression e1);
+
+    friend Expression
+    pow(double e0, Expression e1);
+
+    friend Expression
+    pow(Expression e0, double e1);
+
+    friend Expression
+    heavyside(Expression e);
+
     operator bool() const { return bool{pexpr_}; }
 
   private:
@@ -547,6 +595,18 @@ namespace lbm::details {
     operate(double arg) const override;
   };
 
+  class Heaviside final : public Unary_Operator {
+  public:
+    using Unary_Operator::Unary_Operator;
+
+  private:
+    string
+    name() const override;
+
+    double
+    operate(double arg) const override;
+  };
+
   static const std::map<string, function<shared_ptr<Expr>(const json &)>> operator_map = {
       {"add"s, [](const json &j) { return make_shared<Add>(j); }},
       {"subtract"s, [](const json &j) { return make_shared<Subtract>(j); }},
@@ -576,7 +636,7 @@ namespace lbm::details {
       {"cbrt"s, [](const json &j) { return make_shared<Cbrt>(j); }},
       {"square"s, [](const json &j) { return make_shared<Square>(j); }},
       {"cube"s, [](const json &j) { return make_shared<Cube>(j); }},
-
+      {"heaviside"s, [](const json &j) { return make_shared<Heaviside>(j); }},
   };
 
   inline string
@@ -624,5 +684,11 @@ namespace lbm::details {
       throw runtime_error("Failed to parse JSON expression: "s + j.dump(4));
     }
   }
+
+  const Expression x = json("x");
+  const Expression y = json("y");
+
+  // double
+  // heaviside(double arg);
 
 } // end of namespace lbm::details

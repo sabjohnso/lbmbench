@@ -36,6 +36,9 @@ namespace lbm::details {
     operator[](size_type index) const;
 
     friend Euclidean
+    operator-(const Euclidean &u);
+
+    friend Euclidean
     operator+(const Euclidean &u, const Euclidean &v);
 
     friend Euclidean

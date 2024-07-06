@@ -435,6 +435,16 @@ namespace lbm::testing {
         CHECK(cube.eval(coord2) == x2 * x2 * x2);
       }
     }
+
+    SECTION("heaviside") {
+      Heaviside heaviside{X{}};
+      SECTION("evaluation") {
+        CHECK(heaviside.eval(coord1) == 1.0);
+        CHECK(heaviside.eval(coord2) == 1.0);
+        CHECK(heaviside.eval(-coord1) == 0.0);
+        CHECK(heaviside.eval(-coord2) == 0.0);
+      }
+    }
   }
 
   TEST_CASE("3 Dimensional") {

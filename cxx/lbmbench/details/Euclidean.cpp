@@ -11,6 +11,11 @@ namespace lbm::details {
   }
 
   Euclidean
+  operator-(const Euclidean &u) {
+    return -1.0 * u;
+  }
+
+  Euclidean
   operator+(const Euclidean &u, const Euclidean &v) {
     if (u.size() == v.size()) {
       Euclidean result{};

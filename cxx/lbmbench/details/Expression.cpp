@@ -5,6 +5,91 @@
 
 namespace lbm::details {
 
+  Expression
+  operator+(Expression e0, Expression e1) {
+    return make_shared<Add>(e0, e1);
+  }
+
+  Expression
+  operator+(double e0, Expression e1) {
+    return make_shared<Add>(Expression(make_shared<Constant>(e0)), e1);
+  }
+
+  Expression
+  operator+(Expression e0, double e1) {
+    return make_shared<Add>(e0, Expression(make_shared<Constant>(e1)));
+  }
+
+  Expression
+  operator-(Expression e0, Expression e1) {
+    return make_shared<Subtract>(e0, e1);
+  }
+
+  Expression
+  operator-(double e0, Expression e1) {
+    return make_shared<Subtract>(Expression(make_shared<Constant>(e0)), e1);
+  }
+
+  Expression
+  operator-(Expression e0, double e1) {
+    return make_shared<Subtract>(e0, Expression(make_shared<Constant>(e1)));
+  }
+
+  Expression
+  operator*(Expression e0, Expression e1) {
+    return make_shared<Multiply>(e0, e1);
+  }
+
+  Expression
+  operator*(double e0, Expression e1) {
+    return make_shared<Multiply>(Expression(make_shared<Constant>(e0)), e1);
+  }
+
+  Expression
+  operator*(Expression e0, double e1) {
+    return make_shared<Multiply>(e0, Expression(make_shared<Constant>(e1)));
+  }
+
+  Expression
+  operator/(Expression e0, Expression e1) {
+    return make_shared<Divide>(e0, e1);
+  }
+
+  Expression
+  operator/(double e0, Expression e1) {
+    return make_shared<Divide>(Expression(make_shared<Constant>(e0)), e1);
+  }
+
+  Expression
+  operator/(Expression e0, double e1) {
+    return make_shared<Divide>(e0, Expression(make_shared<Constant>(e1)));
+  }
+
+  Expression
+  pow(Expression e0, Expression e1) {
+    return make_shared<Power>(e0, e1);
+  }
+
+  Expression
+  pow(double e0, Expression e1) {
+    return make_shared<Power>(Expression(make_shared<Constant>(e0)), e1);
+  }
+
+  Expression
+  pow(Expression e0, double e1) {
+    return make_shared<Power>(e0, Expression(make_shared<Constant>(e1)));
+  }
+
+  // Expression
+  // heaviside(Expression e) {
+  //   return make_shared<Heaviside>(e);
+  // }
+
+  // double
+  // heaviside(double arg) {
+  //   return arg > 0.0 ? 1.0 : 0.0;
+  // }
+
   bool
   operator==(const Expr &a, const Expr &b) {
     return json(a) == json(b);
@@ -111,7 +196,7 @@ namespace lbm::details {
 
   string
   Multiply::name() const {
-    return "mutliply"s;
+    return "multiply"s;
   }
 
   double
@@ -367,6 +452,16 @@ namespace lbm::details {
   double
   Cube::operate(double arg) const {
     return arg * arg * arg;
+  }
+
+  string
+  Heaviside::name() const {
+    return "heaviside"s;
+  }
+
+  double
+  Heaviside::operate(double arg) const {
+    return arg > 0.0 ? 1.0 : 0.0;
   }
 
 } // namespace lbm::details

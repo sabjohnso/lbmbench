@@ -15,17 +15,23 @@
 #include <lbmbench/details/Fixed_Lexical.hpp>
 #include <lbmbench/details/Index.hpp>
 #include <lbmbench/details/Initial_Conditions.hpp>
+#include <lbmbench/details/Input.hpp>
 #include <lbmbench/details/JSON_Convertible.hpp>
 #include <lbmbench/details/Lattice.hpp>
 #include <lbmbench/details/Lexical.hpp>
+#include <lbmbench/details/Obstacle.hpp>
 #include <lbmbench/details/Shape.hpp>
 #include <lbmbench/details/Vector.hpp>
 
 namespace lbm {
-
   using details::Bounding_Box;
   using details::Euclidean;
+  using details::Input;
   using details::Lattice;
+  using details::Obstacle;
+  using details::Obstacles;
+  using details::x;
+  using details::y;
 
   using details::JSON_Convertible;
 
@@ -96,6 +102,7 @@ namespace lbm {
   using details::Cbrt;
   using details::Cube;
   using details::Exp;
+  using details::Heaviside;
   using details::Log;
   using details::Log10;
   using details::Sqrt;
