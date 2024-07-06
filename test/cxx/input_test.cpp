@@ -1,14 +1,14 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/utility.hpp>
+#include <lbm/utility.hpp>
 
 //
 // ... Testing header files
 //
 #include <catch2/catch_test_macros.hpp>
 
-namespace lbm::testing {
+namespace lbm::core::testing {
   TEST_CASE("2 Dimensional Input") {
     Input
         input{}; //{Lattice{}, Initial_Conditions{}, Boundary_Conditions{}, Obstacles{}, viscosity};
@@ -18,4 +18,4 @@ namespace lbm::testing {
   }
 
   TEST_CASE("3 Dimensional Input") {}
-} // end of namespace lbm::testing
+} // end of namespace lbm::core::testing

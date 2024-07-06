@@ -1,7 +1,7 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/utility.hpp>
+#include <lbm/core/Fixed_Array.hpp>
 
 //
 // ... Testing header files
@@ -13,7 +13,7 @@
 //
 #include <algorithm>
 
-namespace lbm::testing {
+namespace lbm::core::testing {
 
   TEST_CASE("Fixed Array") {
     SECTION("default initialization") {
@@ -41,4 +41,4 @@ namespace lbm::testing {
       std::for_each(std::begin(array), std::end(array), [](const auto x) { CHECK(x == 4.0); });
     }
   }
-} // end of namespace lbm::testing
+} // end of namespace lbm::core::testing

@@ -9,3 +9,9 @@ AlwaysBreakTemplateDeclarations: Yes
 ColumnLimit:     100
 AlwaysBreakAfterDefinitionReturnType: All
 AlwaysBreakAfterReturnType: All
+BreakBeforeInheritanceComma: true
+BreakConstructorInitializersBeforeComma: true
+BraceWrapping:
+  BeforeLambdaBody: false
+  SplitEmptyFunction: false
+  SplitEmptyRecord: false

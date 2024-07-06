@@ -1,14 +1,14 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/utility.hpp>
+#include <lbm/core/Boundary_ID.hpp>
 
 //
 // ... Testing header files
 //
 #include <catch2/catch_test_macros.hpp>
 
-namespace lbm::testing {
+namespace lbm::core::testing {
 
   TEST_CASE("D2 Boundary ID") {
     Boundary_ID boundary_id{Boundary::Lower, Boundary::NA};
@@ -28,4 +28,4 @@ namespace lbm::testing {
     }
   }
 
-} // end of namespace lbm::testing
+} // end of namespace lbm::core::testing

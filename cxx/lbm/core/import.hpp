@@ -23,7 +23,7 @@
 #include <variant>
 #include <vector>
 
-namespace lbm::details {
+namespace lbm::core {
 
   using nlohmann::json;
 
@@ -101,4 +101,4 @@ namespace lbm::details {
   using std::shared_ptr;
   using std::unique_ptr;
 
-} // end of namespace lbm::details
+} // end of namespace lbm::core

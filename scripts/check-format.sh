@@ -3,8 +3,8 @@ set -eu
 
 readonly scriptpath=$0;
 readonly scriptdir=$(dirname $0)
-readonly srcdir=$scriptdir/../lbmbench
-readonly testdir=$scriptdir/../lbmbench
+readonly srcdir=$scriptdir/../cxx/lbm
+readonly testdir=$scriptdir/../test/cxx
 
 function main(){
     format_files $srcdir
@@ -26,7 +26,7 @@ function format_file(){
 
 function format_files(){
     local inpdir=$1; shift
-    local source_files=$(find $inpdir -type f -name "*.hpp")
+    local source_files=$(find $inpdir -type f -regex ".*\\.hpp\\|.*\\.cpp" -not -regex ".*/\\.git/.*\\|.*/build.*")
     for source_file in $source_files
     do
         if [[ -f "$source_file" ]]
@@ -34,6 +34,7 @@ function format_files(){
             format_file $source_file
         fi
     done
+
 }
 
 

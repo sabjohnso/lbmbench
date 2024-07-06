@@ -1,7 +1,7 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/utility.hpp>
+#include <lbm/core/Initial_Conditions.hpp>
 
 //
 // ... Testing header files
@@ -13,7 +13,7 @@
 //
 #include <sstream>
 
-namespace lbm::testing {
+namespace lbm::core::testing {
 
   TEST_CASE("2 Dimensional Uniform Density and Velocity") {
     using Coordinates = Initial_Conditions::Coordinates;
@@ -61,4 +61,4 @@ namespace lbm::testing {
     }
   }
 
-} // end of namespace lbm::testing
+} // end of namespace lbm::core::testing

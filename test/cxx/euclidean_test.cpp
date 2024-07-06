@@ -1,14 +1,14 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/utility.hpp>
+#include <lbm/core/Euclidean.hpp>
 
 //
 // ... Testing header files
 //
 #include <catch2/catch_test_macros.hpp>
 
-namespace lbm::testing {
+namespace lbm::core::testing {
 
   TEST_CASE("2 Dimensional Euclidean Vector") {
     constexpr double u0 = 2.0;
@@ -67,4 +67,4 @@ namespace lbm::testing {
 
   TEST_CASE("3 Dimensional Euclidean Vector") {}
 
-} // end of namespace lbm::testing
+} // end of namespace lbm::core::testing

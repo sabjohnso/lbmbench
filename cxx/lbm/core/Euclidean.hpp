@@ -3,20 +3,22 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/details/JSON_Convertible.hpp>
-#include <lbmbench/details/base_types.hpp>
-#include <lbmbench/details/import.hpp>
+#include <lbm/core/JSON_Convertible.hpp>
+#include <lbm/core/base_types.hpp>
+#include <lbm/core/import.hpp>
 
-namespace lbm::details {
+namespace lbm::core {
 
   /**
    * @brief A type describing Euclidean vectors with a length determined
    * at runtime.
    *
-   * @details This type favors safety over performance and is not
+   * @core This type favors safety over performance and is not
    * intended for performance critical code.
    */
-  class Euclidean : public vector<double>, public JSON_Convertible {
+  class Euclidean
+      : public vector<double>
+      , public JSON_Convertible {
   public:
     using Base = vector<double>;
     using Base::Base;
@@ -29,7 +31,7 @@ namespace lbm::details {
     /**
      * @brief Array access operator
      *
-     * @details This array access operator supports readonly access and
+     * @core This array access operator supports readonly access and
      * always perfoms bounds checking.
      */
     const double &
@@ -72,4 +74,4 @@ namespace lbm::details {
     set_json(const json &j) override;
   };
 
-} // end of namespace lbm::details
+} // end of namespace lbm::core

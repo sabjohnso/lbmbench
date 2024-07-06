@@ -3,17 +3,17 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/details/Fixed_Array.hpp>
-#include <lbmbench/details/Fixed_Lexical.hpp>
-#include <lbmbench/details/Initial_Conditions.hpp>
+#include <lbm/core/Fixed_Array.hpp>
+#include <lbm/core/Fixed_Lexical.hpp>
+#include <lbm/core/Initial_Conditions.hpp>
 
-#include <lbmbench/details/JSON_Convertible.hpp>
-#include <lbmbench/details/Lattice.hpp>
-#include <lbmbench/details/Vector.hpp>
-#include <lbmbench/details/import.hpp>
-#include <lbmbench/details/misc.hpp>
+#include <lbm/core/JSON_Convertible.hpp>
+#include <lbm/core/Lattice.hpp>
+#include <lbm/core/Vector.hpp>
+#include <lbm/core/import.hpp>
+#include <lbm/core/misc.hpp>
 
-namespace lbm::details::D2Q9 {
+namespace lbm::core::D2Q9 {
 
   template <class T>
   class Velocity_Distribution : public JSON_Convertible {
@@ -52,12 +52,14 @@ namespace lbm::details::D2Q9 {
 
     Velocity_Distribution() = default;
 
-    constexpr Velocity_Distribution(T f1, T f2, same_as<T> auto... fs) : storage_{f1, f2, fs...} {}
+    constexpr Velocity_Distribution(T f1, T f2, same_as<T> auto... fs)
+        : storage_{f1, f2, fs...} {}
 
     constexpr explicit Velocity_Distribution(Density density, Velocity velocity)
         : storage_{compute_equilibrium_distribution(density, velocity)} {}
 
-    constexpr explicit Velocity_Distribution(Storage values) : storage_{std::move(values)} {}
+    constexpr explicit Velocity_Distribution(Storage values)
+        : storage_{std::move(values)} {}
 
     constexpr Const_Reference
     operator[](integer i, integer j) const {
@@ -140,7 +142,8 @@ namespace lbm::details::D2Q9 {
   public:
     Node() = default;
     Node(Velocity_Distribution<T> classes, bool obstacle)
-        : velocity_distribution_(classes), obstacle_(obstacle) {}
+        : velocity_distribution_(classes)
+        , obstacle_(obstacle) {}
 
     friend void
     to_json(json &j, const Node &node) {
@@ -190,8 +193,11 @@ namespace lbm::details::D2Q9 {
                Boundary_Conditions boundary_conditions,
                Obstacles obstacles,
                double viscosity)
-        : lattice_(lattice), initial_conditions_(initial_conditions),
-          boundary_conditions_(boundary_conditions), obstacles_(obstacles), viscosity_(viscosity) {}
+        : lattice_(lattice)
+        , initial_conditions_(initial_conditions)
+        , boundary_conditions_(boundary_conditions)
+        , obstacles_(obstacles)
+        , viscosity_(viscosity) {}
 
     size_type
     size() const {
@@ -254,4 +260,4 @@ namespace lbm::details::D2Q9 {
     Nodes nodes_;
   };
 
-} // end of namespace lbm::details::D2Q9
+} // end of namespace lbm::core::D2Q9

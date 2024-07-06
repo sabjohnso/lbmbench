@@ -1,9 +1,9 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/details/Euclidean.hpp>
+#include <lbm/core/Euclidean.hpp>
 
-namespace lbm::details {
+namespace lbm::core {
 
   const double &
   Euclidean::operator[](size_type index) const {
@@ -89,4 +89,4 @@ namespace lbm::details {
               back_inserter(static_cast<Base &>(*this)),
               [](const json &element) -> double { return element; });
   }
-} // namespace lbm::details
+} // namespace lbm::core

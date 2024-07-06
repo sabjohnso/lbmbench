@@ -1,4 +1,4 @@
-add_subdirectory(lbmbench)
+add_subdirectory(lbm)
 
 add_library(lbmbench_header INTERFACE)
 set_target_properties(lbmbench_header PROPERTIES EXPORT_NAME header)
@@ -11,10 +11,10 @@ add_library(lbmbench::header ALIAS lbmbench_header)
 
 
 add_library(lbmbench_library
-  lbmbench/details/Bounding_Box.cpp
-  lbmbench/details/Lattice.cpp
-  lbmbench/details/Expression.cpp
-  lbmbench/details/Euclidean.cpp)
+  lbm/core/Bounding_Box.cpp
+  lbm/core/Lattice.cpp
+  lbm/core/Expression.cpp
+  lbm/core/Euclidean.cpp)
 
 target_link_libraries(lbmbench_library
   PRIVATE lbmbench::header nlohmann_json::nlohmann_json)

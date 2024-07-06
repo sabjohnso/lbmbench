@@ -3,12 +3,12 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/details/Bounding_Box.hpp>
-#include <lbmbench/details/JSON_Convertible.hpp>
-#include <lbmbench/details/base_types.hpp>
-#include <lbmbench/details/import.hpp>
+#include <lbm/core/Bounding_Box.hpp>
+#include <lbm/core/JSON_Convertible.hpp>
+#include <lbm/core/base_types.hpp>
+#include <lbm/core/import.hpp>
 
-namespace lbm::details {
+namespace lbm::core {
 
   class Lattice final : public JSON_Convertible {
   public:
@@ -40,4 +40,4 @@ namespace lbm::details {
     Bounding_Box bounding_box_{};
     double lattice_spacing_{};
   };
-} // namespace lbm::details
+} // namespace lbm::core

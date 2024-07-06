@@ -1,7 +1,7 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/utility.hpp>
+#include <lbm/core/Boundary_Condition.hpp>
 
 //
 // ... Testing header files
@@ -13,7 +13,7 @@
 //
 #include <sstream>
 
-namespace lbm::details {
+namespace lbm::core {
   TEST_CASE("Boundary Condition") {
     SECTION("Wall") {
       Boundary_Condition boundary_condition{Wall{Boundary_ID{Boundary::Lower, Boundary::NA}}};
@@ -100,4 +100,4 @@ namespace lbm::details {
     }
   }
 
-} // end of namespace lbm::details
+} // end of namespace lbm::core

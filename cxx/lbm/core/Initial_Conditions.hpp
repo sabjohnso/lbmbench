@@ -3,10 +3,10 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/details/Expression.hpp>
-#include <lbmbench/details/import.hpp>
+#include <lbm/core/Expression.hpp>
+#include <lbm/core/import.hpp>
 
-namespace lbm::details {
+namespace lbm::core {
 
   class Initial_Conditions final : public JSON_Convertible {
 
@@ -20,7 +20,8 @@ namespace lbm::details {
     Initial_Conditions() = default;
 
     Initial_Conditions(Density_Expression density, Velocity_Expression velocity)
-        : density_(density), velocity_(velocity) {}
+        : density_(density)
+        , velocity_(velocity) {}
 
     Density
     density(Coordinates coord) const {
@@ -77,4 +78,4 @@ namespace lbm::details {
     Expression density_;
     vector<Expression> velocity_;
   };
-} // end of namespace lbm::details
+} // end of namespace lbm::core

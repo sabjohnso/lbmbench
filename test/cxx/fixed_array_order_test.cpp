@@ -1,7 +1,8 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/utility.hpp>
+#include <lbm/core/Fixed_Array_Index.hpp>
+#include <lbm/core/Fixed_Lexical.hpp>
 
 //
 // ... Third-party header files
@@ -13,7 +14,7 @@
 //
 #include <catch2/catch_test_macros.hpp>
 
-namespace lbm::testing {
+namespace lbm::core::testing {
 
   TEST_CASE("Lexical") {
     SECTION("Degree 2") {
@@ -80,4 +81,4 @@ namespace lbm::testing {
     }
   }
 
-} // end of namespace lbm::testing
+} // end of namespace lbm::core::testing

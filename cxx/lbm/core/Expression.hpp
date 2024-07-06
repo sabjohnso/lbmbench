@@ -3,12 +3,12 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/details/Euclidean.hpp>
-#include <lbmbench/details/JSON_Convertible.hpp>
-#include <lbmbench/details/base_types.hpp>
-#include <lbmbench/details/import.hpp>
+#include <lbm/core/Euclidean.hpp>
+#include <lbm/core/JSON_Convertible.hpp>
+#include <lbm/core/base_types.hpp>
+#include <lbm/core/import.hpp>
 
-namespace lbm::details {
+namespace lbm::core {
 
   class Expr : public JSON_Convertible {
   public:
@@ -35,7 +35,8 @@ namespace lbm::details {
     Expression() = default;
 
     template <derived_from<Expr> T>
-    Expression(shared_ptr<T> pexpr) : pexpr_(pexpr) {}
+    Expression(shared_ptr<T> pexpr)
+        : pexpr_(pexpr) {}
 
     friend bool
     operator==(const Expression &e0, const Expression &e1) {
@@ -201,7 +202,8 @@ namespace lbm::details {
 
     template <derived_from<Expr> T, derived_from<Expr> U>
     Binary_Operator(const T &arg0, const U &arg1)
-        : arg0_(make_shared<T>(arg0)), arg1_(make_shared<U>(arg1)) {}
+        : arg0_(make_shared<T>(arg0))
+        , arg1_(make_shared<U>(arg1)) {}
 
     Binary_Operator(Expression arg0, Expression arg1);
 
@@ -318,7 +320,8 @@ namespace lbm::details {
     Unary_Operator() = default;
 
     template <derived_from<Expr> T>
-    explicit Unary_Operator(const T &arg) : arg_(make_shared<T>(arg)) {}
+    explicit Unary_Operator(const T &arg)
+        : arg_(make_shared<T>(arg)) {}
 
     explicit Unary_Operator(Pointer arg);
 
@@ -691,4 +694,4 @@ namespace lbm::details {
   // double
   // heaviside(double arg);
 
-} // end of namespace lbm::details
+} // end of namespace lbm::core

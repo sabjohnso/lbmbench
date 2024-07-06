@@ -1,7 +1,7 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/utility.hpp>
+#include <lbm/core/Lattice.hpp>
 
 //
 // ... Testing header files
@@ -13,7 +13,7 @@
 //
 #include <sstream>
 
-namespace lbm::testing {
+namespace lbm::core::testing {
   TEST_CASE("2 Dimensional Lattice") {
     constexpr double width = 200.0;
     constexpr double height = 100.0;
@@ -74,4 +74,4 @@ namespace lbm::testing {
       CHECK(lattice == lattice_from_text);
     }
   }
-} // end of namespace lbm::testing
+} // end of namespace lbm::core::testing

@@ -3,15 +3,16 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/details/Boundary_ID.hpp>
-#include <lbmbench/details/import.hpp>
+#include <lbm/core/Boundary_ID.hpp>
+#include <lbm/core/import.hpp>
 
-namespace lbm::details {
+namespace lbm::core {
 
   class Wall final : public JSON_Convertible {
   public:
     constexpr Wall() = default;
-    constexpr Wall(Boundary_ID boundary) : boundary_{boundary} {}
+    constexpr Wall(Boundary_ID boundary)
+        : boundary_{boundary} {}
 
     friend bool
     operator==(const Wall &wall1, const Wall &wall2) {
@@ -38,7 +39,8 @@ namespace lbm::details {
   class Symmetry final : public JSON_Convertible {
   public:
     constexpr Symmetry() = default;
-    constexpr Symmetry(Boundary_ID boundary) : boundary_{boundary} {}
+    constexpr Symmetry(Boundary_ID boundary)
+        : boundary_{boundary} {}
 
     friend bool
     operator==(const Symmetry &symmetry1, const Symmetry &symmetry2) {
@@ -70,7 +72,8 @@ namespace lbm::details {
   public:
     constexpr Inlet() = default;
     constexpr Inlet(Boundary_ID boundary, double inlet_speed)
-        : boundary_{boundary}, inlet_speed_{inlet_speed} {}
+        : boundary_{boundary}
+        , inlet_speed_{inlet_speed} {}
 
     friend bool
     operator==(const Inlet &inlet1, const Inlet &inlet2) {
@@ -105,7 +108,8 @@ namespace lbm::details {
   public:
     constexpr Outlet() = default;
     constexpr Outlet(Boundary_ID boundary, double outlet_speed)
-        : boundary_{boundary}, outlet_speed_{outlet_speed} {}
+        : boundary_{boundary}
+        , outlet_speed_{outlet_speed} {}
 
     friend bool
     operator==(const Outlet &outlet1, const Outlet &outlet2) {
@@ -141,7 +145,8 @@ namespace lbm::details {
   public:
     constexpr Pressure_Drop() = default;
     constexpr Pressure_Drop(Boundary_ID boundary, double value)
-        : boundary_(boundary), value_(value) {}
+        : boundary_(boundary)
+        , value_(value) {}
 
     friend bool
     operator==(const Pressure_Drop &pressure_drop1, const Pressure_Drop &pressure_drop2) {
@@ -227,7 +232,9 @@ namespace lbm::details {
     }
   };
 
-  class Boundary_Conditions : public vector<Boundary_Condition>, public JSON_Convertible {
+  class Boundary_Conditions
+      : public vector<Boundary_Condition>
+      , public JSON_Convertible {
   public:
     using Base = vector<Boundary_Condition>;
     using Base::Base;
@@ -249,4 +256,4 @@ namespace lbm::details {
     }
   };
 
-} // end of namespace lbm::details
+} // end of namespace lbm::core

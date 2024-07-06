@@ -3,10 +3,10 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/details/JSON_Convertible.hpp>
-#include <lbmbench/details/import.hpp>
+#include <lbm/core/JSON_Convertible.hpp>
+#include <lbm/core/import.hpp>
 
-namespace lbm::details {
+namespace lbm::core {
 
   enum class Boundary {
     Lower = -1,
@@ -14,7 +14,9 @@ namespace lbm::details {
     Upper = 1,
   };
 
-  class Boundary_ID : public vector<Boundary>, public JSON_Convertible {
+  class Boundary_ID
+      : public vector<Boundary>
+      , public JSON_Convertible {
   public:
     using Base = vector<Boundary>;
 
@@ -41,4 +43,4 @@ namespace lbm::details {
       });
     }
   };
-} // end of namespace lbm::details
+} // end of namespace lbm::core

@@ -1,10 +1,10 @@
 #pragma once
 
-namespace lbm::details {
+namespace lbm::core {
 
   constexpr auto
   sqr(auto x) {
     return x * x;
   };
 
-} // end of namespace lbm::details
+} // end of namespace lbm::core

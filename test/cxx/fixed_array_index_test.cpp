@@ -1,7 +1,7 @@
 //
 // ... LBM Benchmarks header files
 //
-#include <lbmbench/utility.hpp>
+#include <lbm/core/Fixed_Array.hpp>
 
 //
 // ... Third-party header files
@@ -18,7 +18,7 @@
 //
 #include <string>
 
-namespace lbm::testing {
+namespace lbm::core::testing {
   using namespace std::literals;
 
   TEST_CASE("Fixed Array Index") {
@@ -57,4 +57,4 @@ namespace lbm::testing {
     }
   }
 
-} // end of namespace lbm::testing
+} // end of namespace lbm::core::testing

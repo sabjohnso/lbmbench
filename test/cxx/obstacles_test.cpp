@@ -1,7 +1,7 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/utility.hpp>
+#include <lbm/core/Obstacle.hpp>
 
 //
 // ... Testing header files
@@ -15,7 +15,7 @@
 #include <cmath>
 #include <sstream>
 
-namespace lbm::testing {
+namespace lbm::core::testing {
   TEST_CASE("Two Dimensional Obstacle") {
     using std::pow;
     constexpr double radius = 4.0;
@@ -99,4 +99,4 @@ namespace lbm::testing {
       CHECK(obstacles == obstacles_from_text);
     }
   }
-} // end of namespace lbm::testing
+} // end of namespace lbm::core::testing

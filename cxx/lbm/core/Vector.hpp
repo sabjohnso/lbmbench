@@ -1,9 +1,18 @@
 #pragma once
 
-namespace lbm::details {
+//
+// ... LBM Bench header files
+//
+#include <lbm/core/JSON_Convertible.hpp>
+#include <lbm/core/base_types.hpp>
+#include <lbm/core/import.hpp>
+
+namespace lbm::core {
 
   template <class T, size_type N>
-  class Vector : public array<T, N>, public JSON_Convertible {
+  class Vector
+      : public array<T, N>
+      , public JSON_Convertible {
   public:
     using Value_Type = T;
     using Reference = T &;
@@ -12,7 +21,8 @@ namespace lbm::details {
 
     constexpr Vector() = default;
 
-    constexpr Vector(T x1, T x2, same_as<T> auto... xs) : Base{{x1, x2, xs...}} {}
+    constexpr Vector(T x1, T x2, same_as<T> auto... xs)
+        : Base{{x1, x2, xs...}} {}
 
     constexpr friend Vector
     operator+(const Vector &u, const Vector &v) {
@@ -81,4 +91,4 @@ namespace lbm::details {
   template <class... Ts>
   Vector(Ts &&...) -> Vector<common_type_t<Ts...>, sizeof...(Ts)>;
 
-} // end of namespace lbm::details
+} // end of namespace lbm::core

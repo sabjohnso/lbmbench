@@ -1,7 +1,7 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/utility.hpp>
+#include <lbm/core/Bounding_Box.hpp>
 
 //
 // ... Testing header files
@@ -13,7 +13,7 @@
 //
 #include <sstream>
 
-namespace lbm::testing {
+namespace lbm::core::testing {
   TEST_CASE("Bounding Box") {
     SECTION("2 Dimensional") {
       constexpr double width = 200.0;
@@ -69,4 +69,4 @@ namespace lbm::testing {
       }
     }
   }
-} // end of namespace lbm::testing
+} // end of namespace lbm::core::testing

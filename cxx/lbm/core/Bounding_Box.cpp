@@ -1,9 +1,9 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/details/Bounding_Box.hpp>
+#include <lbm/core/Bounding_Box.hpp>
 
-namespace lbm::details {
+namespace lbm::core {
 
   json
   Bounding_Box::get_json() const {
@@ -16,4 +16,4 @@ namespace lbm::details {
     static_cast<Base &>(*this) = vector<double>(j);
   }
 
-} // end of namespace lbm::details
+} // end of namespace lbm::core

@@ -3,11 +3,11 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/details/Index.hpp>
-#include <lbmbench/details/Shape.hpp>
-#include <lbmbench/details/base_types.hpp>
+#include <lbm/core/Index.hpp>
+#include <lbm/core/Shape.hpp>
+#include <lbm/core/base_types.hpp>
 
-namespace lbm::details {
+namespace lbm::core {
 
   template <size_type N>
   class Lexical {
@@ -18,7 +18,8 @@ namespace lbm::details {
   public:
     constexpr Lexical() = default;
     constexpr Lexical(Shape_Type shape)
-        : shape_{std::move(shape)}, strides_{compute_strides(shape_)} {}
+        : shape_{std::move(shape)}
+        , strides_{compute_strides(shape_)} {}
 
     friend constexpr bool
     operator<=>(const Lexical &, const Lexical &) = default;
@@ -91,4 +92,4 @@ namespace lbm::details {
     Strides strides_{};
   };
 
-} // namespace lbm::details
+} // namespace lbm::core

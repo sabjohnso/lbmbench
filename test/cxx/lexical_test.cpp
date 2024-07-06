@@ -1,7 +1,7 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/utility.hpp>
+#include <lbm/core/Lexical.hpp>
 
 //
 // ... Third-party header files
@@ -18,7 +18,7 @@
 //
 #include <iostream>
 
-namespace lbm::testing {
+namespace lbm::core::testing {
   TEST_CASE("lexical") {
     SECTION("Degree 2") {
       Lexical order{Shape{2, 3}};
@@ -56,4 +56,4 @@ namespace lbm::testing {
       }
     }
   }
-} // namespace lbm::testing
+} // namespace lbm::core::testing

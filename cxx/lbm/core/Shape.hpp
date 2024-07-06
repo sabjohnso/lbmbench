@@ -3,10 +3,10 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/details/base_types.hpp>
-#include <lbmbench/details/import.hpp>
+#include <lbm/core/base_types.hpp>
+#include <lbm/core/import.hpp>
 
-namespace lbm::details {
+namespace lbm::core {
 
   template <size_type N>
   class Shape : public array<size_type, N> {
@@ -53,4 +53,4 @@ namespace lbm::details {
 
   Shape(integral auto n1, integral auto n2, integral auto... ns) -> Shape<2 + sizeof...(ns)>;
 
-} // end of namespace lbm::details
+} // end of namespace lbm::core

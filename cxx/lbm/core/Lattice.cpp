@@ -1,12 +1,13 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/details/Lattice.hpp>
+#include <lbm/core/Lattice.hpp>
 
-namespace lbm::details {
+namespace lbm::core {
 
   Lattice::Lattice(Bounding_Box bounding_box, double lattice_spacing)
-      : bounding_box_(bounding_box), lattice_spacing_(lattice_spacing) {}
+      : bounding_box_(bounding_box)
+      , lattice_spacing_(lattice_spacing) {}
 
   size_type
   Lattice::size(size_type idim) const {
@@ -52,4 +53,4 @@ namespace lbm::details {
     lattice_spacing_ = j["latticeSpacing"];
   }
 
-} // namespace lbm::details
+} // namespace lbm::core

@@ -1,9 +1,9 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/details/Expression.hpp>
+#include <lbm/core/Expression.hpp>
 
-namespace lbm::details {
+namespace lbm::core {
 
   Expression
   operator+(Expression e0, Expression e1) {
@@ -100,7 +100,8 @@ namespace lbm::details {
     return !(a == b);
   }
 
-  Constant::Constant(double value) : value_(value) {}
+  Constant::Constant(double value)
+      : value_(value) {}
 
   double
   Constant::eval(const Euclidean &) const {
@@ -132,10 +133,13 @@ namespace lbm::details {
     return "z"s;
   }
 
-  Binary_Operator::Binary_Operator(Expression arg0, Expression arg1) : arg0_(arg0), arg1_(arg1) {}
+  Binary_Operator::Binary_Operator(Expression arg0, Expression arg1)
+      : arg0_(arg0)
+      , arg1_(arg1) {}
 
   Binary_Operator::Binary_Operator(const json &arg0, const json &arg1)
-      : arg0_(parse_json_expr(arg0)), arg1_(parse_json_expr(arg1)) {}
+      : arg0_(parse_json_expr(arg0))
+      , arg1_(parse_json_expr(arg1)) {}
 
   double
   Binary_Operator::eval(const Euclidean &coord) const {
@@ -159,7 +163,8 @@ namespace lbm::details {
     arg1_ = parse_json_expr(j[name()][1]);
   };
 
-  Unary_Operator::Unary_Operator(Pointer arg) : arg_(arg) {}
+  Unary_Operator::Unary_Operator(Pointer arg)
+      : arg_(arg) {}
 
   json
   Unary_Operator::get_json() const {
@@ -464,4 +469,4 @@ namespace lbm::details {
     return arg > 0.0 ? 1.0 : 0.0;
   }
 
-} // namespace lbm::details
+} // namespace lbm::core

@@ -1,14 +1,14 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/utility.hpp>
+#include <lbm/core/Vector.hpp>
 
 //
 // ... Testing header files
 //
 #include <catch2/catch_test_macros.hpp>
 
-namespace lbm::testing {
+namespace lbm::core::testing {
   TEST_CASE("Vector 2D") {
     constexpr double a = 3.0;
     constexpr double b = 4.0;
@@ -67,4 +67,4 @@ namespace lbm::testing {
       CHECK(u == u_from_text);
     }
   }
-} // end of namespace lbm::testing
+} // end of namespace lbm::core::testing

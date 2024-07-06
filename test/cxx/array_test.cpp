@@ -1,7 +1,7 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/utility.hpp>
+#include <lbm/core/Array.hpp>
 
 //
 // ... Testing header files
@@ -13,7 +13,7 @@
 //
 #include <sstream>
 
-namespace lbm::testing {
+namespace lbm::core::testing {
   TEST_CASE("Array") {
     constexpr size_type nx = 2;
     constexpr size_type ny = 3;
@@ -49,4 +49,4 @@ namespace lbm::testing {
     }
   }
 
-} // end of namespace lbm::testing
+} // namespace lbm::core::testing

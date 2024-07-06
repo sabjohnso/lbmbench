@@ -3,11 +3,11 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/details/Fixed_Array_Index.hpp>
-#include <lbmbench/details/base_types.hpp>
-#include <lbmbench/details/import.hpp>
+#include <lbm/core/Fixed_Array_Index.hpp>
+#include <lbm/core/base_types.hpp>
+#include <lbm/core/import.hpp>
 
-namespace lbm::details {
+namespace lbm::core {
 
   template <size_type... Ns>
   struct Fixed_Lexical {
@@ -78,4 +78,4 @@ namespace lbm::details {
     operator<=>(const Fixed_Lexical &, const Fixed_Lexical &) = default;
   };
 
-} // end of namespace lbm::details
+} // end of namespace lbm::core

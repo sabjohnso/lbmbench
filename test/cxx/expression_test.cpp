@@ -1,7 +1,7 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/utility.hpp>
+#include <lbm/core/Expression.hpp>
 
 //
 // ... Testing header files
@@ -15,7 +15,7 @@
 #include <sstream>
 #include <vector>
 
-namespace lbm::testing {
+namespace lbm::core::testing {
   TEST_CASE("2 Dimensional") {
     constexpr double x1 = 4.0;
     constexpr double y1 = 5.0;
@@ -543,4 +543,4 @@ namespace lbm::testing {
     CHECK(expr.eval(coord) == 5.0);
   }
 
-} // end of namespace lbm::testing
+} // end of namespace lbm::core::testing

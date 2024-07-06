@@ -1,7 +1,7 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/utility.hpp>
+#include <lbm/utility.hpp>
 
 //
 // ... Testing header files
@@ -14,7 +14,7 @@
 //
 #include <sstream>
 
-namespace lbm::testing {
+namespace lbm::core::testing {
   using namespace lbm::D2Q9;
 
   TEST_CASE("D2Q9 Veleocity_Distribution") {
@@ -81,4 +81,4 @@ namespace lbm::testing {
 
   TEST_CASE("D2Q9 State") {}
 
-} // namespace lbm::testing
+} // namespace lbm::core::testing

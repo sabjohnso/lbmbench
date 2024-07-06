@@ -3,9 +3,9 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/details/import.hpp>
+#include <lbm/core/import.hpp>
 
-namespace lbm::details {
+namespace lbm::core {
 
   class JSON_Convertible {
     virtual json
@@ -36,4 +36,4 @@ namespace lbm::details {
     }
   };
 
-} // end of namespace lbm::details
+} // end of namespace lbm::core

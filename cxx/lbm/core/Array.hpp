@@ -3,10 +3,10 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/details/Lexical.hpp>
-#include <lbmbench/details/base_types.hpp>
+#include <lbm/core/Lexical.hpp>
+#include <lbm/core/base_types.hpp>
 
-namespace lbm::details {
+namespace lbm::core {
 
   template <class T, size_type N, class Order_Type = Lexical<N>>
   class Array {
@@ -24,7 +24,8 @@ namespace lbm::details {
 
     Array() = default;
     Array(Order order, T init = T{})
-        : order_{std::move(order)}, values_(order_.total_size(), init) {}
+        : order_{std::move(order)}
+        , values_(order_.total_size(), init) {}
 
     const_reference
     operator[](integral auto i, integral auto j, integral auto... ks) const {
@@ -151,4 +152,4 @@ namespace lbm::details {
     vector<T> values_{};
   };
 
-} // namespace lbm::details
+} // namespace lbm::core

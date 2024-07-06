@@ -3,10 +3,10 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/details/Boundary_Condition.hpp>
-#include <lbmbench/details/Obstacle.hpp>
+#include <lbm/core/Boundary_Condition.hpp>
+#include <lbm/core/Obstacle.hpp>
 
-namespace lbm::details {
+namespace lbm::core {
 
   class Input final : public JSON_Convertible {
 
@@ -17,8 +17,11 @@ namespace lbm::details {
           Boundary_Conditions boundary_conditions,
           Obstacles obstacles,
           double viscosity)
-        : lattice_{lattice}, initial_conditions_{initial_conditions},
-          boundary_conditions_{boundary_conditions}, obstacles_{obstacles}, viscosity_{viscosity} {}
+        : lattice_{lattice}
+        , initial_conditions_{initial_conditions}
+        , boundary_conditions_{boundary_conditions}
+        , obstacles_{obstacles}
+        , viscosity_{viscosity} {}
 
     size_type
     size() const {
@@ -81,4 +84,4 @@ namespace lbm::details {
   //   Nodes nodes_;
   // };
 
-} // end of namespace lbm::details
+} // end of namespace lbm::core

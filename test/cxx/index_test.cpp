@@ -1,7 +1,7 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/utility.hpp>
+#include <lbm/core/Index.hpp>
 
 //
 // ... Third-party header files
@@ -13,7 +13,7 @@
 //
 #include <catch2/catch_test_macros.hpp>
 
-namespace lbm::testing {
+namespace lbm::core::testing {
 
   TEST_CASE("Index") {
     Index index{2, 3, 4};
@@ -45,4 +45,4 @@ namespace lbm::testing {
     }
   }
 
-} // namespace lbm::testing
+} // namespace lbm::core::testing

@@ -3,10 +3,10 @@
 //
 // ... LGM Bench header files
 //
-#include <lbmbench/details/base_types.hpp>
-#include <lbmbench/details/import.hpp>
+#include <lbm/core/base_types.hpp>
+#include <lbm/core/import.hpp>
 
-namespace lbm::details {
+namespace lbm::core {
 
   template <size_type N_Dims>
   class Index : public array<size_type, N_Dims> {
@@ -46,4 +46,4 @@ namespace lbm::details {
 
   Index(integral auto i1, integral auto i2, integral auto... is) -> Index<2 + sizeof...(is)>;
 
-} // namespace lbm::details
+} // namespace lbm::core

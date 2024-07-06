@@ -3,16 +3,17 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/details/Expression.hpp>
-#include <lbmbench/details/JSON_Convertible.hpp>
+#include <lbm/core/Expression.hpp>
+#include <lbm/core/JSON_Convertible.hpp>
 
-namespace lbm::details {
+namespace lbm::core {
 
   class Obstacle final : public JSON_Convertible {
   public:
     Obstacle() = default;
 
-    Obstacle(Expression expression) : expression_(expression) {}
+    Obstacle(Expression expression)
+        : expression_(expression) {}
 
     bool
     contains(const Euclidean &coord) const {
@@ -44,7 +45,9 @@ namespace lbm::details {
     Expression expression_;
   };
 
-  class Obstacles : public vector<Obstacle>, public JSON_Convertible {
+  class Obstacles
+      : public vector<Obstacle>
+      , public JSON_Convertible {
   public:
     using Base = vector<Obstacle>;
     using Base::Base;
@@ -77,4 +80,4 @@ namespace lbm::details {
     }
   };
 
-} // end of namespace lbm::details
+} // end of namespace lbm::core

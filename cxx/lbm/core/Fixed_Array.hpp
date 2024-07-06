@@ -3,9 +3,9 @@
 //
 // ... import header files
 //
-#include <lbmbench/details/Fixed_Lexical.hpp>
-#include <lbmbench/details/JSON_Convertible.hpp>
-#include <lbmbench/details/base_types.hpp>
+#include <lbm/core/Fixed_Lexical.hpp>
+#include <lbm/core/JSON_Convertible.hpp>
+#include <lbm/core/base_types.hpp>
 
 //
 // ... Standard header files
@@ -13,7 +13,7 @@
 #include <algorithm>
 #include <array>
 
-namespace lbm::details {
+namespace lbm::core {
 
   template <class T, class Order>
   class Fixed_Array;
@@ -34,7 +34,8 @@ namespace lbm::details {
     constexpr Fixed_Array() = default;
     constexpr explicit Fixed_Array(T init) { std::fill(cbegin(storage_), cend(storage_), init); }
 
-    constexpr Fixed_Array(T x1, T x2, same_as<T> auto... xs) : storage_{{x1, x2, xs...}} {
+    constexpr Fixed_Array(T x1, T x2, same_as<T> auto... xs)
+        : storage_{{x1, x2, xs...}} {
       static_assert(2 + sizeof...(xs) == size());
     }
 
@@ -163,4 +164,4 @@ namespace lbm::details {
     Storage storage_{};
   };
 
-} // end of namespace lbm::details
+} // end of namespace lbm::core

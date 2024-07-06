@@ -1,7 +1,7 @@
 //
 // ... LBM Bench header files
 //
-#include <lbmbench/utility.hpp>
+#include <lbm/core/Shape.hpp>
 
 //
 // ... Third-party header files header files
@@ -13,7 +13,7 @@
 //
 #include <catch2/catch_test_macros.hpp>
 
-namespace lbm::tsting {
+namespace lbm::core::testing {
 
   TEST_CASE("Shape") {
     constexpr size_type a = 2;
@@ -47,4 +47,4 @@ namespace lbm::tsting {
     }
   }
 
-} // end of namespace lbm::tsting
+} // namespace lbm::core::testing
