@@ -13,7 +13,8 @@ add_library(lbmbench::header ALIAS lbmbench_header)
 add_library(lbmbench_library
   lbmbench/details/Bounding_Box.cpp
   lbmbench/details/Lattice.cpp
-  lbmbench/details/Expression.cpp)
+  lbmbench/details/Expression.cpp
+  lbmbench/details/Euclidean.cpp)
 
 target_link_libraries(lbmbench_library
   PRIVATE lbmbench::header nlohmann_json::nlohmann_json)

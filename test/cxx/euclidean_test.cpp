@@ -52,14 +52,14 @@ namespace lbm::testing {
 
     SECTION("Conversion to and from JSON") {
       json json_u = u;
-      Euclidean<double> u_from_json = json_u;
+      Euclidean u_from_json = json_u;
       CHECK(u == u_from_json);
     }
 
     SECTION("Conversion to and from text") {
       std::stringstream ss{};
       ss << u;
-      Euclidean<double> u_from_text{};
+      Euclidean u_from_text{};
       ss >> u_from_text;
       CHECK(u == u_from_text);
     }

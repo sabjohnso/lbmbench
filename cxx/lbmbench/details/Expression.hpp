@@ -3,6 +3,7 @@
 //
 // ... LBM Bench header files
 //
+#include <lbmbench/details/Euclidean.hpp>
 #include <lbmbench/details/JSON_Convertible.hpp>
 #include <lbmbench/details/base_types.hpp>
 #include <lbmbench/details/import.hpp>
@@ -12,7 +13,7 @@ namespace lbm::details {
   class Expr : public JSON_Convertible {
   public:
     virtual double
-    eval(const vector<double> &) const = 0;
+    eval(const Euclidean &) const = 0;
     virtual ~Expr() = default;
 
     friend bool
@@ -21,7 +22,53 @@ namespace lbm::details {
     friend bool
     operator!=(const Expr &a, const Expr &b);
   };
-  using Expression = shared_ptr<Expr>;
+
+  class Expression;
+
+  Expression
+  parse_json_expr(json j);
+
+  class Expression final : public JSON_Convertible {
+  public:
+    using Pointer = shared_ptr<Expr>;
+
+    Expression() = default;
+
+    template <derived_from<Expr> T>
+    Expression(shared_ptr<T> pexpr) : pexpr_(pexpr) {}
+
+    friend bool
+    operator==(const Expression &e0, const Expression &e1) {
+      return e0.pexpr_ == e1.pexpr_ || *e0.pexpr_ == *e1.pexpr_;
+    }
+
+    friend bool
+    operator!=(const Expression &e0, const Expression &e1) {
+      return !(e0 == e1);
+    }
+
+    double
+    eval(const Euclidean &coord) const {
+      assert(pexpr_);
+      return pexpr_->eval(coord);
+    }
+
+    operator bool() const { return bool{pexpr_}; }
+
+  private:
+    json
+    get_json() const override {
+      assert(pexpr_);
+      return *pexpr_;
+    }
+
+    void
+    set_json(const json &j) override {
+      *this = parse_json_expr(j);
+    }
+
+    Pointer pexpr_{};
+  };
 
   Expression
   parse_json_expr(json j);
@@ -33,7 +80,7 @@ namespace lbm::details {
     Constant(double value);
 
     double
-    eval(const vector<double> &) const override;
+    eval(const Euclidean &) const override;
 
   private:
     json
@@ -49,7 +96,7 @@ namespace lbm::details {
   class Coord : public Expr {
   public:
     double
-    eval(const vector<double> &coord) const override {
+    eval(const Euclidean &coord) const override {
       if (coord.size() > I) {
         return coord[I];
       } else {
@@ -102,24 +149,22 @@ namespace lbm::details {
 
   class Binary_Operator : public Expr {
   public:
-    using Pointer = shared_ptr<Expr>;
-
     Binary_Operator() = default;
 
     template <derived_from<Expr> T, derived_from<Expr> U>
-    Binary_Operator(const T &arg1, const U &arg2)
-        : arg1_(make_shared<T>(arg1)), arg2_(make_shared<U>(arg2)) {}
+    Binary_Operator(const T &arg0, const U &arg1)
+        : arg0_(make_shared<T>(arg0)), arg1_(make_shared<U>(arg1)) {}
 
-    Binary_Operator(Pointer arg1, Pointer arg2);
+    Binary_Operator(Expression arg0, Expression arg1);
 
-    Binary_Operator(const json &arg1, const json &arg2);
+    Binary_Operator(const json &arg0, const json &arg1);
 
     double
-    eval(const vector<double> &coord) const override;
+    eval(const Euclidean &coord) const override;
 
   private:
     virtual double
-    operate(double arg1, double arg2) const = 0;
+    operate(double arg0, double arg1) const = 0;
 
     virtual string
     name() const = 0;
@@ -130,8 +175,8 @@ namespace lbm::details {
     void
     set_json(const json &j) override;
 
-    Pointer arg1_{};
-    Pointer arg2_{};
+    Expression arg0_{};
+    Expression arg1_{};
   };
 
   class Add final : public Binary_Operator {
@@ -143,7 +188,7 @@ namespace lbm::details {
     name() const override;
 
     double
-    operate(double arg1, double arg2) const override;
+    operate(double arg0, double arg1) const override;
   };
 
   class Subtract final : public Binary_Operator {
@@ -155,7 +200,7 @@ namespace lbm::details {
     name() const override;
 
     double
-    operate(double arg1, double arg2) const override;
+    operate(double arg0, double arg1) const override;
   };
 
   class Multiply final : public Binary_Operator {
@@ -167,7 +212,7 @@ namespace lbm::details {
     name() const override;
 
     double
-    operate(double arg1, double arg2) const override;
+    operate(double arg0, double arg1) const override;
   };
 
   class Divide final : public Binary_Operator {
@@ -179,7 +224,7 @@ namespace lbm::details {
     name() const override;
 
     double
-    operate(double arg1, double arg2) const override;
+    operate(double arg0, double arg1) const override;
   };
 
   class Power final : public Binary_Operator {
@@ -191,7 +236,7 @@ namespace lbm::details {
     name() const override;
 
     double
-    operate(double arg1, double arg2) const override;
+    operate(double arg0, double arg1) const override;
   };
 
   class Atan2 final : public Binary_Operator {
@@ -203,7 +248,7 @@ namespace lbm::details {
     name() const override;
 
     double
-    operate(double arg1, double arg2) const override;
+    operate(double arg0, double arg1) const override;
   };
 
   class Hypot final : public Binary_Operator {
@@ -215,7 +260,7 @@ namespace lbm::details {
     name() const override;
 
     double
-    operate(double arg1, double arg2) const override;
+    operate(double arg0, double arg1) const override;
   };
 
   class Unary_Operator : public Expr {
@@ -230,8 +275,8 @@ namespace lbm::details {
     explicit Unary_Operator(Pointer arg);
 
     double
-    eval(const vector<double> &coord) const override {
-      return operate(arg_->eval(coord));
+    eval(const Euclidean &coord) const override {
+      return operate(arg_.eval(coord));
     }
 
   private:
@@ -246,7 +291,8 @@ namespace lbm::details {
 
     void
     set_json(const json &j) override;
-    Pointer arg_{};
+
+    Expression arg_{};
   };
 
   class Negate final : public Unary_Operator {
@@ -555,14 +601,12 @@ namespace lbm::details {
   parse_json_expr(json j) {
     if (j.is_number()) {
       return make_shared<Constant>(Constant{j.get<double>()});
-
     } else if (j.is_string()) {
       if (j == "x"s) {
         return make_shared<X>();
 
       } else if (j == "y"s) {
         return make_shared<Y>();
-
       } else if (j == "z"s) {
         return make_shared<Z>();
 

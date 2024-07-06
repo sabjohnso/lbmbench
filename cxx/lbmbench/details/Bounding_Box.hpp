@@ -8,7 +8,7 @@
 
 namespace lbm::details {
 
-  class Bounding_Box : public vector<double>, public JSON_Convertible {
+  class Bounding_Box final : public vector<double>, public JSON_Convertible {
   public:
     using Base = vector<double>;
     using Base::Base;

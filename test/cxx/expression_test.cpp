@@ -19,11 +19,11 @@ namespace lbm::testing {
   TEST_CASE("2 Dimensional") {
     constexpr double x1 = 4.0;
     constexpr double y1 = 5.0;
-    const std::vector coord1 = {x1, y1};
+    const Euclidean coord1 = {x1, y1};
 
     constexpr double x2 = 6.0;
     constexpr double y2 = 7.0;
-    const std::vector coord2 = {x2, y2};
+    const Euclidean coord2 = {x2, y2};
 
     SECTION("x-coordinate") {
       const X x{};
@@ -441,12 +441,12 @@ namespace lbm::testing {
     constexpr double x1 = 4.0;
     constexpr double y1 = 5.0;
     constexpr double z1 = 6.0;
-    const std::vector coord1 = {x1, y1, z1};
+    const Euclidean coord1 = {x1, y1, z1};
 
     constexpr double x2 = 7.0;
     constexpr double y2 = 8.0;
     constexpr double z2 = 9.0;
-    const std::vector coord2 = {x2, y2, z2};
+    const Euclidean coord2 = {x2, y2, z2};
 
     SECTION("x-coordinate") {
       const X x{};
@@ -529,8 +529,8 @@ namespace lbm::testing {
 
     auto expr = parse_json_expr(json_expr);
 
-    std::vector coord = {0.0, 0.0};
-    CHECK(expr->eval(coord) == 5.0);
+    const Euclidean coord = {0.0, 0.0};
+    CHECK(expr.eval(coord) == 5.0);
   }
 
 } // end of namespace lbm::testing

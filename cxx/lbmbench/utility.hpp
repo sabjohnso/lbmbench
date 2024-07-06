@@ -8,6 +8,7 @@
 #include <lbmbench/details/Boundary_ID.hpp>
 #include <lbmbench/details/Bounding_Box.hpp>
 #include <lbmbench/details/D2Q9.hpp>
+#include <lbmbench/details/Euclidean.hpp>
 #include <lbmbench/details/Expression.hpp>
 #include <lbmbench/details/Fixed_Array.hpp>
 #include <lbmbench/details/Fixed_Array_Index.hpp>
@@ -23,6 +24,7 @@
 namespace lbm {
 
   using details::Bounding_Box;
+  using details::Euclidean;
   using details::Lattice;
 
   using details::JSON_Convertible;

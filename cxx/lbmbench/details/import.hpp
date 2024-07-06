@@ -45,6 +45,7 @@ namespace lbm::details {
   using std::equal_to;
   using std::function;
   using std::logical_and;
+  using std::minus;
   using std::multiplies;
   using std::plus;
 
@@ -67,6 +68,7 @@ namespace lbm::details {
   using std::ostringstream;
 
   // from stdexcept
+  using std::logic_error;
   using std::runtime_error;
 
   // from functional
@@ -91,6 +93,7 @@ namespace lbm::details {
   // from type_traits
   using std::common_type_t;
   using std::is_default_constructible_v;
+  using std::remove_cvref_t;
 
   // from memory
   using std::make_shared;

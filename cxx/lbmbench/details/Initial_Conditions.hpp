@@ -8,14 +8,14 @@
 
 namespace lbm::details {
 
-  class Initial_Conditions : public JSON_Convertible {
+  class Initial_Conditions final : public JSON_Convertible {
 
   public:
     using Density_Expression = Expression;
     using Velocity_Expression = vector<Expression>;
     using Density = double;
-    using Velocity = vector<double>;
-    using Coordinates = vector<double>;
+    using Velocity = Euclidean;
+    using Coordinates = Euclidean;
 
     Initial_Conditions() = default;
 
@@ -24,12 +24,12 @@ namespace lbm::details {
 
     Density
     density(Coordinates coord) const {
-      return density_->eval(coord);
+      return density_.eval(coord);
     }
 
     Velocity
     velocity(Coordinates coord) const {
-      return {velocity_[0]->eval(coord), velocity_[1]->eval(coord)};
+      return {velocity_[0].eval(coord), velocity_[1].eval(coord)};
     }
 
     friend bool
@@ -41,8 +41,8 @@ namespace lbm::details {
       assert(ic2.velocity_[0]);
       assert(ic2.velocity_[1]);
 
-      return *ic1.density_ == *ic2.density_ && *ic1.velocity_[0] == *ic2.velocity_[0] &&
-             *ic1.velocity_[1] == *ic1.velocity_[1];
+      return ic1.density_ == ic2.density_ && ic1.velocity_[0] == ic2.velocity_[0] &&
+             ic1.velocity_[1] == ic1.velocity_[1];
     }
 
     friend bool
@@ -55,12 +55,12 @@ namespace lbm::details {
     get_json() const override {
       json j = json::object();
       j["initialConditions"] = json::object();
-      j["initialConditions"]["density"] = *density_;
+      j["initialConditions"]["density"] = density_;
       j["initialConditions"]["velocity"] = json::array();
       transform(std::begin(velocity_),
                 std::end(velocity_),
                 back_inserter(j["initialConditions"]["velocity"]),
-                [](Expression expr) { return json(*expr); });
+                [](Expression expr) { return json(expr); });
       return j;
     }
 

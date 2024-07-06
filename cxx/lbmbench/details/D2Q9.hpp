@@ -209,7 +209,7 @@ namespace lbm::details::D2Q9 {
       transform(std::begin(obstacles_),
                 std::end(obstacles_),
                 back_inserter(j["D2Q9Input"]["obstacles"]),
-                [](Expression expr) -> json { return *expr; });
+                [](Expression expr) -> json { return expr; });
 
       j["D2Q9Input"]["lattice"] = lattice_;
       return j;

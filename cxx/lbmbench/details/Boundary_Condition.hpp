@@ -227,4 +227,26 @@ namespace lbm::details {
     }
   };
 
+  class Boundary_Conditions : public vector<Boundary_Condition>, public JSON_Convertible {
+  public:
+    using Base = vector<Boundary_Condition>;
+    using Base::Base;
+
+  private:
+    json
+    get_json() const override {
+      json j = static_cast<const Base &>(*this);
+      return j;
+    }
+
+    void
+    set_json(const json &j) override {
+      Base::clear();
+      transform(std::begin(j),
+                std::end(j),
+                back_inserter(*this),
+                [](const json &bc) -> Boundary_Condition { return bc; });
+    }
+  };
+
 } // end of namespace lbm::details

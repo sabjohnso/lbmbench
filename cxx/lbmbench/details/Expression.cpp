@@ -18,7 +18,7 @@ namespace lbm::details {
   Constant::Constant(double value) : value_(value) {}
 
   double
-  Constant::eval(const vector<double> &) const {
+  Constant::eval(const Euclidean &) const {
     return value_;
   }
 
@@ -47,32 +47,31 @@ namespace lbm::details {
     return "z"s;
   }
 
-  Binary_Operator::Binary_Operator(Pointer arg1, Pointer arg2) : arg1_(arg1), arg2_(arg2) {}
+  Binary_Operator::Binary_Operator(Expression arg0, Expression arg1) : arg0_(arg0), arg1_(arg1) {}
 
-  Binary_Operator::Binary_Operator(const json &arg1, const json &arg2)
-      : arg1_(parse_json_expr(arg1)), arg2_(parse_json_expr(arg2)) {}
+  Binary_Operator::Binary_Operator(const json &arg0, const json &arg1)
+      : arg0_(parse_json_expr(arg0)), arg1_(parse_json_expr(arg1)) {}
 
   double
-  Binary_Operator::eval(const vector<double> &coord) const {
-    return operate(arg1_->eval(coord), arg2_->eval(coord));
+  Binary_Operator::eval(const Euclidean &coord) const {
+    return operate(arg0_.eval(coord), arg1_.eval(coord));
   }
 
   json
   Binary_Operator::get_json() const {
-
     json j = json::object();
     j[name()] = json::array();
-    json arg1_json = *arg1_;
-    json arg2_json = *arg2_;
+    json arg0_json = arg0_;
+    json arg1_json = arg1_;
+    j[name()].push_back(arg0_json);
     j[name()].push_back(arg1_json);
-    j[name()].push_back(arg2_json);
     return j;
   };
 
   void
   Binary_Operator::set_json(const json &j) {
-    arg1_ = parse_json_expr(j[name()][0]);
-    arg2_ = parse_json_expr(j[name()][1]);
+    arg0_ = parse_json_expr(j[name()][0]);
+    arg1_ = parse_json_expr(j[name()][1]);
   };
 
   Unary_Operator::Unary_Operator(Pointer arg) : arg_(arg) {}
@@ -80,7 +79,7 @@ namespace lbm::details {
   json
   Unary_Operator::get_json() const {
     json j = json::object();
-    j[name()] = json(*arg_);
+    j[name()] = json(arg_);
 
     return j;
   };
@@ -96,8 +95,8 @@ namespace lbm::details {
   }
 
   double
-  Add::operate(double arg1, double arg2) const {
-    return arg1 + arg2;
+  Add::operate(double arg0, double arg1) const {
+    return arg0 + arg1;
   }
 
   string
@@ -106,8 +105,8 @@ namespace lbm::details {
   }
 
   double
-  Subtract::operate(double arg1, double arg2) const {
-    return arg1 - arg2;
+  Subtract::operate(double arg0, double arg1) const {
+    return arg0 - arg1;
   }
 
   string
@@ -116,8 +115,8 @@ namespace lbm::details {
   }
 
   double
-  Multiply::operate(double arg1, double arg2) const {
-    return arg1 * arg2;
+  Multiply::operate(double arg0, double arg1) const {
+    return arg0 * arg1;
   }
 
   string
@@ -126,8 +125,8 @@ namespace lbm::details {
   }
 
   double
-  Divide::operate(double arg1, double arg2) const {
-    return arg1 / arg2;
+  Divide::operate(double arg0, double arg1) const {
+    return arg0 / arg1;
   }
 
   string
@@ -136,8 +135,8 @@ namespace lbm::details {
   }
 
   double
-  Power::operate(double arg1, double arg2) const {
-    return std::pow(arg1, arg2);
+  Power::operate(double arg0, double arg1) const {
+    return std::pow(arg0, arg1);
   }
 
   string
@@ -146,8 +145,8 @@ namespace lbm::details {
   }
 
   double
-  Atan2::operate(double arg1, double arg2) const {
-    return std::atan2(arg1, arg2);
+  Atan2::operate(double arg0, double arg1) const {
+    return std::atan2(arg0, arg1);
   }
 
   string
@@ -156,8 +155,8 @@ namespace lbm::details {
   }
 
   double
-  Hypot::operate(double arg1, double arg2) const {
-    return std::hypot(arg1, arg2);
+  Hypot::operate(double arg0, double arg1) const {
+    return std::hypot(arg0, arg1);
   }
 
   string
