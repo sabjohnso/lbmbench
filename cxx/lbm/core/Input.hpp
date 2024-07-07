@@ -4,6 +4,8 @@
 // ... LBM Bench header files
 //
 #include <lbm/core/Boundary_Condition.hpp>
+#include <lbm/core/Initial_Conditions.hpp>
+#include <lbm/core/Lattice.hpp>
 #include <lbm/core/Obstacle.hpp>
 
 namespace lbm::core {
@@ -24,42 +26,65 @@ namespace lbm::core {
         , viscosity_{viscosity} {}
 
     size_type
-    size() const {
-      return lattice_.size();
+    ndims() const {
+      return lattice_.ndims();
+    }
+
+    size_type
+    nnodes() const {
+      return lattice_.nnodes();
+    }
+
+    size_type
+    nnodes(size_type idim) const {
+      return lattice_.nnodes(idim);
+    }
+
+    double
+    density(Euclidean coord) const {
+      return initial_conditions_.density(coord);
+    }
+
+    Euclidean
+    velocity(Euclidean coord) const {
+      return initial_conditions_.velocity(coord);
+    }
+
+    bool
+    is_obstacle(Euclidean coord) const {
+      return obstacles_.contains(coord);
     }
 
     friend bool
-    operator==(const Input &, const Input &) {
-      return true;
+    operator==(const Input &inp0, const Input &inp1) {
+      // clang-format off
+      return inp0.lattice_        == inp1.lattice_ &&
+        inp0.initial_conditions_  == inp1.initial_conditions_ &&
+        inp0.boundary_conditions_ == inp1.boundary_conditions_ &&
+        inp0.obstacles_           == inp1.obstacles_ &&
+        inp0.viscosity_           == inp1.viscosity_;
+      // clang-format on
     }
 
   private:
     json
     get_json() const override {
       json j = json::object();
-      j["D2Q9Input"] = json::object();
-      j["D2Q9Input"]["viscosity"] = viscosity_;
-      j["D2Q9Input"]["boundaryConditions"] = boundary_conditions_;
-      j["D2Q9Input"]["obstacles"] = obstacles_;
-      j["D2Q9Input"]["lattice"] = lattice_;
+      j["lattice"] = lattice_;
+      j["initialConditions"] = initial_conditions_;
+      j["boundaryConditions"] = boundary_conditions_;
+      j["obstacles"] = obstacles_;
+      j["viscosity"] = viscosity_;
       return j;
     }
 
     void
     set_json(const json &j) override {
-      viscosity_ = j["D2Q9Input"]["viscosity"];
-      j["D2Q9Input"]["boundaryConditions"];
-      boundary_conditions_.clear();
-      std::transform(std::begin(j["D2Q9Input"]["boundaryConditions"]),
-                     std::end(j["D2Q9Input"]["boundaryConditions"]),
-                     back_inserter(boundary_conditions_),
-                     [](const json bc) { return Boundary_Condition{bc}; });
-      obstacles_.clear();
-      std::transform(std::begin(j["D2Q9Input"]["obstacles"]),
-                     std::end(j["D2Q9Input"]["obstacles"]),
-                     back_inserter(obstacles_),
-                     [](json obstacle) { return parse_json_expr(obstacle); });
-      lattice_ = j["D2Q9Input"]["lattice"];
+      lattice_ = j["lattice"];
+      initial_conditions_ = j["initialConditions"];
+      boundary_conditions_ = j["boundaryConditions"];
+      obstacles_ = j["obstacles"];
+      viscosity_ = j["viscosity"];
     }
 
     Lattice lattice_{};

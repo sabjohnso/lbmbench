@@ -21,9 +21,10 @@ namespace lbm::core::testing {
     Lattice lattice{Bounding_Box{width, height}, lattice_spacing};
 
     SECTION("Values") {
-      CHECK(lattice.size(0) == width / lattice_spacing);
-      CHECK(lattice.size(1) == height / lattice_spacing);
-      CHECK(lattice.size() == lattice.size(0) * lattice.size(1));
+      CHECK(lattice.ndims() == 2);
+      CHECK(lattice.nnodes(0) == width / lattice_spacing);
+      CHECK(lattice.nnodes(1) == height / lattice_spacing);
+      CHECK(lattice.nnodes() == lattice.nnodes(0) * lattice.nnodes(1));
       CHECK(lattice.extent(0) == width);
       CHECK(lattice.extent(1) == height);
     }
@@ -51,10 +52,11 @@ namespace lbm::core::testing {
     Lattice lattice{Bounding_Box{width, height, depth}, lattice_spacing};
 
     SECTION("Values") {
-      CHECK(lattice.size(0) == width / lattice_spacing);
-      CHECK(lattice.size(1) == height / lattice_spacing);
-      CHECK(lattice.size(2) == depth / lattice_spacing);
-      CHECK(lattice.size() == lattice.size(0) * lattice.size(1) * lattice.size(2));
+      CHECK(lattice.ndims() == 3);
+      CHECK(lattice.nnodes(0) == width / lattice_spacing);
+      CHECK(lattice.nnodes(1) == height / lattice_spacing);
+      CHECK(lattice.nnodes(2) == depth / lattice_spacing);
+      CHECK(lattice.nnodes() == lattice.nnodes(0) * lattice.nnodes(1) * lattice.nnodes(2));
       CHECK(lattice.extent(0) == width);
       CHECK(lattice.extent(1) == height);
       CHECK(lattice.extent(2) == depth);

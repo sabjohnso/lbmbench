@@ -5,6 +5,9 @@
 
 namespace lbm::core {
 
+  Expression::Expression()
+      : pexpr_{make_shared<Constant>(0.0)} {}
+
   Expression
   operator+(Expression e0, Expression e1) {
     return make_shared<Add>(e0, e1);
@@ -467,6 +470,21 @@ namespace lbm::core {
   double
   Heaviside::operate(double arg) const {
     return arg > 0.0 ? 1.0 : 0.0;
+  }
+
+  Expression
+  constant(double c) {
+    return make_shared<Constant>(c);
+  }
+
+  Expression
+  square(Expression e) {
+    return make_shared<Square>(Square{e});
+  }
+
+  double
+  square(double c) {
+    return c * c;
   }
 
 } // namespace lbm::core

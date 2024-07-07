@@ -201,7 +201,7 @@ namespace lbm::core::D2Q9 {
 
     size_type
     size() const {
-      return lattice_.size();
+      return lattice_.nnodes();
     }
 
   private:

@@ -32,7 +32,7 @@ namespace lbm::core {
   public:
     using Pointer = shared_ptr<Expr>;
 
-    Expression() = default;
+    Expression();
 
     template <derived_from<Expr> T>
     Expression(shared_ptr<T> pexpr)
@@ -318,6 +318,9 @@ namespace lbm::core {
     using Pointer = shared_ptr<Expr>;
 
     Unary_Operator() = default;
+
+    explicit Unary_Operator(Expression arg)
+        : arg_(arg) {}
 
     template <derived_from<Expr> T>
     explicit Unary_Operator(const T &arg)
@@ -690,6 +693,15 @@ namespace lbm::core {
 
   const Expression x = json("x");
   const Expression y = json("y");
+
+  Expression
+  constant(double c);
+
+  Expression
+  square(Expression e);
+
+  double
+  square(double c);
 
   // double
   // heaviside(double arg);

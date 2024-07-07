@@ -16,10 +16,13 @@ namespace lbm::core {
     Lattice(Bounding_Box bounding_box, double lattice_spacing);
 
     size_type
-    size() const;
+    ndims() const;
 
     size_type
-    size(size_type idim) const;
+    nnodes() const;
+
+    size_type
+    nnodes(size_type idim) const;
 
     double
     extent(size_type idim) const;

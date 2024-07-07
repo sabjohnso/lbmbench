@@ -10,15 +10,20 @@ namespace lbm::core {
       , lattice_spacing_(lattice_spacing) {}
 
   size_type
-  Lattice::size(size_type idim) const {
+  Lattice::ndims() const {
+    return bounding_box_.size();
+  }
+
+  size_type
+  Lattice::nnodes(size_type idim) const {
     return static_cast<size_type>(std::ceil(bounding_box_.at(idim) / lattice_spacing_));
   }
 
   size_type
-  Lattice::size() const {
+  Lattice::nnodes() const {
     size_type accum = 1;
     for (size_type i = 0; i < static_cast<size_type>(bounding_box_.size()); ++i) {
-      accum *= size(i);
+      accum *= nnodes(i);
     }
     return accum;
   }
