@@ -25,12 +25,12 @@ namespace lbm::core {
     operator<=>(const Lexical &, const Lexical &) = default;
 
     size_type
-    storage_index(Index_Type idx) {
+    storage_index(Index_Type idx) const {
       return inner_product(begin(idx), end(idx), begin(strides_), size_type(0u));
     };
 
     constexpr Index_Type
-    array_index(const size_type &index) {
+    array_index(const size_type &index) const {
       return [=, this]<std::size_t... i>(index_sequence<i...>) {
         return Index{(index / strides_[i]) % shape_[i]...};
       }(make_index_sequence<N>());

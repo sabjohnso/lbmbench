@@ -38,7 +38,7 @@ namespace lbm::core::testing {
     SECTION("conversion to and from JSON") {
       nlohmann::json json_array = array;
       Array<double, 2> array_from_json = json_array;
-      CHECK(array == json_array);
+      CHECK(array == array_from_json);
     }
 
     SECTION("conversion to and from text") {

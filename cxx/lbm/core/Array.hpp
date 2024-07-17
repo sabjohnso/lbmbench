@@ -27,6 +27,9 @@ namespace lbm::core {
         : order_{std::move(order)}
         , values_(order_.total_size(), init) {}
 
+    friend bool
+    operator<=>(const Array &, const Array &) = default;
+
     const_reference
     operator[](integral auto i, integral auto j, integral auto... ks) const {
       static_assert(2 + sizeof...(ks) == N);

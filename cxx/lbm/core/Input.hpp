@@ -55,6 +55,11 @@ namespace lbm::core {
       return obstacles_.contains(coord);
     }
 
+    double
+    lattice_spacing() {
+      return lattice_.lattice_spacing();
+    }
+
     friend bool
     operator==(const Input &inp0, const Input &inp1) {
       // clang-format off

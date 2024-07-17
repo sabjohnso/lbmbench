@@ -1,7 +1,7 @@
 //
 // ... LBM Bench header files
 //
-#include <lbm/utility.hpp>
+#include <lbm/D2Q9/Velocity_Distribution.hpp>
 
 //
 // ... Testing header files
@@ -49,36 +49,4 @@ namespace lbm::core::testing {
       REQUIRE_THAT(dist_velocity[1], Catch::Matchers::WithinAbs(velocity[1], 1.0E-12));
     }
   }
-
-  TEST_CASE("D2Q9 Node") {
-    Node<double> node{};
-
-    SECTION("conversion to and from JSON") {
-      json json_node = node;
-
-      SECTION("conversion to and from JSON") {
-        json json_node = node;
-        Node<double> node_from_json = json_node;
-        CHECK(node == node_from_json);
-      }
-
-      SECTION("conversion to and from text") {}
-    }
-  }
-
-  TEST_CASE("D2Q9 Input") {
-    D2Q9_Input input{
-        Lattice{Bounding_Box{200.0, 100.0}, 1.0},
-        Initial_Conditions{parse_json_expr(1.0), {parse_json_expr(2.0), parse_json_expr(3.0)}},
-        {},
-        {parse_json_expr({{"subtract",
-                           {25,
-                            {{"add",
-                              {{{"square", {{"subtract", {"x", 50}}}}},
-                               {{"square", {{"subtract", {"y", 50}}}}}}}}}}})},
-        0.1};
-  }
-
-  TEST_CASE("D2Q9 State") {}
-
 } // namespace lbm::core::testing
