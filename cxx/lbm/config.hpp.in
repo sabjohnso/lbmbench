@@ -1,3 +1,9 @@
 #pragma once
 
-namespace lbm::config {} // end of namespace lbm::config
+namespace lbm::config {
+
+  constexpr char schema_path[] = "${CMAKE_INSTALL_DATAROOTDIR}/lbm-schema.json";
+  constexpr char schema_path_testing[] = "${PROJECT_SOURCE_DIR}/lbm-schema.json";
+  constexpr char version[] = "${PROJECT_VERSION}";
+
+} // end of namespace lbm::config

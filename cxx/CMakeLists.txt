@@ -22,7 +22,10 @@ target_compile_features(lbmbench_library PUBLIC ${lbmbench_CXX_FEATURES})
 set_target_properties(lbmbench_header PROPERTIES EXPORT_NAME library)
 add_library(lbmbench::library ALIAS lbmbench_library)
 
-install(TARGETS lbmbench_header lbmbench_library
+add_executable(lbmbench main.cpp)
+target_link_libraries(lbmbench PRIVATE lbmbench::header lbmbench::library Boost::program_options)
+
+install(TARGETS lbmbench_header lbmbench_library lbmbench
   EXPORT lbmbench_EXPORTS
   RUNTIME DESTINATION ${lbmbench_INSTALL_BINDIR}
   LIBRARY DESTINATION ${lbmbench_INSTALL_LIBDIR}

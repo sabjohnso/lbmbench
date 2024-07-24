@@ -54,3 +54,10 @@ namespace lbm::core {
                     convertible_to<size_type> auto... ns) -> Fixed_Array_Index<sizeof...(ns) + 2>;
 
 } // end of namespace lbm::core
+
+namespace std {
+
+  template <lbm::core::size_type N>
+  struct tuple_size<lbm::core::Fixed_Array_Index<N>> : integral_constant<size_t, N> {};
+
+} // end of namespace std

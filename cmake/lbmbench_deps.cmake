@@ -9,6 +9,7 @@ list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake_utilities)
 find_package(CMakeUtilities REQUIRED)
 find_package(nlohmann_json REQUIRED)
 find_package(nlohmann_json_schema_validator REQUIRED)
+find_package(Boost REQUIRED COMPONENTS program_options)
 
 if(lbm_USE_MPI)
   find_package(MPI REQUIRED)

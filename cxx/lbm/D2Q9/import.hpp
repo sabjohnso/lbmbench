@@ -4,6 +4,7 @@
 // ... LBM Bench header files
 //
 #include <lbm/core/Array.hpp>
+#include <lbm/core/Dynamic_Array.hpp>
 #include <lbm/core/Euclidean.hpp>
 #include <lbm/core/Fixed_Array.hpp>
 #include <lbm/core/Input.hpp>
@@ -25,10 +26,12 @@
 
 namespace lbm::D2Q9 {
   using lbm::core::Array;
+  using lbm::core::Dynamic_Array;
   using lbm::core::Euclidean;
   using lbm::core::Fixed_Array;
   using lbm::core::Fixed_Lexical;
   using lbm::core::Input;
+  using lbm::core::integer;
   using lbm::core::json;
   using lbm::core::JSON_Convertible;
   using lbm::core::Lexical;

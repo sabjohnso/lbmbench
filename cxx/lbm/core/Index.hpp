@@ -47,3 +47,16 @@ namespace lbm::core {
   Index(integral auto i1, integral auto i2, integral auto... is) -> Index<2 + sizeof...(is)>;
 
 } // namespace lbm::core
+
+namespace std {
+
+  template <lbm::core::size_type N_Dims>
+  struct tuple_size<lbm::core::Index<N_Dims>> : integral_constant<size_t, N_Dims> {};
+
+  template <size_t I, lbm::core::size_type N_Dims>
+  struct tuple_element<I, lbm::core::Index<N_Dims>> {
+    using type = lbm::core::size_type;
+    static_assert(I < N_Dims, "Expected a valid index");
+  };
+
+} // end of namespace std

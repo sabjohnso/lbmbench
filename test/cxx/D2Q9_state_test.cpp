@@ -1,5 +1,5 @@
-//
-// ... LBM Bench
+// ega
+//  ... LBM Bench
 //
 #include <lbm/D2Q9/State.hpp>
 #include <lbm/core/Input.hpp>
@@ -24,7 +24,7 @@ namespace lbm::D2Q9::testing {
     constexpr double v0 = 3.0;
     constexpr double width = 200.0;
     constexpr double height = 100.0;
-    constexpr double lattice_spacing = 0.5;
+    constexpr double lattice_spacing = 5.0;
     constexpr double inlet_speed = 4.0;
     constexpr double outlet_speed = 4.0;
     constexpr double radius = 5.0;

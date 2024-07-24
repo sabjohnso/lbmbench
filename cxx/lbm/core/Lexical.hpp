@@ -29,6 +29,12 @@ namespace lbm::core {
       return inner_product(begin(idx), end(idx), begin(strides_), size_type(0u));
     };
 
+    size_type
+    storage_index(size_type i1, size_type i2, same_as<size_type> auto... is) const {
+      static_assert(sizeof...(is) == N - 2);
+      return storage_index(Index_Type{i1, i2, is...});
+    }
+
     constexpr Index_Type
     array_index(const size_type &index) const {
       return [=, this]<std::size_t... i>(index_sequence<i...>) {

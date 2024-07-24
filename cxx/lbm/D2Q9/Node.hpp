@@ -24,9 +24,9 @@ namespace lbm::D2Q9 {
 
   public:
     Node() = default;
-    Node(Velocity_Distribution<T> classes, bool obstacle)
+    Node(Velocity_Distribution<T> classes, bool obstacle = false)
         : velocity_distribution_(classes)
-        , obstacle_(obstacle) {}
+        , obstacle_{obstacle} {}
 
     Density
     density() const {
@@ -44,11 +44,10 @@ namespace lbm::D2Q9 {
     }
 
     void
-    init(Density density, Euclidean velocity, bool obstacle) {
+    init(Density density, Euclidean velocity) {
       density_ = density;
       copy(std::begin(velocity), std::end(velocity), std::begin(velocity_));
       velocity_distribution_.set_equilibrium(density_, velocity_);
-      obstacle_ = obstacle;
     }
 
     void
@@ -62,8 +61,7 @@ namespace lbm::D2Q9 {
     operator==(const Node &node1, const Node &node2) {
       return (node1.velocity_distribution_ == node2.velocity_distribution_) &&
              (node1.velocity_ == node2.velocity_) && //
-             (node1.density_ == node2.density_) &&   //
-             (node1.obstacle_ == node2.obstacle_);
+             (node1.density_ == node2.density_);
     }
 
     friend bool
@@ -79,7 +77,6 @@ namespace lbm::D2Q9 {
       j["classes"] = velocity_distribution_;
       j["velocity"] = velocity_;
       j["density"] = density_;
-      j["obstacle"] = obstacle_;
       return j;
     }
 
@@ -88,7 +85,6 @@ namespace lbm::D2Q9 {
       velocity_distribution_ = j["classes"];
       velocity_ = j["velocity"];
       density_ = j["density"];
-      obstacle_ = j["obstacle"];
     }
 
     Velocity_Distribution<T> velocity_distribution_{};
