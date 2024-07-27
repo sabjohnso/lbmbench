@@ -16,14 +16,10 @@ namespace lbm::app {
   class Runtime_Config {
   public:
     Runtime_Config(int argc, const char *const *argv)
-        : visible_{make_visible_options()}
-        , hidden_{make_hidden_options()} {
+        : visible_{make_visible_options()} {
 
       try {
-        po::store(po::command_line_parser(argc, argv) //
-                      .options(visible_)              //
-                      .run(),
-                  vm_);
+        po::store(po::command_line_parser(argc, argv).options(visible_).run(), vm_);
         po::notify(vm_);
       } catch (const std::exception &e) {
         replace_command_line_parser_error(argv[0], e);
@@ -43,17 +39,6 @@ namespace lbm::app {
           replace_input_error(argv[0], e);
         }
       }
-    }
-
-    bool
-    is_restart() const {
-      return vm_.count("restart");
-    }
-
-    path
-    checkpoint_path() const {
-      assert(is_restart());
-      return vm_["restart"].as<path>();
     }
 
     path
@@ -102,17 +87,7 @@ namespace lbm::app {
       description.add_options()                             //
           ("help,h", "Show this help message and exit.")    //
           ("version,v", "Show the version number and exit") //
-          ("restart,r",
-           po::value<path>()->value_name("CHECKPOINT"),
-           "Specify an optional checkpoint file for restarting a simulation") //
           ("input,i", po::value<path>()->value_name("INPUT"), "Simulation input file");
-      return description;
-    }
-
-    static po::options_description
-    make_hidden_options() {
-      po::options_description description{};
-      description.add_options()("input", po::value<path>()->required(), "Configuration file");
       return description;
     }
 
@@ -132,8 +107,6 @@ namespace lbm::app {
     }
 
     po::options_description visible_;
-    po::options_description hidden_;
-    po::positional_options_description positional_;
     po::variables_map vm_{};
     json input_{};
   };
