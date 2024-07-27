@@ -17,13 +17,17 @@ add_library(lbmbench_library
   lbm/core/Euclidean.cpp)
 
 target_link_libraries(lbmbench_library
-  PRIVATE lbmbench::header nlohmann_json::nlohmann_json)
+  PUBLIC Boost::program_options
+  lbmbench::header
+  nlohmann_json::nlohmann_json
+  nlohmann_json_schema_validator)
 target_compile_features(lbmbench_library PUBLIC ${lbmbench_CXX_FEATURES})
 set_target_properties(lbmbench_header PROPERTIES EXPORT_NAME library)
 add_library(lbmbench::library ALIAS lbmbench_library)
 
 add_executable(lbmbench main.cpp)
-target_link_libraries(lbmbench PRIVATE lbmbench::header lbmbench::library Boost::program_options)
+target_link_libraries(lbmbench PRIVATE lbmbench::header lbmbench::library Boost::program_options
+nlohmann_json_schema_validator)
 
 install(TARGETS lbmbench_header lbmbench_library lbmbench
   EXPORT lbmbench_EXPORTS

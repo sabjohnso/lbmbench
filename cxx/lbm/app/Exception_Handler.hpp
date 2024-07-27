@@ -22,6 +22,10 @@ namespace lbm::app {
         std::cout << e.what() << std::endl;
         exit_code_ = int(Exit_Code::SUCCESS);
 
+      } catch (const Version_Request &e) {
+        std::cout << e.what() << std::endl;
+        exit_code_ = int(Exit_Code::SUCCESS);
+
       } catch (const Bad_Usage &e) {
 
         std::cerr << "Invalid usage error:" << std::endl

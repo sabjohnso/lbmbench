@@ -2,8 +2,12 @@
 
 namespace lbm::config {
 
-  constexpr char schema_path[] = "${CMAKE_INSTALL_DATAROOTDIR}/lbm-schema.json";
-  constexpr char schema_path_testing[] = "${PROJECT_SOURCE_DIR}/lbm-schema.json";
-  constexpr char version[] = "${PROJECT_VERSION}";
+  constexpr char schema_location[] = "${CMAKE_INSTALL_DATAROOTDIR}/lbm-schema.json";
+  constexpr char schema_location_testing[] = "${PROJECT_SOURCE_DIR}/lbm-schema.json";
+  constexpr char version[] = "lbmbench v${PROJECT_VERSION}";
+  constexpr bool testing = true;
+
+  constexpr char invalid_input_path[] = "${PROJECT_SOURCE_DIR}/test/data/invalid-input.json";
+  constexpr char valid_input_path[] = "${PROJECT_SOURCE_DIR}/test/data/valid-input.json";
 
 } // end of namespace lbm::config

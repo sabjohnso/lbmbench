@@ -1,223 +1,69 @@
 {
     "$schema" : "https://json-schema.org/draft/2020-12/schema#",
     "$id" : "https://sabjohnso.github.io/2024/schema/lbm-schema.json",
-    "oneOf" : [
-        {"$ref" : "#/$defs/D2Q9Input"},
-        {"$ref" : "#/$defs/D2Q9Checkpoint"},
-        {"$ref" : "#/$defs/D2Q9Output"}
-    ],
+    "type" : "object",
+    "properties" : {
+        "kernel" : {"$ref" : "#/$defs/Kernel"},
+        "floatType" : {"$ref" : "#/$defs/FloatingPointType"},
+        "timeScale" : {"$ref" : "#/$defs/PositiveNumber"},
+        "numSteps" : {"$ref" : "#/$defs/NaturalNumber"},
+        "input" : {"$ref" : "#/$defs/Input"}
+    },
+ "required" : ["kernel", "floatType", "timeScale", "numSteps", "input"],
+    "additionalProperties" : false,
     "$defs" : {
-        "D2Q9Input" : {
-            "type" : "object",
-            "properties": {
-                "D2Q9Input" : {
-                    "type" : "object",
-                    "properties" : {
-                        "viscosity" : {"type" : "number"},
-                        "lattice" : {"$ref" : "#/$defs/D2Lattice"},
-                        "boundaryConditions" : {"$ref" : "#/$defs/D2BoundaryConditions"},
-                        "initialConditions" : {"$ref" : "#/$defs/D2InitialConditions"}
-                        "obstacles" : {"$ref" : "#/$defs/D2Obstacles"}
-                    },
-                    "required" : ["viscosity", "lattice", "boundaryConditions", "obstacles"],
-                    "additionalProperties" : false
-                }
-            },
-            "required" : ["D2Q9"],
-            "additionalProperties" : false
+        "FloatingPointType" : {
+            "enum" : ["float32", "float64"]
         },
-        "D2Q9Checkpoint" : {
+        "Kernel" : {
+            "enum" : ["D2Q9"]
+        },
+        "Input" : {
             "type" : "object",
             "properties" : {
-                "input" : {"$ref" : "#/$defs/D2Input"},
-                "timestep" : {"type" : "integer"},
-                "densities" : {"$ref" : "#/$defs/D2Q9LatticeDensities"}
-            },
-            "required" : ["input", "timestep", "densities"],
-            "additionalProperties" : false
-        },
-        "D2Q9Output" : {
-            "type" : "object",
-            "properties" : {
-                "velocity" : {"type" : "array", "items" : {"$ref" : "#/$defs/D2Velocity"}},
-                "density"  : {"type" : "array", "items" : {"type" : "number"}},
-                "pressure" : {"type" : "array", "items" : {"type" : "number"}}
-            },
-            "required" : ["velocity", "density", "pressure"],
-            "additionalProperties" : false
-        },
-        "D2Lattice" : {
-            "type" : "object",
-            "properties" : {
-                "width" : {"type" : "number"},
-                "height" : {"type" : "number"},
-                "latticeSpacing" : {"type" : "number"}
-            },
-            "required" : ["width", "height", "latticeSpacing"],
-            "additionalProperties" : false
-        },
-        "D2InitialConditions"  : {
-            "type" : "object",
-            "properties"  : {
-                "desity" : {"$ref" : "#/$defs/D2Expr"},
-                "velocity" : {
-                    "type" : "array"
-                    "items" : {"$ref" : "#/$defs/D2Expr"}
-                    "minItems" : 2,
-                    "maxItems" : 2
-                }
+                "lattice" : {"$ref" : "#/$defs/Lattice"},
+                "boundaryConditions" : {"$ref" : "#/$defs/BoundaryConditions"},
+                "initialConditions" : {"$ref" : "#/$defs/InitialConditions"},
+                "obstacles" : {"$ref" : "#/$defs/Obstacles"}
+                ,
+                "viscosity" : {"type" : "number"}
             }
-        },                
-        "D2BoundaryConditions" : {
+        },
+        "Lattice" : {},
+        "BoundaryConditions" : {
             "type" : "array",
-            "items" : {"$ref" : "#/$defs/D2BoundaryCondition"}
+            "items" : {"$ref" : "#/$defs/BoundaryCondition"}
         },
-        "D2BoundaryCondition" : {
-            "oneOf" : [
-                {"$ref" : "#/$defs/D2Wall"},
-                {"$ref" : "#/$defs/D2Symmetry"},
-                {"$ref" : "#/$defs/D2Periodic"},
-                {"$ref" : "#/$defs/D2Inlet"},
-                {"$ref" : "#/$defs/D2Outlet"},
-                {"$ref" : "#/$defs/D2PressureDrop"}
-               
-            ]
-        },
-        "D2Wall" : {
+        "BoundaryCondition" : {},
+        "InitialConditions" : {
             "type" : "object",
             "properties" : {
-                "wall"  : {
-                    "type" : "object",
-                    "properties" : {
-                        "boundary" :  {"$ref" : "#/$defs/D2BoundaryID"}
-                    },
-                    "required" : ["boundary"],
-                    "additionalProperties" : false
-                }
+                "density" : {"$ref" : "#/$defs/InitialDensity"},
+                "velocity" : {"$ref" : "#/$defs/InitialVelocity"}
             },
-            "required" : ["wall"],
+            "required" : ["density", "velocity"],
             "additionalProperties" : false
         },
-        "D2Symmetry" : {
-            "type" : "object",
-            "properties" :  {
-                "symmetry" : {
-                    "type" : "object",
-                    "properties" : {
-                        "boundary" : {"$ref" : "#/$defs/D2BoundaryID"}
-                    },
-                    "required" : ["boundary"],
-                    "additionalProperties" : false
-                }
-            },
-            "required" : ["symmetry"],
-            "additionalProperties" : false
-        },
-        "D2Periodic" : {
-            "type" : "object",
-            "properties" :  {
-                "periodic" : {
-                    "type" : "object",
-                    "properties" : {
-                        "boundary" : {"$ref" : "#/$defs/D2BoundaryID"}
-                    },
-                    "required" : ["boundary"],
-                    "additionalProperties" : false
-                }
-            },
-            "required" : ["periodic"],
-            "additionalProperties" : false
-        },
-        "D2Inlet" : {
-            "type" : "object",
-            "properties" :  {
-                "inlet" : {
-                    "type" : "object",
-                    "properties" : {
-                        "inletSpeed" : {"type" : "number"},
-                        "boundary" : {"$ref" : "#/$defs/D2BoundaryID"}
-                    },
-                    "required" : ["inletSpeed", "boundary"],
-                    "additionalProperties" : false
-                }
-            },
-            "required" : ["inlet"],
-            "additionalProperties" : false
-        },
-        "D2Outlet" : {
-            "type" : "object",
-            "properties" : {
-                "outlet" : {
-                    "type" : "object",
-                    "properties" : {
-                        "outletSpeed" : {"type" : "number"},
-                        "boundary" : {"$ref" : "#/$defs/D2BoundaryID"}
-                    },
-                    "required" : [],
-                    "additionalProperties" : false
-                }
-            },
-            "required" : ["outlet"],
-            "additionalProperties" : false
-        },       
-        "D2PressureDrop" : {
-            "type" : "object",
-            "properties" :  {
-                "pressureDrop" : {
-                    "type" : "object",
-                    "properties" : {
-                        "value" : {"type" : "number"},
-                        "boundary" : {"$ref" : "#/$defs/D2BoundaryID"}
-                    },
-                    "required" : ["value", "boundary"],
-                    "additionalProperties" : false
-                }
-            },
-            "required" : ["pressureDrop"],
-            "additionalProperties" : false
-        },        
-        "D2Obstacles" : {
+        "InitialDensity" : {"$ref" : "#/$defs/Expression"},
+        "InitialVelocity" : {
             "type" : "array",
-            "items" : {"$ref" : "#/$defs/D2Expr"}
-        },
-        "D2BoundaryID" : {
-            "type" : "array",
-            "items" : {"type" : "number"},
+            "items" : {"$ref" : "#/$defs/Expression"},
             "minItems" : 2,
             "maxItems" : 2
         },
-        "D2Expr" : {
-            "oneOf" : [
-                {"type" : "number"},
-                {"const" : "x"},
-                {"const" : "y"},
-                {"$ref" : "#/$defs/D2BinaryApplication"},
-                {"$ref" : "#/$defs/D2UnaryApplication"}
-            ]
-        },
-        "D2Q9LatticeDensities": {},
-        "D2Q9NodeDensities" : {},
-        "D2UnaryApplication" : {
-            "type" : "object",
-            "patternProperties" : {
-                "^(negate|reciprocal|cos|sin|tan|acos|asin|atan|cosh|sinh|tanh|acosh|asinh|atanh|heaviside|sqr|exp|log|log10|log2)$" : {"$ref" : "#/$defs/D2Expr"}
-            }
-        },
-        "D2BinaryApplication" : {
-            "type" : "object",
-            "patternProperties" : {
-                "^(add|subtract|multiply|divide|pow|atan2|hypot)$" : {"type" : "array", "items" : {"$ref" : "#/$defs/D2Expr"}, "minItems" : 2, "maxItems" : 2}
-            }
-        },
-        "D2Q9LatticeDensities" : {
+        "Obstacles" : {
             "type" : "array",
-            "items" : {"$ref" : "#/$defs/D2Q9NodeDensities"}
+            "items" : {"$ref" : "#/$defs/Expression"}
         },
-        "D2Q9NodeDensities" : {
-            "type" : "array",
-            "items"  : {"type": "number"},
-            "minItems" : 9,
-            "maxItems" : 9
+        "NaturalNumber" : {
+            "type" : "integer",
+            "minimum" : 0
+        },
+        "PositiveNumber" : {
+            "type" : "number",
+            "exclusiveMinimum" : 0
+        },
+        "Expression" : {
         }
-    }    
+    }
 }

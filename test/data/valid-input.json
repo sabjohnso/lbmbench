@@ -1,0 +1,28 @@
+{
+    "kernel": "D2Q9",
+    "floatType": "float32",
+    "timeScale" : 1.0,
+    "numSteps" : 100,
+    "input": {
+        "boundaryConditions": [
+            {"inlet": {"boundary": [-1, 0], "inletSpeed": 4.0}},
+            {"outlet": {"boundary": [1, 0], "outletSpeed": 4.0}},
+            {"wall": {"boundary": [0, -1]}},
+            {"wall": {"boundary": [0, 1]}}
+        ],
+        
+        "initialConditions": {
+            "density": 1.0,
+            "velocity": [2.0, 3.0]
+        },
+        "lattice": {"boundingBox": [200.0, 100.0], "latticeSpacing": 0.5},
+        "obstacles": [
+            {"subtract": 
+             [25.0, {"add" :
+                     [{"square": {"subtract": ["x", 50.0]}},
+                      {"square": {"subtract": ["y", 60.0]}}]}]},
+            {"subtract": [25.0, {"add": [{"square": {"subtract": ["x", 50.0]}},
+                                         {"square": {"subtract": ["y", 40.0]}}]}]}],
+        "viscosity": 0.01
+    }
+}
