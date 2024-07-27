@@ -41,9 +41,9 @@ namespace lbm::app {
       }
     }
 
-    path
-    config_path() const {
-      return vm_["config"].as<path>();
+    const json &
+    input() const {
+      return input_;
     }
 
   private:
@@ -94,7 +94,7 @@ namespace lbm::app {
     std::string
     usage(const path &executable_path) {
       std::ostringstream oss{};
-      oss << "Usage: " << std::string{executable_path.filename()} << " [options] <input-file>\n";
+      oss << "Usage: " << std::string{executable_path.filename()} << " [options]";
       oss << "Options:" << all_options();
       return oss.str();
     }
