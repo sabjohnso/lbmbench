@@ -36,7 +36,7 @@ add_executable(lbmbench main.cpp)
 target_link_libraries(lbmbench PRIVATE lbmbench::header lbmbench::library Boost::program_options
 nlohmann_json_schema_validator)
 
-install(TARGETS lbmbench_header lbmbench_library lbmbench
+install(TARGETS lbmbench
   EXPORT lbmbench_EXPORTS
   RUNTIME DESTINATION ${lbmbench_INSTALL_BINDIR}
   LIBRARY DESTINATION ${lbmbench_INSTALL_LIBDIR}
