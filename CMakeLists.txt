@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 3.12)
 
 option(lbmbench_BUILD_TESTING "Build the lbmbench tests" ON)
-option(lbmbench_USE_MPI "Build LBM benchmarks with MPI support" ON)
-option(lbmbench_USE_THREADS "Build LBM benchmarks with multithreading support" ON)
-option(lbmbench_USE_OPENMP "Build LBM benchmarks with OpenMP support" ON)
-option(lbmbench_USE_CUDA "Build LBM benchmarks with CUDA support" ON)
+option(lbmbench_USE_MPI "Build LBM benchmarks with MPI support" OFF)
+option(lbmbench_USE_THREADS "Build LBM benchmarks with multithreading support" OFF)
+option(lbmbench_USE_OPENMP "Build LBM benchmarks with OpenMP support" OFF)
+option(lbmbench_USE_CUDA "Build LBM benchmarks with CUDA support" OFF)
 
 option(lbmbench_USE_FLOAT64 "Build LBM benchmarks with 64bit floating-point support" ON)
 option(lbmbench_USE_FLOAT32 "Build LBM benchmarks with 32bit floating-point support" ON)
