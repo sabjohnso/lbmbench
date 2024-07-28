@@ -1,6 +1,12 @@
 #pragma once
 
 //
+// ... LBM Bench header files
+//
+#include <lbm/exceptions/Bad_Float_Type.hpp>
+#include <lbm/exceptions/Bad_Kernel_Name.hpp>
+
+//
 // ... Third-party header files
 //
 #include <nlohmann/json.hpp>
@@ -29,6 +35,9 @@ namespace lbm::core {
   using nlohmann::json;
 
   using namespace std::literals;
+
+  using lbm::exceptions::Bad_Float_Type;
+  using lbm::exceptions::Bad_Kernel_Name;
 
   // from utility
   using std::index_sequence;

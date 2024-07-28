@@ -14,7 +14,12 @@ add_library(lbmbench_library
   lbm/core/Bounding_Box.cpp
   lbm/core/Lattice.cpp
   lbm/core/Expression.cpp
-  lbm/core/Euclidean.cpp)
+  lbm/core/Euclidean.cpp
+  lbm/core/Float_Type.cpp
+  lbm/core/Kernel.cpp
+  lbm/core/Input.cpp
+  lbm/app/Runtime_Config.cpp
+  lbm/app/Runtime_Config_Impl.cpp)
 
 target_link_libraries(lbmbench_library
   PUBLIC Boost::program_options

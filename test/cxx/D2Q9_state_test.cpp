@@ -18,6 +18,10 @@ namespace lbm::D2Q9::testing {
   using namespace lbm::core;
 
   TEST_CASE("State") {
+    constexpr auto kernel{Kernel::D2Q9};
+    constexpr auto float_type{Float_Type::FLOAT32};
+    constexpr double time_scale{0.1};
+    constexpr size_type num_steps{10};
     constexpr double density = 1.0;
     constexpr double viscosity = 0.01;
     constexpr double u0 = 2.0;
@@ -34,6 +38,10 @@ namespace lbm::D2Q9::testing {
     const Euclidean point{50.0, 50.0};
 
     Input input{
+        kernel,
+        float_type,
+        time_scale,
+        num_steps,
         Lattice{Bounding_Box{width, height}, lattice_spacing},
         Initial_Conditions{Initial_Density{density}, Initial_Velocity{constant(u0), constant(v0)}},
         Boundary_Conditions{Inlet{Boundary_ID{Boundary::Lower, Boundary::NA}, inlet_speed},

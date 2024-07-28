@@ -7,6 +7,7 @@
 #include <lbm/core/Dynamic_Array.hpp>
 #include <lbm/core/Euclidean.hpp>
 #include <lbm/core/Fixed_Array.hpp>
+#include <lbm/core/IState.hpp>
 #include <lbm/core/Input.hpp>
 #include <lbm/core/JSON_Convertible.hpp>
 #include <lbm/core/Lexical.hpp>
@@ -32,6 +33,7 @@ namespace lbm::D2Q9 {
   using lbm::core::Fixed_Lexical;
   using lbm::core::Input;
   using lbm::core::integer;
+  using lbm::core::IState;
   using lbm::core::json;
   using lbm::core::JSON_Convertible;
   using lbm::core::Lexical;

@@ -7,27 +7,30 @@
         "floatType" : {"$ref" : "#/$defs/FloatingPointType"},
         "timeScale" : {"$ref" : "#/$defs/PositiveNumber"},
         "numSteps" : {"$ref" : "#/$defs/NaturalNumber"},
-        "input" : {"$ref" : "#/$defs/Input"}
+        "lattice" : {"$ref" : "#/$defs/Lattice"},
+        "boundaryConditions" : {"$ref" : "#/$defs/BoundaryConditions"},
+        "initialConditions" : {"$ref" : "#/$defs/InitialConditions"},
+        "obstacles" : {"$ref" : "#/$defs/Obstacles"},
+        "viscosity" : {"type" : "number"}
     },
- "required" : ["kernel", "floatType", "timeScale", "numSteps", "input"],
+    "required" : [
+        "kernel",
+        "floatType",
+        "timeScale",
+        "numSteps",
+        "lattice",
+        "boundaryConditions",
+        "initialConditions",
+        "obstacles",
+        "viscosity"
+    ],
     "additionalProperties" : false,
     "$defs" : {
         "FloatingPointType" : {
-            "enum" : ["float32", "float64"]
+            "enum" : ["Float32", "Float64"]
         },
         "Kernel" : {
             "enum" : ["D2Q9"]
-        },
-        "Input" : {
-            "type" : "object",
-            "properties" : {
-                "lattice" : {"$ref" : "#/$defs/Lattice"},
-                "boundaryConditions" : {"$ref" : "#/$defs/BoundaryConditions"},
-                "initialConditions" : {"$ref" : "#/$defs/InitialConditions"},
-                "obstacles" : {"$ref" : "#/$defs/Obstacles"}
-                ,
-                "viscosity" : {"type" : "number"}
-            }
         },
         "Lattice" : {},
         "BoundaryConditions" : {

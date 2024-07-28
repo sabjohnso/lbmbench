@@ -9,7 +9,7 @@
 namespace lbm::D2Q9 {
 
   template <class T>
-  class State : public JSON_Convertible {
+  class State final : public IState {
   public:
     using Lattice_Spacing = T;
     using Time_Step = size_type;
@@ -34,7 +34,7 @@ namespace lbm::D2Q9 {
         , nxm1_{nx_ - 1}
         , nym1_{ny_ - 1}
         , order_{Shape{nx_, ny_}}
-        , lattice_spacing_{input.lattice_spacing()}
+        , lattice_spacing_(input.lattice_spacing())
         , nodes_{{Nodes{order_}, Nodes{order_}}} {
 
       initialize_nodes(input);
@@ -42,7 +42,7 @@ namespace lbm::D2Q9 {
     }
 
     void
-    step() {
+    step() override {
       stream();
       bounceback();
       collide();

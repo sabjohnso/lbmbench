@@ -8,7 +8,7 @@
 namespace lbm::app {
 
   class Exception_Handler {
-    enum class Exit_Code { SUCCESS, BAD_USAGE, BAD_CONFIG_PATH };
+    enum class Exit_Code { SUCCESS, BAD_USAGE, BAD_CONFIG_PATH, BAD_KERNEL_NAME, BAD_FLOAT_TYPE };
 
   public:
     Exception_Handler() = delete;
@@ -35,7 +35,16 @@ namespace lbm::app {
                   << "\t\t" << e.what();
         exit_code_ = int(Exit_Code::BAD_USAGE);
 
-      } catch (std::exception &e) {
+      } catch (const Bad_Kernel_Name &e) {
+        std::cerr << "lbm received a bad kernel name: " << e.what() << std::endl;
+        exit_code_ = int(Exit_Code::BAD_KERNEL_NAME);
+
+      } catch (const Bad_Float_Type &e) {
+        std::cerr << "lbm received a bad floating-point type: " << e.what() << std::endl;
+        exit_code_ = int(Exit_Code::BAD_FLOAT_TYPE);
+      }
+
+      catch (std::exception &e) {
         std::cerr << "lbmbench encountered an unexpected error:" << std::endl
                   << "\tinvocation:" << std::endl
                   << "\t\t" << invocation(argc, argv) << std::endl

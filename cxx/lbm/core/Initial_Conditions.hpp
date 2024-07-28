@@ -132,22 +132,21 @@ namespace lbm::core {
     json
     get_json() const override {
       json j = json::object();
-      j["initialConditions"] = json::object();
-      j["initialConditions"]["density"] = density_;
-      j["initialConditions"]["velocity"] = json::array();
+      j["density"] = density_;
+      j["velocity"] = json::array();
       transform(std::begin(velocity_),
                 std::end(velocity_),
-                back_inserter(j["initialConditions"]["velocity"]),
+                back_inserter(j["velocity"]),
                 [](Expression expr) { return json(expr); });
       return j;
     }
 
     void
     set_json(const json &j) override {
-      density_ = parse_json_expr(j["initialConditions"]["density"]);
-      velocity_.resize(j["initialConditions"]["velocity"].size());
-      transform(std::begin(j["initialConditions"]["velocity"]),
-                std::end(j["initialConditions"]["velocity"]),
+      density_ = parse_json_expr(j["density"]);
+      velocity_.resize(j["velocity"].size());
+      transform(std::begin(j["velocity"]),
+                std::end(j["velocity"]),
                 std::begin(velocity_),
                 parse_json_expr);
     }

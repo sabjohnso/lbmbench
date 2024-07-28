@@ -10,7 +10,7 @@ namespace lbm::core {
   class JSON_Convertible {
 
     friend constexpr bool
-    operator<=>(JSON_Convertible const &, JSON_Convertible const &) = default;
+    operator==(JSON_Convertible const &, JSON_Convertible const &) = default;
 
     virtual json
     get_json() const = 0;
