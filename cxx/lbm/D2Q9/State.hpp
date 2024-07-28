@@ -9,7 +9,7 @@
 namespace lbm::D2Q9 {
 
   template <class T>
-  class State final : public IState {
+  class State final : public I_State {
   public:
     using Lattice_Spacing = T;
     using Time_Step = size_type;

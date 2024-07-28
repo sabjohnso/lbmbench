@@ -4,7 +4,7 @@
 // ... LBM Bench header files
 //
 #include <lbm/config.hpp>
-#include <lbm/core/IState.hpp>
+#include <lbm/core/I_State.hpp>
 #include <lbm/core/Input.hpp>
 #include <lbm/core/base_types.hpp>
 #include <lbm/exceptions/Bad_Config_Path.hpp>
@@ -49,8 +49,8 @@ namespace lbm::app {
   using lbm::config::schema_location;
   using lbm::config::schema_location_testing;
   using lbm::core::Float_Type;
+  using lbm::core::I_State;
   using lbm::core::Input;
-  using lbm::core::IState;
   using lbm::core::Kernel;
   using lbm::core::size_type;
   using lbm::exceptions::Bad_Config_Path;

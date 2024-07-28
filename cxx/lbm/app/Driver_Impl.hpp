@@ -21,7 +21,7 @@ namespace lbm::app {
   private:
     Runtime_Config runtime_config_;
     Input input_;
-    unique_ptr<IState> pstate_{};
+    unique_ptr<I_State> pstate_{};
   };
 
 } // end of namespace lbm::app

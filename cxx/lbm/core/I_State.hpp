@@ -7,12 +7,12 @@
 
 namespace lbm::core {
 
-  class IState : public JSON_Convertible {
+  class I_State : public JSON_Convertible {
   public:
     virtual void
     step() = 0;
 
-    virtual ~IState() {}
+    virtual ~I_State() {}
   };
 
 } // end of namespace lbm::core
