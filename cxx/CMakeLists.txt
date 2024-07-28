@@ -20,7 +20,8 @@ add_library(lbmbench_library
   lbm/core/Input.cpp
   lbm/app/Runtime_Config.cpp
   lbm/app/Runtime_Config_Impl.cpp
-  lbm/app/Driver.cpp)
+  lbm/app/Driver.cpp
+  lbm/app/Driver_Impl.cpp)
 
 target_link_libraries(lbmbench_library
   PUBLIC Boost::program_options

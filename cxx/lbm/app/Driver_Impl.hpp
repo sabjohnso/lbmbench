@@ -4,23 +4,24 @@
 // ... LBM Bench header files
 //
 #include <lbm/D2Q9/State.hpp>
+#include <lbm/app/Driver.hpp>
 #include <lbm/app/Runtime_Config.hpp>
 #include <lbm/app/import.hpp>
 
 namespace lbm::app {
 
-  class Driver {
+  class Driver::Impl {
   public:
-    Driver() = delete;
+    Impl() = delete;
 
-    Driver(int argc, char **argv);
-    ~Driver();
+    Impl(int argc, char **argv);
 
     operator int() const;
 
   private:
-    class Impl;
-    Impl *pimpl;
+    Runtime_Config runtime_config_;
+    Input input_;
+    unique_ptr<IState> pstate_{};
   };
 
 } // end of namespace lbm::app
