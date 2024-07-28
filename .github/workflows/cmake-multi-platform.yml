@@ -58,7 +58,7 @@ jobs:
     - name: Install boost
       run : |
         sudo apt-get update
-        sudo apt-get install boost
+        sudo apt-get install libboost-program-options-dev
       
 
     - name: Configure CMake
