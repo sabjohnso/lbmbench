@@ -7,6 +7,8 @@ macro(lbmbench_add_test test_name)
   target_link_libraries(${exe_name} PRIVATE
     lbmbench::header
     lbmbench::library
+    nlohmann_json::nlohmann_json
+    nlohmann_json_schema_validator
     Catch2::Catch2WithMain)
   target_compile_features(${exe_name} PRIVATE ${lbmbench_CXX_FEATURES})
   add_test(${test_name} ${exe_name})

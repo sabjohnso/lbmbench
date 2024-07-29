@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.30)
 
 option(lbmbench_BUILD_TESTING "Build the lbmbench tests" ON)
 option(lbmbench_USE_MPI "Build LBM benchmarks with MPI support" OFF)

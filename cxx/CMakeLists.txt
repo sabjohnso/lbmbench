@@ -24,7 +24,7 @@ add_library(lbmbench_library
   lbm/app/Driver_Impl.cpp)
 
 target_link_libraries(lbmbench_library
-  PUBLIC Boost::program_options
+  PRIVATE Boost::program_options
   lbmbench::header
   nlohmann_json::nlohmann_json
   nlohmann_json_schema_validator)
@@ -36,7 +36,7 @@ add_executable(lbmbench main.cpp)
 target_link_libraries(lbmbench PRIVATE lbmbench::header lbmbench::library Boost::program_options
 nlohmann_json_schema_validator)
 
-install(TARGETS lbmbench
+install(TARGETS lbmbench nlohmann_json
   EXPORT lbmbench_EXPORTS
   RUNTIME DESTINATION ${lbmbench_INSTALL_BINDIR}
   LIBRARY DESTINATION ${lbmbench_INSTALL_LIBDIR}

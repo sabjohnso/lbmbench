@@ -10,7 +10,6 @@ find_package(CMakeUtilities REQUIRED)
 
 find_package(nlohmann_json REQUIRED)
 
-set(nlohmann_json_schema_validator_EXCLUDE_FROM_ALL EXCLUDE_FROM_ALL)
 find_package(nlohmann_json_schema_validator REQUIRED)
 
 find_package(Boost REQUIRED COMPONENTS program_options)
