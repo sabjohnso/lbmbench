@@ -31,24 +31,24 @@ namespace lbm::core {
     operator<=>(const Array &, const Array &) = default;
 
     const_reference
-    operator[](integral auto i, integral auto j, integral auto... ks) const {
+    operator()(integral auto i, integral auto j, integral auto... ks) const {
       static_assert(2 + sizeof...(ks) == N);
       return values_[order_.storage_index(Index{i, j, ks...})];
     }
 
     reference
-    operator[](integral auto i, integral auto j, integral auto... ks) {
+    operator()(integral auto i, integral auto j, integral auto... ks) {
       static_assert(2 + sizeof...(ks) == N);
       return values_[order_.storage_index(Index_Type{i, j, ks...})];
     }
 
     const_reference
-    operator[](const Index_Type &index) const {
+    operator()(const Index_Type &index) const {
       return values_[order_.storage_index(index)];
     }
 
     reference
-    operator[](const Index_Type &index) {
+    operator()(const Index_Type &index) {
       return values_[order_.storage_index(index)];
     }
 

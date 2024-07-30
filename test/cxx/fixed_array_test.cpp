@@ -26,7 +26,7 @@ namespace lbm::core::testing {
       CHECK(array.size() == 9);
       for (size_type i = 0; i < 3; ++i) {
         for (size_type j = 0; j < 3; ++j) {
-          array[i, j] = double(i * 3 + j);
+          array(i, j) = double(i * 3 + j);
         }
       }
       std::for_each(

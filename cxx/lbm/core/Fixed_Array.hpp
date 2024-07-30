@@ -67,7 +67,7 @@ namespace lbm::core {
     }
 
     constexpr Const_Reference
-    operator[](size_type i, size_type j, integral auto... ks) const {
+    operator()(size_type i, size_type j, integral auto... ks) const {
       static_assert(2 + sizeof...(ks) == degree);
       static_assert(Order::degree == degree);
       assert(Order::storage_index(Fixed_Array_Index<degree>(i, j, size_type(ks)...)) <
@@ -76,7 +76,7 @@ namespace lbm::core {
     }
 
     Reference
-    operator[](size_type i, size_type j, integral auto... ks) {
+    operator()(size_type i, size_type j, integral auto... ks) {
       static_assert(2 + sizeof...(ks) == degree);
       static_assert(Order::degree == degree);
       return storage_[Order::storage_index(Fixed_Array_Index(i, j, size_type(ks)...))];

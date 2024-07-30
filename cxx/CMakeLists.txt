@@ -24,7 +24,7 @@ add_library(lbmbench_library
   lbm/app/Driver_Impl.cpp)
 
 target_link_libraries(lbmbench_library
-  PRIVATE Boost::program_options
+  PUBLIC Boost::program_options
   lbmbench::header
   nlohmann_json::nlohmann_json
   nlohmann_json_schema_validator)
@@ -33,10 +33,11 @@ set_target_properties(lbmbench_header PROPERTIES EXPORT_NAME library)
 add_library(lbmbench::library ALIAS lbmbench_library)
 
 add_executable(lbmbench main.cpp)
-target_link_libraries(lbmbench PRIVATE lbmbench::header lbmbench::library Boost::program_options
-nlohmann_json_schema_validator)
+target_link_libraries(lbmbench PRIVATE
+  lbmbench::header
+  lbmbench::library)
 
-install(TARGETS lbmbench nlohmann_json
+install(TARGETS lbmbench
   EXPORT lbmbench_EXPORTS
   RUNTIME DESTINATION ${lbmbench_INSTALL_BINDIR}
   LIBRARY DESTINATION ${lbmbench_INSTALL_LIBDIR}

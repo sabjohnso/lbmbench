@@ -58,13 +58,13 @@ namespace lbm::D2Q9 {
         : storage_{std::move(values)} {}
 
     constexpr Const_Reference
-    operator[](size_type i, size_type j) const {
-      return storage_[i + 1, j + 1];
+    operator()(size_type i, size_type j) const {
+      return storage_(i + 1, j + 1);
     }
 
     Reference
-    operator[](size_type i, size_type j) {
-      return storage_[i + 1, j + 1];
+    operator()(size_type i, size_type j) {
+      return storage_(i + 1, j + 1);
     }
 
     friend bool
@@ -102,12 +102,12 @@ namespace lbm::D2Q9 {
                            Velocity velocity) {
       for (size_type j = 0; j < Storage::size(1); ++j) {
         for (size_type i = 0; i < Storage::size(0); ++i) {
-          storage_[i, j] += inverse_time_scale *
+          storage_(i, j) += inverse_time_scale *
                             (weights[i] * density *
-                                 (one + three * dot(discrete_velocities[i, j], velocity()) +
-                                  nine_halves * sqr(dot(discrete_velocities[i, j], velocity)) -
+                                 (one + three * dot(discrete_velocities(i, j), velocity()) +
+                                  nine_halves * sqr(dot(discrete_velocities(i, j), velocity)) -
                                   three_halves * dot(velocity, velocity)) -
-                             storage_[i, j]);
+                             storage_(i, j));
         }
       }
     }
@@ -118,12 +118,12 @@ namespace lbm::D2Q9 {
                            Velocity velocity) {
       for (size_type i = 0; i < Storage::size(0); ++i) {
         for (size_type j = 0; j < Storage::size(1); ++j) {
-          storage_[i, j] += inverse_time_scale *
+          storage_(i, j) += inverse_time_scale *
                             (weights[i] * density *
-                                 (one + three * dot(discrete_velocities[i, j], velocity()) +
-                                  nine_halves * sqr(dot(discrete_velocities[i, j], velocity)) -
+                                 (one + three * dot(discrete_velocities(i, j), velocity()) +
+                                  nine_halves * sqr(dot(discrete_velocities(i, j), velocity)) -
                                   three_halves * dot(velocity, velocity)) -
-                             storage_[i, j]);
+                             storage_(i, j));
         }
       }
     }

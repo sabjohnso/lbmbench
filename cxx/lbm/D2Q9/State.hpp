@@ -89,18 +89,18 @@ namespace lbm::D2Q9 {
       for_each(std::cbegin(obstacles_), std::cend(obstacles_), [&, this](size_type index) {
         const auto [iobst, jobst] = order_.array_index(index);
 
-        for_each(std::cbegin(neighbor_offsets),
-                 std::cend(neighbor_offsets),
-                 [&, this](const auto &offsets) {
-                   const auto &[ioffset, joffset] = offsets;
+        for_each(
+            std::cbegin(neighbor_offsets),
+            std::cend(neighbor_offsets),
+            [&, this](const auto &offsets) {
+              const auto &[ioffset, joffset] = offsets;
 
-                   size_type i = iobst + ioffset;
-                   size_type j = jobst + joffset;
-                   if (interior_indices(i, j) && !nodes[i, j].is_obstacle()) {
-                     bounceback_lists_[ioffset + 1, joffset + 1].push_back(
-                         order_.storage_index(i, j));
-                   }
-                 });
+              size_type i = iobst + ioffset;
+              size_type j = jobst + joffset;
+              if (interior_indices(i, j) && !nodes(i, j).is_obstacle()) {
+                bounceback_lists_(ioffset + 1, joffset + 1).push_back(order_.storage_index(i, j));
+              }
+            });
       });
     }
 

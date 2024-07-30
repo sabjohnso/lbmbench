@@ -25,7 +25,7 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-set(lbmbench_CXX_FEATURES cxx_std_23)
+set(lbmbench_CXX_FEATURES cxx_std_20)
 
 include(GNUInstallDirs)
 set(lbmbench_INSTALL_BINDIR ${CMAKE_INSTALL_BINDIR})

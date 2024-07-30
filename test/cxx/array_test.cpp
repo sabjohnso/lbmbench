@@ -22,15 +22,15 @@ namespace lbm::core::testing {
     SECTION("element access") {
       for (size_type i = 0; i < nx; ++i) {
         for (size_type j = 0; j < ny; ++j) {
-          CHECK(array[i, j] == 0.0);
-          CHECK(&array[i, j] == &array[Index{i, j}]);
-          array[i, j] = i * ny + j;
+          CHECK(array(i, j) == 0.0);
+          CHECK(&array(i, j) == &array(Index{i, j}));
+          array(i, j) = i * ny + j;
         }
       }
       std::for_each(
           std::begin(array), std::end(array), [&, i = size_type(0)](const auto &x) mutable {
-            CHECK(&x == &array[(i / ny) % nx, i % ny]);
-            CHECK(x == array[(i / ny) % nx, i % ny]);
+            CHECK(&x == &array((i / ny) % nx, i % ny));
+            CHECK(x == array((i / ny) % nx, i % ny));
             ++i;
           });
     }
