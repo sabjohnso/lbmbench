@@ -20,7 +20,7 @@ namespace lbm::D2Q9 {
     using Velocity = Vector<T, 2>;
     using Density = Value_Type;
 
-    using Inverse_Time_Scale = Velocity_Distribution<T>::Inverse_Time_Scale;
+    using Inverse_Time_Scale = typename Velocity_Distribution<T>::Inverse_Time_Scale;
 
   public:
     Node() = default;

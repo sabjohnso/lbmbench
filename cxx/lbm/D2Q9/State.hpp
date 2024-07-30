@@ -84,24 +84,33 @@ namespace lbm::D2Q9 {
 
     void
     initialize_bounceback_lists() {
-      const auto &nodes = nodes_[0];
-
-      for_each(std::cbegin(obstacles_), std::cend(obstacles_), [&, this](size_type index) {
-        const auto [iobst, jobst] = order_.array_index(index);
-
-        for_each(
-            std::cbegin(neighbor_offsets),
-            std::cend(neighbor_offsets),
-            [&, this](const auto &offsets) {
-              const auto &[ioffset, joffset] = offsets;
-
-              size_type i = iobst + ioffset;
-              size_type j = jobst + joffset;
-              if (interior_indices(i, j) && !nodes(i, j).is_obstacle()) {
-                bounceback_lists_(ioffset + 1, joffset + 1).push_back(order_.storage_index(i, j));
-              }
-            });
+      for_each(std::cbegin(obstacles_), std::cend(obstacles_), [this](size_type index) {
+        return initialize_bounceback_list_obstacle(index);
       });
+    }
+
+    void
+    initialize_bounceback_list_obstacle(size_type index) {
+      const auto &nodes = nodes_[0];
+      const auto ijobst = order_.array_index(index);
+
+      // Note: [clang] structured binding encounters errors using
+      // structured binding here for clang versions 15 and below,
+      // but the bug is fixed in version 18.
+      const size_type iobst = std::get<0>(ijobst);
+      const size_type jobst = std::get<1>(ijobst);
+
+      for_each(
+          std::cbegin(neighbor_offsets),
+          std::cend(neighbor_offsets),
+          [&, this](const auto &offsets) {
+            const auto &[ioffset, joffset] = offsets;
+            const size_type i = iobst + ioffset;
+            const size_type j = jobst + joffset;
+            if (interior_indices(i, j) && !nodes(i, j).is_obstacle()) {
+              bounceback_lists_(ioffset + 1, joffset + 1).push_back(order_.storage_index(i, j));
+            }
+          });
     }
 
     bool

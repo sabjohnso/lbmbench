@@ -17,8 +17,8 @@ namespace lbm::core {
     using const_reference = const T &;
     using Index_Type = Index<2>;
     using Storage = vector<T>;
-    using iterator = Storage::iterator;
-    using const_iterator = Storage::const_iterator;
+    using iterator = typename Storage::iterator;
+    using const_iterator = typename Storage::const_iterator;
 
     using Order = Order_Type;
 
