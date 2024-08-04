@@ -10,8 +10,8 @@ namespace lbm::core {
 
   class Wall final : public JSON_Convertible {
   public:
-    constexpr Wall() = default;
-    constexpr Wall(Boundary_ID boundary)
+    Wall() = default;
+    Wall(Boundary_ID boundary)
         : boundary_{boundary} {}
 
     friend bool
@@ -38,8 +38,8 @@ namespace lbm::core {
 
   class Symmetry final : public JSON_Convertible {
   public:
-    constexpr Symmetry() = default;
-    constexpr Symmetry(Boundary_ID boundary)
+    Symmetry() = default;
+    Symmetry(Boundary_ID boundary)
         : boundary_{boundary} {}
 
     friend bool
@@ -70,8 +70,8 @@ namespace lbm::core {
 
   class Inlet final : public JSON_Convertible {
   public:
-    constexpr Inlet() = default;
-    constexpr Inlet(Boundary_ID boundary, double inlet_speed)
+    Inlet() = default;
+    Inlet(Boundary_ID boundary, double inlet_speed)
         : boundary_{boundary}
         , inlet_speed_{inlet_speed} {}
 
@@ -106,8 +106,8 @@ namespace lbm::core {
 
   class Outlet final : public JSON_Convertible {
   public:
-    constexpr Outlet() = default;
-    constexpr Outlet(Boundary_ID boundary, double outlet_speed)
+    Outlet() = default;
+    Outlet(Boundary_ID boundary, double outlet_speed)
         : boundary_{boundary}
         , outlet_speed_{outlet_speed} {}
 
@@ -143,8 +143,8 @@ namespace lbm::core {
 
   class Pressure_Drop final : public JSON_Convertible {
   public:
-    constexpr Pressure_Drop() = default;
-    constexpr Pressure_Drop(Boundary_ID boundary, double value)
+    Pressure_Drop() = default;
+    Pressure_Drop(Boundary_ID boundary, double value)
         : boundary_(boundary)
         , value_(value) {}
 

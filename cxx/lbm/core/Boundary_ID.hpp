@@ -20,8 +20,8 @@ namespace lbm::core {
   public:
     using Base = vector<Boundary>;
 
-    constexpr Boundary_ID() = default;
-    constexpr Boundary_ID(auto i, auto j, auto... ks)
+    Boundary_ID() = default;
+    Boundary_ID(auto i, auto j, auto... ks)
         : Base{Boundary(i), Boundary(j), Boundary(ks)...} {}
 
   private:
