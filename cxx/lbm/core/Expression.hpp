@@ -161,7 +161,7 @@ namespace lbm::core {
     }
 
     void
-    set_json(const json &j) override {
+    set_json([[maybe_unused]] const json &j) override {
       assert(j == name());
     }
 

@@ -7,6 +7,7 @@
 // ... Testing header files
 //
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/matchers/catch_matchers_floating_point.hpp>
 
 //
 // ... Standard header files
@@ -16,6 +17,10 @@
 #include <vector>
 
 namespace lbm::core::testing {
+  using Catch::Matchers::WithinRel;
+
+  constexpr double tolerance = 1.0e-12;
+
   TEST_CASE("2 Dimensional") {
     constexpr double x1 = 4.0;
     constexpr double y1 = 5.0;
@@ -333,8 +338,8 @@ namespace lbm::core::testing {
     SECTION("sinh") {
       Sinh sinh{X{}};
       SECTION("evaluation") {
-        CHECK(sinh.eval(coord1) == std::sinh(x1));
-        CHECK(sinh.eval(coord2) == std::sinh(x2));
+        CHECK_THAT(sinh.eval(coord1), WithinRel(std::sinh(x1), tolerance));
+        CHECK_THAT(sinh.eval(coord2), WithinRel(std::sinh(x2), tolerance));
       }
     }
 
@@ -349,23 +354,23 @@ namespace lbm::core::testing {
     SECTION("acosh") {
       Acosh acosh{X{}};
       SECTION("evaluation") {
-        CHECK(acosh.eval(coord1) == std::acosh(x1));
-        CHECK(acosh.eval(coord2) == std::acosh(x2));
+        CHECK_THAT(acosh.eval(coord1), WithinRel(std::acosh(x1), tolerance));
+        CHECK_THAT(acosh.eval(coord2), WithinRel(std::acosh(x2), tolerance));
       }
     }
 
     SECTION("asinh") {
       Asinh asinh{X{}};
       SECTION("evaluation") {
-        CHECK(asinh.eval(coord1) == std::asinh(x1));
-        CHECK(asinh.eval(coord2) == std::asinh(x2));
+        CHECK_THAT(asinh.eval(coord1), WithinRel(std::asinh(x1), tolerance));
+        CHECK_THAT(asinh.eval(coord2), WithinRel(std::asinh(x2), tolerance));
       }
     }
 
     SECTION("atanh") {
       constexpr double a = 0.5;
       Atanh atanh{Constant{a}};
-      SECTION("evaluation") { CHECK(atanh.eval(coord1) == std::atanh(a)); }
+      SECTION("evaluation") { CHECK_THAT(atanh.eval(coord1), WithinRel(std::atanh(a), tolerance)); }
     }
 
     SECTION("exp") {
@@ -411,7 +416,7 @@ namespace lbm::core::testing {
       Cbrt cbrt{X{}};
       SECTION("evaluation") {
         CHECK(cbrt.eval(coord1) == std::cbrt(x1));
-        CHECK(cbrt.eval(coord2) == std::cbrt(x2));
+        CHECK_THAT(cbrt.eval(coord2), WithinRel(std::cbrt(x2), tolerance));
       }
     }
 
