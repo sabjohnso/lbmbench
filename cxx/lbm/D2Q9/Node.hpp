@@ -57,6 +57,16 @@ namespace lbm::D2Q9 {
       velocity_distribution_.collide(inverse_time_scale_, density_, velocity_);
     }
 
+    T &
+    operator()(size_type i, size_type j) {
+      return velocity_distribution_(i, j);
+    }
+
+    const T &
+    operator()(size_type i, size_type j) const {
+      return velocity_distribution_(i, j);
+    }
+
     friend bool
     operator==(const Node &node1, const Node &node2) {
       return (node1.velocity_distribution_ == node2.velocity_distribution_) &&

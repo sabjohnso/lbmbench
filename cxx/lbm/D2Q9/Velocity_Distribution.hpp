@@ -57,13 +57,13 @@ namespace lbm::D2Q9 {
     constexpr explicit Velocity_Distribution(Storage values)
         : storage_{std::move(values)} {}
 
-    constexpr Const_Reference
-    operator()(size_type i, size_type j) const {
+    Reference
+    operator()(size_type i, size_type j) {
       return storage_(i + 1, j + 1);
     }
 
-    Reference
-    operator()(size_type i, size_type j) {
+    constexpr Const_Reference
+    operator()(size_type i, size_type j) const {
       return storage_(i + 1, j + 1);
     }
 
@@ -96,6 +96,10 @@ namespace lbm::D2Q9 {
       return momentum() / density();
     }
 
+    void
+    collide(Inverse_Time_Scale inverse_time_scale, Density density, Velocity velocity) {
+      collide_single_loop(inverse_time_scale, density, velocity);
+    }
     void
     collide_double_loop_ji(Inverse_Time_Scale inverse_time_scale,
                            Density density,
@@ -133,7 +137,7 @@ namespace lbm::D2Q9 {
       for (size_type i = 0; i < Storage::size(); ++i) {
         storage_[i] +=
             inverse_time_scale * (weights[i] * density *
-                                      (one + three * dot(discrete_velocities[i], velocity()) +
+                                      (one + three * dot(discrete_velocities[i], velocity) +
                                        nine_halves * sqr(dot(discrete_velocities[i], velocity)) -
                                        three_halves * dot(velocity, velocity)) -
                                   storage_[i]);

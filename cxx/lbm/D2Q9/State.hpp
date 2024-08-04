@@ -44,8 +44,8 @@ namespace lbm::D2Q9 {
     void
     step() override {
       stream();
-      bounceback();
       collide();
+      reset_boundaries();
       ++time_step_;
     }
 
@@ -126,9 +126,6 @@ namespace lbm::D2Q9 {
     void
     reset_boundaries() {}
 
-    void
-    bounceback() {}
-
     size_type
     current_time_index() const {
       return time_step_ % 2;
@@ -140,10 +137,27 @@ namespace lbm::D2Q9 {
     }
 
     void
-    stream() {}
+    stream() {
+      const auto &prev_nodes = nodes_[time_step_ % 2];
+      auto &nodes = nodes_[(time_step_ + 1) % 2];
+      for (size_type i = 1; i < nxm1_; ++i) {
+        for (size_type j = 1; j < nym1_; ++i) {
+          for_each(
+              std::begin(neighbor_offsets), std::end(neighbor_offsets), [&](const auto &offsets) {
+                const auto &[ioffset, joffset] = offsets;
+                const size_type ineigh = i + ioffset;
+                const size_type jneigh = j + joffset;
+                nodes(i, j)(-ioffset, -joffset) = prev_nodes(ineigh, jneigh)(-ioffset, -joffset);
+              });
+        }
+      }
+    }
 
     void
-    collide() {}
+    collide() {
+      auto &nodes = nodes_[(time_step_ + 1) % 2];
+      for_each(std::begin(nodes), std::end(nodes), [&](auto &node) { node.collide(); });
+    }
 
     json
     get_json() const override {
@@ -159,7 +173,6 @@ namespace lbm::D2Q9 {
       nodes_[time_step_ % 2] = j["nodes"];
       nodes_[(time_step_ + 1) % 2] = j["nodes"];
     }
-
     size_type nx_{};
     size_type ny_{};
     size_type nxm1_{};
