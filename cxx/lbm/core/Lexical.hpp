@@ -37,9 +37,10 @@ namespace lbm::core {
 
     constexpr Index_Type
     array_index(const size_type &index) const {
-      return [=, this]<std::size_t... i>(index_sequence<i...>) {
+      return [ =, this ]<std::size_t... i>(index_sequence<i...>) {
         return Index{(index / strides_[i]) % shape_[i]...};
-      }(make_index_sequence<N>());
+      }
+      (make_index_sequence<N>());
     }
 
     size_type

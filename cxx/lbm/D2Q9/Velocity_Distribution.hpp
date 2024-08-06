@@ -81,14 +81,16 @@ namespace lbm::D2Q9 {
     density() const {
       return [this]<std::size_t... Index>(index_sequence<Index...>) {
         return (storage_[Index] + ...);
-      }(make_index_sequence<Storage::size()>());
+      }
+      (make_index_sequence<Storage::size()>());
     }
 
     constexpr Momentum
     momentum() const {
       return [this]<std::size_t... Index>(index_sequence<Index...>) {
         return ((storage_[Index] * discrete_velocities[Index]) + ...);
-      }(make_index_sequence<Storage::size()>());
+      }
+      (make_index_sequence<Storage::size()>());
     }
 
     constexpr Velocity
@@ -160,7 +162,7 @@ namespace lbm::D2Q9 {
 
     void
     collide_vertical(Inverse_Time_Scale inverse_time_scale, Density density, Velocity velocity) {
-      [&, this]<std::size_t... I>(index_sequence<I...>) {
+      [&, this ]<std::size_t... I>(index_sequence<I...>) {
         (
             [&, this] {
               storage_[I] += inverse_time_scale *
@@ -171,12 +173,13 @@ namespace lbm::D2Q9 {
                               storage_[I]);
             }(),
             ...);
-      }(make_index_sequence<Storage::size()>());
+      }
+      (make_index_sequence<Storage::size()>());
     }
 
     void
     collide_horizontal(Inverse_Time_Scale inverse_time_scale, Density density, Velocity velocity) {
-      [&, this]<std::size_t... I>(index_sequence<I...>) {
+      [&, this ]<std::size_t... I>(index_sequence<I...>) {
         unroll_horizontally([&, this] {
           return storage_[I] += inverse_time_scale *
                                 (weights[I] * density *
@@ -185,12 +188,13 @@ namespace lbm::D2Q9 {
                                       three_halves * dot(velocity, velocity)) -
                                  storage_[I]);
         }()...);
-      }(make_index_sequence<Storage::size()>());
+      }
+      (make_index_sequence<Storage::size()>());
     }
 
     void
     set_equilibrium(const Density &density, const Velocity &velocity) {
-      [&, this]<std::size_t... I>(index_sequence<I...>) {
+      [&, this ]<std::size_t... I>(index_sequence<I...>) {
         (
             [&, this] {
               storage_[I] = weights[I] * density *
@@ -199,7 +203,8 @@ namespace lbm::D2Q9 {
                              three_halves * dot(velocity, velocity));
             }(),
             ...);
-      }(make_index_sequence<Storage::size()>());
+      }
+      (make_index_sequence<Storage::size()>());
     }
 
     static constexpr Velocity_Distribution
@@ -209,7 +214,8 @@ namespace lbm::D2Q9 {
                                      (one + three * dot(discrete_velocities[Index], velocity) +
                                       nine_halves * sqr(dot(discrete_velocities[Index], velocity)) -
                                       three_halves * dot(velocity, velocity))...};
-      }(make_index_sequence<Storage::size()>());
+      }
+      (make_index_sequence<Storage::size()>());
     }
 
     friend constexpr Velocity_Distribution

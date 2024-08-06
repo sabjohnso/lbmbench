@@ -28,35 +28,34 @@ namespace lbm::core {
     operator+(const Vector &u, const Vector &v) {
       return [&]<std::size_t... Index>(index_sequence<Index...>) {
         return Vector{u[Index] + v[Index]...};
-      }(make_index_sequence<N>());
+      }
+      (make_index_sequence<N>());
     }
 
     constexpr friend Vector
     operator-(const Vector &u, const Vector &v) {
       return [&]<std::size_t... Index>(index_sequence<Index...>) {
         return Vector{u[Index] - v[Index]...};
-      }(make_index_sequence<N>());
+      }
+      (make_index_sequence<N>());
     }
 
     constexpr friend Vector
     operator*(const Vector &u, Value_Type s) {
-      return [&]<std::size_t... Index>(index_sequence<Index...>) {
-        return Vector{u[Index] * s...};
-      }(make_index_sequence<N>());
+      return [&]<std::size_t... Index>(index_sequence<Index...>) { return Vector{u[Index] * s...}; }
+      (make_index_sequence<N>());
     }
 
     constexpr friend Vector
     operator*(Value_Type s, const Vector &v) {
-      return [&]<std::size_t... Index>(index_sequence<Index...>) {
-        return Vector{s * v[Index]...};
-      }(make_index_sequence<N>());
+      return [&]<std::size_t... Index>(index_sequence<Index...>) { return Vector{s * v[Index]...}; }
+      (make_index_sequence<N>());
     }
 
     constexpr friend Vector
     operator/(const Vector &u, Value_Type s) {
-      return [&]<std::size_t... Index>(index_sequence<Index...>) {
-        return Vector{u[Index] / s...};
-      }(make_index_sequence<N>());
+      return [&]<std::size_t... Index>(index_sequence<Index...>) { return Vector{u[Index] / s...}; }
+      (make_index_sequence<N>());
     }
 
     constexpr friend Value_Type

@@ -9,31 +9,32 @@ readonly testdir=$scriptdir/../test/cxx
 . $scriptdir/clang-format-env.sh
 
 function main(){
-    format_files $srcdir
-    format_files $testdir
+    check_files $srcdir
+    check_files $testdir
 }
 
-function format_file(){
+function check_file(){
     local inpfile=$1; shift
     local tmpfile=$(mktemp)
-    clang-format --style=file $inpfile > $tmpfile
+    /usr/bin/clang-format --style=file $inpfile > $tmpfile
     if [[ $(diff -q $inpfile $tmpfile) ]]
     then
-        echo "reformatting $inpfile"
-        mv $tmpfile $inpfile
-    fi
+        echo "format errors found in $inpfile"
+        exit 1
 
+        rm $tmpfile
+    fi
     rm -f $tmpfile
 }
 
-function format_files(){
+function check_files(){
     local inpdir=$1; shift
     local source_files=$(find $inpdir -type f -regex ".*\\.hpp\\|.*\\.cpp" -not -regex ".*/\\.git/.*\\|.*/build.*")
     for source_file in $source_files
     do
         if [[ -f "$source_file" ]]
         then
-            format_file $source_file
+            check_file $source_file
         fi
     done
 

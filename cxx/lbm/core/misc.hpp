@@ -11,6 +11,6 @@ namespace lbm::core {
   };
 
   constexpr auto
-  unroll_horizontally(auto &&) {};
+  unroll_horizontally(auto &&){};
 
 } // end of namespace lbm::core
