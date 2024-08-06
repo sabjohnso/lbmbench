@@ -49,9 +49,8 @@ namespace lbm::core {
     }
   };
 
-  Fixed_Array_Index(size_type,
-                    size_type,
-                    convertible_to<size_type> auto... ns) -> Fixed_Array_Index<sizeof...(ns) + 2>;
+  Fixed_Array_Index(size_type, size_type, convertible_to<size_type> auto... ns)
+      -> Fixed_Array_Index<sizeof...(ns) + 2>;
 
 } // end of namespace lbm::core
 

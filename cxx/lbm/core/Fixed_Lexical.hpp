@@ -43,7 +43,8 @@ namespace lbm::core {
     array_index(const size_type &index) {
       return [=]<std::size_t... i>(index_sequence<i...>) {
         return Index{(index / strides[i]) % extents[i]...};
-      }(make_index_sequence<degree>());
+      }
+      (make_index_sequence<degree>());
     }
 
     friend void
