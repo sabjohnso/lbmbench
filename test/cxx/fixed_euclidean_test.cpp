@@ -1,7 +1,7 @@
 //
 // ... LBM Bench header files
 //
-#include <lbm/core/Vector.hpp>
+#include <lbm/core/Fixed_Euclidean.hpp>
 
 //
 // ... Testing header files
@@ -9,13 +9,13 @@
 #include <catch2/catch_test_macros.hpp>
 
 namespace lbm::core::testing {
-  TEST_CASE("Vector 2D") {
+  TEST_CASE("Fixed_Euclidean 2D") {
     constexpr double a = 3.0;
     constexpr double b = 4.0;
     constexpr double c = 5.0;
     constexpr double d = 6.0;
-    constexpr Vector u{a, b};
-    constexpr Vector v{c, d};
+    constexpr Fixed_Euclidean u{a, b};
+    constexpr Fixed_Euclidean v{c, d};
 
     SECTION("array access") {
       CHECK(u[0] == a);
@@ -55,14 +55,14 @@ namespace lbm::core::testing {
 
     SECTION("conversion to and from json") {
       json json_u = u;
-      Vector<double, 2> u_from_json = json_u;
+      Fixed_Euclidean<double, 2> u_from_json = json_u;
       CHECK(u == u_from_json);
     }
 
     SECTION("conversion to and from text") {
       std::stringstream ss{};
       ss << u;
-      Vector<double, 2> u_from_text{};
+      Fixed_Euclidean<double, 2> u_from_text{};
       ss >> u_from_text;
       CHECK(u == u_from_text);
     }

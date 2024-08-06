@@ -17,7 +17,7 @@ namespace lbm::D2Q9 {
     using Value_Type = T;
     using Reference = T &;
     using Const_Reference = const T &;
-    using Velocity = Vector<T, 2>;
+    using Velocity = Fixed_Euclidean<T, 2>;
     using Density = Value_Type;
 
     using Inverse_Time_Scale = typename Velocity_Distribution<T>::Inverse_Time_Scale;

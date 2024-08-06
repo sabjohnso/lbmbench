@@ -10,7 +10,7 @@
 namespace lbm::core {
 
   template <class T, size_type N>
-  class Vector
+  class Fixed_Euclidean
       : public array<T, N>
       , public JSON_Convertible {
   public:
@@ -19,58 +19,64 @@ namespace lbm::core {
     using Const_Reference = const T &;
     using Base = array<T, N>;
 
-    constexpr Vector() = default;
+    constexpr Fixed_Euclidean() = default;
 
-    constexpr Vector(T x1, T x2, same_as<T> auto... xs)
+    constexpr Fixed_Euclidean(T x1, T x2, same_as<T> auto... xs)
         : Base{{x1, x2, xs...}} {}
 
-    constexpr friend Vector
-    operator+(const Vector &u, const Vector &v) {
+    constexpr friend Fixed_Euclidean
+    operator+(const Fixed_Euclidean &u, const Fixed_Euclidean &v) {
       return [&]<std::size_t... Index>(index_sequence<Index...>) {
-        return Vector{u[Index] + v[Index]...};
+        return Fixed_Euclidean{u[Index] + v[Index]...};
       }
       (make_index_sequence<N>());
     }
 
-    constexpr friend Vector
-    operator-(const Vector &u, const Vector &v) {
+    constexpr friend Fixed_Euclidean
+    operator-(const Fixed_Euclidean &u, const Fixed_Euclidean &v) {
       return [&]<std::size_t... Index>(index_sequence<Index...>) {
-        return Vector{u[Index] - v[Index]...};
+        return Fixed_Euclidean{u[Index] - v[Index]...};
       }
       (make_index_sequence<N>());
     }
 
-    constexpr friend Vector
-    operator*(const Vector &u, Value_Type s) {
-      return [&]<std::size_t... Index>(index_sequence<Index...>) { return Vector{u[Index] * s...}; }
+    constexpr friend Fixed_Euclidean
+    operator*(const Fixed_Euclidean &u, Value_Type s) {
+      return [&]<std::size_t... Index>(index_sequence<Index...>) {
+        return Fixed_Euclidean{u[Index] * s...};
+      }
       (make_index_sequence<N>());
     }
 
-    constexpr friend Vector
-    operator*(Value_Type s, const Vector &v) {
-      return [&]<std::size_t... Index>(index_sequence<Index...>) { return Vector{s * v[Index]...}; }
+    constexpr friend Fixed_Euclidean
+    operator*(Value_Type s, const Fixed_Euclidean &v) {
+      return [&]<std::size_t... Index>(index_sequence<Index...>) {
+        return Fixed_Euclidean{s * v[Index]...};
+      }
       (make_index_sequence<N>());
     }
 
-    constexpr friend Vector
-    operator/(const Vector &u, Value_Type s) {
-      return [&]<std::size_t... Index>(index_sequence<Index...>) { return Vector{u[Index] / s...}; }
+    constexpr friend Fixed_Euclidean
+    operator/(const Fixed_Euclidean &u, Value_Type s) {
+      return [&]<std::size_t... Index>(index_sequence<Index...>) {
+        return Fixed_Euclidean{u[Index] / s...};
+      }
       (make_index_sequence<N>());
     }
 
     constexpr friend Value_Type
-    dot(const Vector &u, const Vector &v) {
+    dot(const Fixed_Euclidean &u, const Fixed_Euclidean &v) {
       return transform_reduce(std::begin(u), std::end(u), std::begin(v), T(0));
     }
 
     friend constexpr bool
-    operator==(const Vector &u, const Vector &v) {
+    operator==(const Fixed_Euclidean &u, const Fixed_Euclidean &v) {
       return transform_reduce(
           std::cbegin(u), std::cend(u), std::begin(v), true, logical_and{}, equal_to{});
     }
 
     friend constexpr bool
-    operator!=(const Vector &u, const Vector &v) {
+    operator!=(const Fixed_Euclidean &u, const Fixed_Euclidean &v) {
       return !(u == v);
     }
 
@@ -88,6 +94,6 @@ namespace lbm::core {
   };
 
   template <class... Ts>
-  Vector(Ts &&...) -> Vector<common_type_t<Ts...>, sizeof...(Ts)>;
+  Fixed_Euclidean(Ts &&...) -> Fixed_Euclidean<common_type_t<Ts...>, sizeof...(Ts)>;
 
 } // end of namespace lbm::core
