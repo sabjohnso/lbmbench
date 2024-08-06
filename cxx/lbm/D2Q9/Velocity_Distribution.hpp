@@ -19,8 +19,8 @@ namespace lbm::D2Q9 {
     using Const_Reference = const T &;
     using Density = Value_Type;
     using Storage = Fixed_Array<Value_Type, Fixed_Lexical<3, 3>>;
-    using Velocity = Vector<Value_Type, 2>;
-    using Momentum = Vector<Value_Type, 2>;
+    using Velocity = Fixed_Euclidean<Value_Type, 2>;
+    using Momentum = Fixed_Euclidean<Value_Type, 2>;
 
     static constexpr T four_9ths = T(4) / T(9);
     static constexpr T one_9th = T(1) / T(9);

@@ -7,12 +7,12 @@
 #include <lbm/core/Dynamic_Array.hpp>
 #include <lbm/core/Euclidean.hpp>
 #include <lbm/core/Fixed_Array.hpp>
+#include <lbm/core/Fixed_Euclidean.hpp>
 #include <lbm/core/I_State.hpp>
 #include <lbm/core/Input.hpp>
 #include <lbm/core/JSON_Convertible.hpp>
 #include <lbm/core/Lexical.hpp>
 #include <lbm/core/Shape.hpp>
-#include <lbm/core/Vector.hpp>
 #include <lbm/core/base_types.hpp>
 #include <lbm/core/misc.hpp>
 
@@ -30,6 +30,7 @@ namespace lbm::D2Q9 {
   using lbm::core::Dynamic_Array;
   using lbm::core::Euclidean;
   using lbm::core::Fixed_Array;
+  using lbm::core::Fixed_Euclidean;
   using lbm::core::Fixed_Lexical;
   using lbm::core::I_State;
   using lbm::core::Input;
@@ -41,7 +42,6 @@ namespace lbm::D2Q9 {
   using lbm::core::size_type;
   using lbm::core::sqr;
   using lbm::core::unroll_horizontally;
-  using lbm::core::Vector;
 
   using std::array;
   using std::copy;
