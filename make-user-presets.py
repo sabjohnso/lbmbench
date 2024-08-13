@@ -103,7 +103,8 @@ def make_configure_preset(compiler):
         "environment": {
             "COMPILER_ROOT": compiler["root"],
             "PATH": "$env{COMPILER_ROOT}/bin:$penv{PATH}",
-            "LIBRARY_PATH": "$env{COMPILER_ROOT}/lib:$penv{LIBRARY_PATH}",
+            "LIBRARY_PATH": "$env{COMPILER_ROOT}/lib:$env{COMPILER_ROOT}/lib64:$penv{LIBRARY_PATH}",
+            "LD_LIBRARY_PATH": "$env{COMPILER_ROOT}/lib:$env{COMPILER_ROOT}/lib64:$penv{LD_LIBRARY_PATH}",
             "CPATH": "$env{COMPILER_ROOT}/lib",
             "CC": "$env{COMPILER_ROOT}/bin/" + compiler["cc"],
             "CXX": "$env{COMPILER_ROOT}/bin/" + compiler["cxx"],

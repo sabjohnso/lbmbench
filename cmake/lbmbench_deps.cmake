@@ -20,8 +20,6 @@ install(EXPORT HACK_TO_SATISFY_CMAKE_FOR_VALIDATOR
 
 find_package(nlohmann_json_schema_validator REQUIRED)
 
-
-
 find_package(Boost REQUIRED COMPONENTS program_options)
 
 if(lbm_USE_MPI)

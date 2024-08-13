@@ -158,13 +158,13 @@ namespace lbm::core {
     j[name()].push_back(arg0_json);
     j[name()].push_back(arg1_json);
     return j;
-  };
+  }
 
   void
   Binary_Operator::set_json(const json &j) {
     arg0_ = parse_json_expr(j[name()][0]);
     arg1_ = parse_json_expr(j[name()][1]);
-  };
+  }
 
   Unary_Operator::Unary_Operator(Pointer arg)
       : arg_(arg) {}
@@ -175,7 +175,7 @@ namespace lbm::core {
     j[name()] = json(arg_);
 
     return j;
-  };
+  }
 
   void
   Unary_Operator::set_json(const json &j) {
