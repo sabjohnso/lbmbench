@@ -8,39 +8,18 @@
 
 namespace lbm::core {
 
-  enum class Boundary {
-    Lower = -1,
-    NA = 0,
-    Upper = 1,
-  };
+  enum class Boundary_ID { Left, Right, Bottom, Top, Front, Back };
 
-  class Boundary_ID
-      : public vector<Boundary>
-      , public JSON_Convertible {
-  public:
-    using Base = vector<Boundary>;
+  void
+  to_json(json &j, Boundary_ID id);
 
-    Boundary_ID() = default;
-    Boundary_ID(auto i, auto j, auto... ks)
-        : Base{Boundary(i), Boundary(j), Boundary(ks)...} {}
+  void
+  from_json(const json &j, Boundary_ID &id);
 
-  private:
-    json
-    get_json() const override {
-      json j = json::array();
+  ostream &
+  operator<<(ostream &os, Boundary_ID id);
 
-      transform(std::begin(*this), std::end(*this), back_inserter(j), [](const Boundary &x) {
-        return int(x);
-      });
-      return j;
-    }
+  istream &
+  operator>>(istream &is, Boundary_ID &id);
 
-    void
-    set_json(const json &j) override {
-      this->clear();
-      transform(std::begin(j), std::end(j), back_inserter(*this), [](const auto &x) {
-        return Boundary(x);
-      });
-    }
-  };
 } // end of namespace lbm::core

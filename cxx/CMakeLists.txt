@@ -12,6 +12,7 @@ add_library(lbmbench::header ALIAS lbmbench_header)
 
 add_library(lbmbench_library
   lbm/core/Bounding_Box.cpp
+  lbm/core/Boundary_ID.cpp
   lbm/core/Boundary_Condition.cpp
   lbm/core/Lattice.cpp
   lbm/core/Expression.cpp
