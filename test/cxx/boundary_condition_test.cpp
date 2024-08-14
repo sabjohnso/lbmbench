@@ -16,7 +16,9 @@
 namespace lbm::core {
   TEST_CASE("Boundary Condition") {
     SECTION("Wall") {
-      Boundary_Condition boundary_condition{Wall{Boundary_ID{Boundary::Lower, Boundary::NA}}};
+      Boundary_ID west = Boundary_ID{Boundary::Lower, Boundary::NA};
+      Boundary_Condition boundary_condition{Wall{west}};
+
       SECTION("Conversion to and from json") {
         json json_boundary_condition = boundary_condition;
         Boundary_Condition boundary_condition_from_json = json_boundary_condition;
@@ -29,10 +31,13 @@ namespace lbm::core {
         ss >> boundary_condition_from_text;
         CHECK(boundary_condition_from_text == boundary_condition);
       }
+
+      SECTION("Boundary ID access") { CHECK(boundary_condition.boundary() == west); }
     }
 
     SECTION("Symmetry") {
-      Boundary_Condition boundary_condition{Symmetry{Boundary_ID{Boundary::NA, Boundary::Upper}}};
+      Boundary_ID north = Boundary_ID{Boundary::NA, Boundary::Upper};
+      Boundary_Condition boundary_condition{Symmetry{north}};
       SECTION("Conversion to and from json") {
         json json_boundary_condition = boundary_condition;
         std::cout << json_boundary_condition << std::endl;
@@ -46,10 +51,12 @@ namespace lbm::core {
         ss >> boundary_condition_from_text;
         CHECK(boundary_condition_from_text == boundary_condition);
       }
+      SECTION("Boundary ID access") { CHECK(boundary_condition.boundary() == north); }
     }
 
     SECTION("Inlet") {
-      Boundary_Condition boundary_condition{Inlet{Boundary_ID{Boundary::NA, Boundary::Lower}, 3.0}};
+      Boundary_ID south = Boundary_ID{Boundary::NA, Boundary::Lower};
+      Boundary_Condition boundary_condition{Inlet{south, 3.0}};
       SECTION("Conversion to and from json") {
         json json_boundary_condition = boundary_condition;
         std::cout << json_boundary_condition << std::endl;
@@ -63,9 +70,11 @@ namespace lbm::core {
         ss >> boundary_condition_from_text;
         CHECK(boundary_condition_from_text == boundary_condition);
       }
+      SECTION("Boundary ID access") { CHECK(boundary_condition.boundary() == south); }
     }
 
     SECTION("Outlet") {
+      Boundary_ID south = Boundary_ID{Boundary::NA, Boundary::Lower};
       Boundary_Condition boundary_condition{
           Outlet{Boundary_ID{Boundary::NA, Boundary::Lower}, 3.0}};
       SECTION("Conversion to and from json") {
@@ -80,11 +89,12 @@ namespace lbm::core {
         ss >> boundary_condition_from_text;
         CHECK(boundary_condition_from_text == boundary_condition);
       }
+      SECTION("Boundary ID access") { CHECK(boundary_condition.boundary() == south); }
     }
 
     SECTION("Pressure Drop") {
-      Boundary_Condition boundary_condition{
-          Pressure_Drop{Boundary_ID{Boundary::Upper, Boundary::NA}, 3.0}};
+      Boundary_ID east = Boundary_ID{Boundary::Upper, Boundary::NA};
+      Boundary_Condition boundary_condition{Pressure_Drop{east, 3.0}};
       SECTION("Conversion to and from json") {
         json json_boundary_condition = boundary_condition;
         Boundary_Condition boundary_condition_from_json = json_boundary_condition;
