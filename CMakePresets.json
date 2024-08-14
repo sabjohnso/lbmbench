@@ -9,7 +9,7 @@
 	{
 	    "name": "default",
             "hidden" : true,
-	    "generator" : "Ninja",
+	    "generator" : "Ninja Multi-Config",
 	    "cacheVariables" : {
 		"CMAKE_CXX_FLAGS" : "-Wall -Wextra -pedantic -Werror",
                 "CMAKE_CXX_FLAGS_RELEASE" : "-DNDEBUG -O3",
@@ -17,8 +17,7 @@
 		"CMAKE_EXPORT_COMPILE_COMMANDS" : "ON",
                 "nlohmann_json_GIT_TAG" : "v3.10.0",
                 "nlohmann_json_FORCE_DOWNLOAD" : true,
-                "nlohmann_json_schema_validator_FORCE_DOWNLOAD" : true,
-                "CMAKE_BUILD_TYPE" : "Release"
+                "nlohmann_json_schema_validator_FORCE_DOWNLOAD" : true
 	    },
             "binaryDir" : "${sourceDir}/build"
 	}

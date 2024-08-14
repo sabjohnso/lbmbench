@@ -57,8 +57,6 @@ def make_command_line_parser(prog):
 def run(config):
     workflow_names = get_workflow_names(config)
     for workflow_name in workflow_names:
-        print(workflow_name)
-        print(type(workflow_name))
         subprocess.run(["cmake", "--workflow", "--preset", workflow_name], check=True)
 
 

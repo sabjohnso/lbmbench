@@ -30,6 +30,20 @@ def make_command_line_parser(prog):
         help="Dump the user presets to stdout instead of a file",
     )
     parser.add_argument(
+        "--shared-build-directory",
+        action="store_true",
+        default=False,
+        help="All presets share the same build directory",
+    )
+
+    parser.add_argument(
+        "--shared-devel-build-directory",
+        action="store_true",
+        default=False,
+        help="Normal and `devel` builds share the same directory ",
+    )
+
+    parser.add_argument(
         "--replace-existing",
         action="store_true",
         default=False,
@@ -54,12 +68,13 @@ def validate_input(config):
 def run(config):
     with open(config.filename, "r", encoding="utf-8") as inp:
         input_data = json.load(inp)
-    print(json.dumps(input_data, indent=4))
     output_data = {
         "version": 6,
         "cmakeMinimumRequired": {"major": 3, "minor": 21, "patch": 0},
-        "configurePresets": [make_configure_preset(compiler) for compiler in input_data]
-        + [make_devel_configure_preset(compiler) for compiler in input_data],
+        "configurePresets": [
+            make_configure_preset(config, compiler) for compiler in input_data
+        ]
+        + [make_devel_configure_preset(config, compiler) for compiler in input_data],
         "buildPresets": (
             [{"name": "baseBuild", "jobs": 16, "configurePreset": "default"}]
             + [make_build_preset(compiler["name"]) for compiler in input_data]
@@ -94,12 +109,13 @@ def run(config):
             json.dump(output_data, out, indent=4)
 
 
-def make_configure_preset(compiler):
+def make_configure_preset(config, compiler):
     return {
         "name": compiler["name"],
         "inherits": "default",
         "hidden": False,
-        "binaryDir": "${sourceDir}/build-" + compiler["name"],
+        "binaryDir": binary_directory(config, compiler),
+        "cacheVariables": {"CMAKE_BUILD_TYPE": "Release"},
         "environment": {
             "COMPILER_ROOT": compiler["root"],
             "PATH": "$env{COMPILER_ROOT}/bin:$penv{PATH}",
@@ -112,15 +128,30 @@ def make_configure_preset(compiler):
     }
 
 
-def make_devel_configure_preset(compiler):
+def make_devel_configure_preset(config, compiler):
     return {
         "name": compiler["name"] + "-devel",
         "inherits": compiler["name"],
         "hidden": False,
+        "binaryDir": devel_binary_directory(config, compiler),
         "cacheVariables": {
             "CMAKE_BUILD_TYPE": "RelWithDebInfo",
         },
     }
+
+
+def devel_binary_directory(config, compiler):
+    return (
+        binary_directory(config, compiler) + "-devel"
+        if not config.shared_devel_build_directory
+        else ""
+    )
+
+
+def binary_directory(config, compiler):
+    return "${sourceDir}/build" + (
+        "-" + compiler["name"] if not config.shared_build_directory else ""
+    )
 
 
 def make_build_preset(workflow_name):
