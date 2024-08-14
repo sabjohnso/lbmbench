@@ -59,6 +59,9 @@ namespace lbm::core {
     double
     lattice_spacing() const;
 
+    Boundary_Condition
+    boundary(Boundary_ID id) const;
+
     friend bool
     operator==(const Input &inp0, const Input &inp1);
 
