@@ -11,7 +11,7 @@
 namespace lbm::core::testing {
 
   TEST_CASE("D2 Boundary ID") {
-    Boundary_ID boundary_id{Boundary::Lower, Boundary::NA};
+    Boundary_ID boundary_id = Boundary_ID::Left;
 
     SECTION("Conversion to and from JSON") {
       json json_boundary_id = boundary_id;
