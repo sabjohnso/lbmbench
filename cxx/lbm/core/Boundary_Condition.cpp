@@ -139,18 +139,30 @@ namespace lbm::core {
   // ... Inlet
   //
 
-  Inlet::Inlet(Boundary_ID boundary, double inlet_speed)
+  Inlet::Inlet(Boundary_ID boundary, double density, double speed)
       : boundary_{boundary}
-      , inlet_speed_{inlet_speed} {}
+      , density_{density}
+      , speed_{speed} {}
 
   bool
   operator==(const Inlet &inlet1, const Inlet &inlet2) {
-    return inlet1.boundary_ == inlet2.boundary_ && inlet1.inlet_speed_ == inlet2.inlet_speed_;
+    return inlet1.boundary_ == inlet2.boundary_ && inlet1.density_ == inlet2.density_ &&
+           inlet1.speed_ == inlet2.speed_;
   }
 
   bool
   operator!=(const Inlet &inlet1, const Inlet &inlet2) {
     return !(inlet1 == inlet2);
+  }
+
+  double
+  Inlet::density() const {
+    return density_;
+  }
+
+  double
+  Inlet::speed() const {
+    return speed_;
   }
 
   Boundary_ID
@@ -162,32 +174,45 @@ namespace lbm::core {
   Inlet::get_json() const {
     json j = json::object();
     j["inlet"]["boundary"] = boundary_;
-    j["inlet"]["inletSpeed"] = inlet_speed_;
+    j["inlet"]["inletSpeed"] = speed_;
     return j;
   }
 
   void
   Inlet::set_json(const json &j) {
     boundary_ = j["inlet"]["boundary"];
-    inlet_speed_ = j["inlet"]["inletSpeed"];
+    density_ = j["inlet"]["density"];
+    speed_ = j["inlet"]["speed"];
   }
 
   //
   // ... Outlet
   //
 
-  Outlet::Outlet(Boundary_ID boundary, double outlet_speed)
+  Outlet::Outlet(Boundary_ID boundary, double density, double speed)
       : boundary_{boundary}
-      , outlet_speed_{outlet_speed} {}
+      , density_{density}
+      , speed_{speed} {}
 
   bool
   operator==(const Outlet &outlet1, const Outlet &outlet2) {
-    return outlet1.boundary_ == outlet2.boundary_ && outlet1.outlet_speed_ == outlet2.outlet_speed_;
+    return outlet1.boundary_ == outlet2.boundary_ && outlet1.density_ == outlet2.density_ &&
+           outlet1.speed_ == outlet2.speed_;
   }
 
   bool
   operator!=(const Outlet &outlet1, const Outlet &outlet2) {
     return !(outlet1 == outlet2);
+  }
+
+  double
+  Outlet::density() const {
+    return density_;
+  }
+
+  double
+  Outlet::speed() const {
+    return speed_;
   }
 
   Boundary_ID
@@ -200,14 +225,16 @@ namespace lbm::core {
     json j = json::object();
     j["outlet"] = json::object();
     j["outlet"]["boundary"] = boundary_;
-    j["outlet"]["outletSpeed"] = outlet_speed_;
+    j["outlet"]["density"] = density_;
+    j["outlet"]["speed"] = speed_;
     return j;
   }
 
   void
   Outlet::set_json(const json &j) {
     boundary_ = j["outlet"]["boundary"];
-    outlet_speed_ = j["outlet"]["outletSpeed"];
+    density_ = j["outlet"]["dentity"];
+    speed_ = j["outlet"]["speed"];
   }
 
   //

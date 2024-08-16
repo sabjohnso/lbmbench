@@ -1,7 +1,5 @@
 #pragma once
 
-#pragma once
-
 //
 // ... LBM Bench header files
 //

@@ -56,7 +56,7 @@ namespace lbm::core {
   class Inlet final : public JSON_Convertible {
   public:
     Inlet() = default;
-    Inlet(Boundary_ID boundary, double inlet_speed);
+    Inlet(Boundary_ID boundary, double density, double speed);
 
     friend bool
     operator==(const Inlet &inlet1, const Inlet &inlet2);
@@ -67,6 +67,12 @@ namespace lbm::core {
     Boundary_ID
     boundary() const;
 
+    double
+    density() const;
+
+    double
+    speed() const;
+
   private:
     json
     get_json() const override;
@@ -75,13 +81,14 @@ namespace lbm::core {
     set_json(const json &j) override;
 
     Boundary_ID boundary_{};
-    double inlet_speed_{};
+    double density_{};
+    double speed_{};
   };
 
   class Outlet final : public JSON_Convertible {
   public:
     Outlet() = default;
-    Outlet(Boundary_ID boundary, double outlet_speed);
+    Outlet(Boundary_ID boundary, double density, double speed);
 
     friend bool
     operator==(const Outlet &outlet1, const Outlet &outlet2);
@@ -92,6 +99,12 @@ namespace lbm::core {
     Boundary_ID
     boundary() const;
 
+    double
+    density() const;
+
+    double
+    speed() const;
+
   private:
     json
     get_json() const override;
@@ -100,7 +113,8 @@ namespace lbm::core {
     set_json(const json &j) override;
 
     Boundary_ID boundary_{};
-    double outlet_speed_{};
+    double density_{};
+    double speed_{};
   };
 
   class Pressure_Drop final : public JSON_Convertible {

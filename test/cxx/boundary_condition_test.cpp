@@ -56,8 +56,10 @@ namespace lbm::core {
     }
 
     SECTION("Inlet") {
-      Boundary_ID south = Bottom;
-      Boundary_Condition boundary_condition{Inlet{south, 3.0}};
+      constexpr Boundary_ID south = Bottom;
+      constexpr double density = 1.0;
+      constexpr double speed = 3.0;
+      Boundary_Condition boundary_condition{Inlet{south, density, speed}};
       SECTION("Conversion to and from json") {
         json json_boundary_condition = boundary_condition;
         std::cout << json_boundary_condition << std::endl;
@@ -72,11 +74,16 @@ namespace lbm::core {
         CHECK(boundary_condition_from_text == boundary_condition);
       }
       SECTION("Boundary ID access") { CHECK(boundary_condition.boundary() == south); }
+      SECTION("Density access") { CHECK(std::get<Inlet>(boundary_condition).density() == density); }
+      SECTION("Speed access") { CHECK(std::get<Inlet>(boundary_condition).speed() == speed); }
     }
 
     SECTION("Outlet") {
-      Boundary_ID south = Bottom;
-      Boundary_Condition boundary_condition{Outlet{south, 3.0}};
+      constexpr Boundary_ID south = Bottom;
+      constexpr double density = 1.0;
+      constexpr double speed = 3.0;
+      Boundary_Condition boundary_condition{Outlet{south, density, speed}};
+
       SECTION("Conversion to and from json") {
         json json_boundary_condition = boundary_condition;
         Boundary_Condition boundary_condition_from_json = json_boundary_condition;
@@ -90,6 +97,10 @@ namespace lbm::core {
         CHECK(boundary_condition_from_text == boundary_condition);
       }
       SECTION("Boundary ID access") { CHECK(boundary_condition.boundary() == south); }
+      SECTION("Density access") {
+        CHECK(std::get<Outlet>(boundary_condition).density() == density);
+      }
+      SECTION("Speed access") { CHECK(std::get<Outlet>(boundary_condition).speed() == speed); }
     }
 
     SECTION("Pressure Drop") {

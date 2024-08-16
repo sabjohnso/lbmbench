@@ -39,6 +39,7 @@ namespace lbm::D2Q9 {
 
       initialize_nodes(input);
       initialize_bounceback_lists();
+      initialize_boundary_functions(input);
     }
 
     void
@@ -124,7 +125,94 @@ namespace lbm::D2Q9 {
     }
 
     void
-    reset_boundaries() {}
+    initialize_boundary_functions(Input input) {
+      using enum Boundary_ID;
+      boundary_functions_[Left] = make_left_boundary_function(input);
+      boundary_functions_[Right] = make_right_boundary_function(input);
+      boundary_functions_[Bottom] = make_left_boundary_function(input);
+      boundary_functions_[Top] = make_left_boundary_function(input);
+    }
+
+    function<void()>
+    make_left_boundary_function(Input input) {
+      Boundary_Condition bc = input.boundary(Boundary_ID::Left);
+      if (holds_alternative<Wall>(bc)) {
+        return [] {};
+      } else if (holds_alternative<Symmetry>(bc)) {
+        return [] {};
+      } else if (holds_alternative<Inlet>(bc)) {
+        return [] {};
+      } else if (holds_alternative<Outlet>(bc)) {
+        return [] {};
+      } else if (holds_alternative<Pressure_Drop>(bc)) {
+        return [] {};
+      } else {
+        unreachable_code(source_location::current());
+      }
+    }
+
+    function<void()>
+    make_right_boundary_function(Input input) {
+      Boundary_Condition bc = input.boundary(Boundary_ID::Right);
+      if (holds_alternative<Wall>(bc)) {
+        return [] {};
+      } else if (holds_alternative<Symmetry>(bc)) {
+        return [] {};
+      } else if (holds_alternative<Inlet>(bc)) {
+        return [] {};
+      } else if (holds_alternative<Outlet>(bc)) {
+        return [] {};
+      } else if (holds_alternative<Pressure_Drop>(bc)) {
+        return [] {};
+      } else {
+        unreachable_code(source_location::current());
+      }
+    }
+
+    function<void()>
+    make_bottom_boundary_function(Input input) {
+      Boundary_Condition bc = input.boundary(Boundary_ID::Bottom);
+      if (holds_alternative<Wall>(bc)) {
+        return [] {};
+      } else if (holds_alternative<Symmetry>(bc)) {
+        return [] {};
+      } else if (holds_alternative<Inlet>(bc)) {
+        return [] {};
+      } else if (holds_alternative<Outlet>(bc)) {
+        return [] {};
+      } else if (holds_alternative<Pressure_Drop>(bc)) {
+        return [] {};
+      } else {
+        unreachable_code(source_location::current());
+      }
+    }
+
+    function<void()>
+    make_top_boundary_function(Input input) {
+      Boundary_Condition bc = input.boundary(Boundary_ID::Top);
+      if (holds_alternative<Wall>(bc)) {
+        return [] {};
+      } else if (holds_alternative<Symmetry>(bc)) {
+        return [] {};
+      } else if (holds_alternative<Inlet>(bc)) {
+        return [] {};
+      } else if (holds_alternative<Outlet>(bc)) {
+        return [] {};
+      } else if (holds_alternative<Pressure_Drop>(bc)) {
+        return [] {};
+      } else {
+        unreachable_code(source_location::current());
+      }
+    }
+
+    void
+    reset_boundaries() {
+      using enum Boundary_ID;
+      boundary_functions_[Left]();
+      boundary_functions_[Right]();
+      boundary_functions_[Bottom]();
+      boundary_functions_[Top]();
+    }
 
     size_type
     current_time_index() const {
@@ -173,6 +261,7 @@ namespace lbm::D2Q9 {
       nodes_[time_step_ % 2] = j["nodes"];
       nodes_[(time_step_ + 1) % 2] = j["nodes"];
     }
+
     size_type nx_{};
     size_type ny_{};
     size_type nxm1_{};
@@ -183,6 +272,7 @@ namespace lbm::D2Q9 {
     Time_Step time_step_{};
     Obstacle_List obstacles_{};
     Bounceback_Lists bounceback_lists_{};
+    unordered_map<Boundary_ID, function<void()>> boundary_functions_{};
   };
 
 } // end of namespace lbm::D2Q9
