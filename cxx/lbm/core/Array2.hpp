@@ -46,53 +46,9 @@ namespace lbm::core {
     using Base::Base;
 
   private:
-    /**
-     * @brief A type describing an element reference enhanced by
-     * access to the position of the element.
-     *
-     * @tparam Modifier  - A template template parameter used to
-     * specify the reference as `const` or not `const`.
-     */
-    template <template <class> class Modifier>
-    class Generic_Element_Reference {
-      using Array_Reference = typename Modifier<Array2>::type;
-      using Element_Reference = typename Modifier<T>::type;
-
-    public:
-      Generic_Element_Reference() = delete;
-      Generic_Element_Reference(const Generic_Element_Reference &) = default;
-      Generic_Element_Reference(Array_Reference array_ref, size_type i, size_type j)
-          : array_ref_{array_ref}
-          , i_{i}
-          , j_{j} {}
-
-      Generic_Element_Reference &
-      operator=(Const_Reference input) {
-        array_ref_(i_, j_) = input;
-        return *this;
-      }
-
-      array<size_type, 2>
-      indices() const {
-        return {i_, j_};
-      }
-
-      operator Element_Reference() { return array_ref_(i_, j_); }
-
-    private:
-      Array_Reference array_ref_;
-      size_type i_;
-      size_type j_;
-    };
-
     template <typename U>
     struct Add_Const_Reference : add_lvalue_reference<add_const_t<U>> {};
 
-  public:
-    using Element_Reference = Generic_Element_Reference<add_lvalue_reference>;
-    using Cegonst_Element_Reference = Generic_Element_Reference<Add_Const_Reference>;
-
-  private:
     /**
      * @brief A type describing a iterator over a boundary
      *
@@ -104,25 +60,24 @@ namespace lbm::core {
     public:
       using Array_Reference = typename Modifier<Array2>::type;
       using Value_Reference = typename Modifier<T>::type;
-      using Element_Reference = Generic_Element_Reference<Modifier>;
 
       Generic_Boundary_Iterator(const Generic_Boundary_Iterator &) = default;
-      Generic_Boundary_Iterator(Array_Reference ref, size_type index)
-          : ref_{ref}
+      Generic_Boundary_Iterator(Array_Reference array_ref, size_type index)
+          : array_ref_{array_ref}
           , index_{index} {}
 
       Value_Reference
       operator()(size_type ioffset, size_type joffset) {
         if constexpr (boundary == Boundary_ID::Left) {
-          return ref_(ioffset, index_ + joffset);
+          return array_ref_(ioffset, index_ + joffset);
         } else if constexpr (boundary == Boundary_ID::Right) {
-          const auto nxm1 = ref_.size(0) - 1;
-          return ref_(nxm1 + ioffset, index_ + joffset);
+          const auto nxm1 = array_ref_.size(0) - 1;
+          return array_ref_(nxm1 + ioffset, index_ + joffset);
         } else if constexpr (boundary == Boundary_ID::Bottom) {
-          return ref_(index_ + ioffset, joffset);
+          return array_ref_(index_ + ioffset, joffset);
         } else if constexpr (boundary == Boundary_ID::Top) {
-          const auto nym1 = ref_.size(1) - 1;
-          return ref_(index_ + ioffset, nym1 + joffset);
+          const auto nym1 = array_ref_.size(1) - 1;
+          return array_ref_(index_ + ioffset, nym1 + joffset);
         }
       }
 
@@ -161,24 +116,24 @@ namespace lbm::core {
         return result;
       }
 
-      Element_Reference
+      Value_Reference
       operator*() {
         if constexpr (boundary == Boundary_ID::Left) {
-          return {ref_, 0, index_};
+          return array_ref_(0, index_);
         } else if constexpr (boundary == Boundary_ID::Right) {
-          const auto nxm1 = ref_.size(0) - 1;
-          return {ref_, nxm1, index_};
+          const auto nxm1 = array_ref_.size(0) - 1;
+          return array_ref_(nxm1, index_);
         } else if constexpr (boundary == Boundary_ID::Bottom) {
-          return {ref_, index_, 0};
+          return array_ref_(index_, 0);
         } else if constexpr (boundary == Boundary_ID::Top) {
-          const auto nym1 = ref_.size(1) - 1;
-          return {ref_, index_, nym1};
+          const auto nym1 = array_ref_.size(1) - 1;
+          return array_ref_(index_, nym1);
         }
       }
 
       friend bool
       operator==(const Generic_Boundary_Iterator &iter1, const Generic_Boundary_Iterator &iter2) {
-        return &iter1.ref_ == &iter2.ref_ && iter1.index_ == iter2.index_;
+        return &iter1.array_ref_ == &iter2.array_ref_ && iter1.index_ == iter2.index_;
       }
 
       friend bool
@@ -192,7 +147,7 @@ namespace lbm::core {
       }
 
     private:
-      Array_Reference &ref_;
+      Array_Reference &array_ref_;
       size_type index_;
     };
 
@@ -209,7 +164,6 @@ namespace lbm::core {
     public:
       using Array_Reference = typename Modifier<Array2>::type;
       using Value_Reference = typename Modifier<T>::type;
-      using Element_Reference = Generic_Element_Reference<Modifier>;
 
       Generic_Interior_Iterator() = delete;
       Generic_Interior_Iterator(const Generic_Interior_Iterator &) = default;
@@ -252,9 +206,9 @@ namespace lbm::core {
         return array_ref_(i_ + ioffset, j_ + joffset);
       }
 
-      Element_Reference
+      Value_Reference
       operator*() {
-        return {array_ref_, i_, j_};
+        return array_ref_(i_, j_);
       }
 
     private:
@@ -269,9 +223,10 @@ namespace lbm::core {
     using Const_Interior_Iterator = Generic_Interior_Iterator<Add_Const_Reference>;
 
     using Base::begin;
+    using Base::end;
+
     using Base::cbegin;
     using Base::cend;
-    using Base::end;
 
     template <Boundary_ID boundary>
     Boundary_Iterator<boundary>
@@ -308,7 +263,6 @@ namespace lbm::core {
         unreachable_code(source_location::current());
       }
     }
-
     template <Boundary_ID boundary>
     Const_Boundary_Iterator<boundary>
     cbegin() const {
