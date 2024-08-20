@@ -6,27 +6,9 @@
 #include <lbm/core/Array.hpp>
 #include <lbm/core/Boundary_ID.hpp>
 #include <lbm/core/import.hpp>
+#include <lbm/core/subdomain_tags.hpp>
 
 namespace lbm::core {
-
-  struct Interior {
-  } constexpr interior{};
-
-  struct Left {
-  } constexpr left{};
-
-  struct Right {
-  } constexpr right{};
-
-  struct Bottom {
-  } constexpr bottom{};
-
-  struct Top {
-  } constexpr top{};
-
-  template <class T>
-  concept Boundary_Tag =
-      same_as<Left, T> || same_as<Right, T> || same_as<Bottom, T> || same_as<Top, T>;
 
   /**
    * @brief A type describing degree 2 arrays
@@ -55,7 +37,7 @@ namespace lbm::core {
      * @tparam boundary - A template value parameter specifing the boundary to iterate over.
      * @tparam Modifier - A template template parameter specifying the constness of the reference.
      */
-    template <Boundary_ID boundary, template <class> class Modifier>
+    template <Boundary_Tag2 Boundary, template <class> class Modifier>
     class Generic_Boundary_Iterator {
     public:
       using Array_Reference = typename Modifier<Array2>::type;
@@ -68,14 +50,14 @@ namespace lbm::core {
 
       Value_Reference
       operator()(size_type ioffset, size_type joffset) {
-        if constexpr (boundary == Boundary_ID::Left) {
+        if constexpr (same_as<Boundary, Left>) {
           return array_ref_(ioffset, index_ + joffset);
-        } else if constexpr (boundary == Boundary_ID::Right) {
+        } else if constexpr (same_as<Boundary, Right>) {
           const auto nxm1 = array_ref_.size(0) - 1;
           return array_ref_(nxm1 + ioffset, index_ + joffset);
-        } else if constexpr (boundary == Boundary_ID::Bottom) {
+        } else if constexpr (same_as<Boundary, Bottom>) {
           return array_ref_(index_ + ioffset, joffset);
-        } else if constexpr (boundary == Boundary_ID::Top) {
+        } else if constexpr (same_as<Boundary, Top>) {
           const auto nym1 = array_ref_.size(1) - 1;
           return array_ref_(index_ + ioffset, nym1 + joffset);
         }
@@ -86,7 +68,6 @@ namespace lbm::core {
         index_ += offset;
         return *this;
       }
-
       Generic_Boundary_Iterator &
       operator-=(size_type offset) {
         return *this += -offset;
@@ -118,14 +99,14 @@ namespace lbm::core {
 
       Value_Reference
       operator*() {
-        if constexpr (boundary == Boundary_ID::Left) {
+        if constexpr (same_as<Boundary, Left>) {
           return array_ref_(0, index_);
-        } else if constexpr (boundary == Boundary_ID::Right) {
+        } else if constexpr (same_as<Boundary, Right>) {
           const auto nxm1 = array_ref_.size(0) - 1;
           return array_ref_(nxm1, index_);
-        } else if constexpr (boundary == Boundary_ID::Bottom) {
+        } else if constexpr (same_as<Boundary, Bottom>) {
           return array_ref_(index_, 0);
-        } else if constexpr (boundary == Boundary_ID::Top) {
+        } else if constexpr (same_as<Boundary, Top>) {
           const auto nym1 = array_ref_.size(1) - 1;
           return array_ref_(index_, nym1);
         }
@@ -152,11 +133,11 @@ namespace lbm::core {
     };
 
   public:
-    template <Boundary_ID boundary>
-    using Boundary_Iterator = Generic_Boundary_Iterator<boundary, add_lvalue_reference>;
+    template <Boundary_Tag2 Boundary>
+    using Boundary_Iterator = Generic_Boundary_Iterator<Boundary, add_lvalue_reference>;
 
-    template <Boundary_ID boundary>
-    using Const_Boundary_Iterator = Generic_Boundary_Iterator<boundary, Add_Const_Reference>;
+    template <Boundary_Tag2 Boundary>
+    using Const_Boundary_Iterator = Generic_Boundary_Iterator<Boundary, Add_Const_Reference>;
 
   private:
     template <template <class> class Modifier>
@@ -228,51 +209,48 @@ namespace lbm::core {
     using Base::cbegin;
     using Base::cend;
 
-    template <Boundary_ID boundary>
-    Boundary_Iterator<boundary>
-    begin() {
+    template <Boundary_Tag2 Boundary>
+    Boundary_Iterator<Boundary>
+    begin(Boundary) {
       return {*this, 1};
     }
 
-    template <Boundary_ID boundary>
-    Boundary_Iterator<boundary>
-    end() {
-      if constexpr (boundary == Boundary_ID::Left || boundary == Boundary_ID::Right) {
+    template <Boundary_Tag2 Boundary>
+    Boundary_Iterator<Boundary>
+    end(Boundary) {
+      if constexpr (same_as<Boundary, Left> || same_as<Boundary, Right>) {
         return {*this, this->size(1) - 1};
-      } else if constexpr (boundary == Boundary_ID::Bottom || boundary == Boundary_ID::Top) {
+      } else if constexpr (same_as<Boundary, Bottom> || same_as<Boundary, Top>) {
         return {*this, this->size(0) - 1};
-      } else {
-        unreachable_code(source_location::current());
       }
     }
 
-    template <Boundary_ID boundary>
-    Const_Boundary_Iterator<boundary>
-    begin() const {
+    template <Boundary_Tag2 Boundary>
+    Const_Boundary_Iterator<Boundary>
+    begin(Boundary) const {
       return {*this, 1};
     }
 
-    template <Boundary_ID boundary>
-    Const_Boundary_Iterator<boundary>
-    end() const {
-      if constexpr (boundary == Boundary_ID::Left || boundary == Boundary_ID::Right) {
+    template <Boundary_Tag2 Boundary>
+    Const_Boundary_Iterator<Boundary>
+    end(Boundary) const {
+      if constexpr (same_as<Boundary, Left> || same_as<Boundary, Right>) {
         return {*this, this->size(1) - 1};
-      } else if constexpr (boundary == Boundary_ID::Bottom || boundary == Boundary_ID::Top) {
+      } else if constexpr (same_as<Boundary, Bottom> || same_as<Boundary, Top>) {
         return {*this, this->size(0) - 1};
-      } else {
-        unreachable_code(source_location::current());
       }
     }
-    template <Boundary_ID boundary>
-    Const_Boundary_Iterator<boundary>
-    cbegin() const {
-      return begin<boundary>();
+
+    template <Boundary_Tag2 Boundary>
+    Const_Boundary_Iterator<Boundary>
+    cbegin(Boundary) const {
+      return begin(Boundary{});
     }
 
-    template <Boundary_ID boundary>
-    Const_Boundary_Iterator<boundary>
-    cend() const {
-      return end<boundary>();
+    template <Boundary_Tag2 Boundary>
+    Const_Boundary_Iterator<Boundary>
+    cend(Boundary) const {
+      return end(Boundary{});
     }
 
     Interior_Iterator

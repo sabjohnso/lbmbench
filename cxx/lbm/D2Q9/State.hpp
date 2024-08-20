@@ -161,40 +161,36 @@ namespace lbm::D2Q9 {
       boundary_functions_[Top] = make_left_boundary_function(input);
     }
 
+    template <Boundary_Tag2 Boundary>
     function<void()>
-    make_wall_boundary(Boundary_ID boundary) {
-      const auto internal_offsets = get_internal_offsets(boundary);
+    make_wall_boundary(Boundary) {
+      const auto internal_offsets = get_internal_offsets(Boundary{});
       return [=, this] {
         auto &nodes = get_next_nodes();
-        for_each(nodes.begin(boundary), nodes.end(boundary), [=, this](auto &node) {
-          const auto [i, j] = node.indices();
+        forall(nodes.begin(Boundary{}), nodes.end(Boundary{}), [=, this](auto node) {
           for_each(std::cbegin(internal_offsets), std::cend(internal_offsets), [&](auto offsets) {
-            const auto &[ioffset, joffset] = offsets;
-            const auto &interior_node = nodes(i + ioffset, j + joffset);
-            node(ioffset, joffset) = interior_node(-ioffset, joffset);
+            const auto &[i, j] = offsets;
+            node(0, 0)(i, j) = node(i, j)(-i, -j);
           });
         });
       };
     }
 
+    template <Boundary_Tag2 Boundary>
     auto
-    get_internal_offsets(Boundary_ID boundary) {
-      using enum Boundary_ID;
-      switch (boundary) {
-      case Left:
+    get_internal_offsets(Boundary) {
+      if constexpr (same_as<Boundary, Left>) {
         return left_internal_offsets;
-      case Right:
+
+      } else if constexpr (same_as<Boundary, Right>) {
         return right_internal_offsets;
-      case Bottom:
+
+      } else if constexpr (same_as<Boundary, Bottom>) {
         return bottom_internal_offsets;
-      case Top:
+
+      } else if constexpr (same_as<Boundary, Top>) {
         return top_internal_offsets;
-      case Back:
-        unreachable_code(source_location::current());
-      case Front:
-        unreachable_code(source_location::current());
       }
-      unreachable_code(source_location::current());
     }
 
     function<void()>

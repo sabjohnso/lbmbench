@@ -17,6 +17,7 @@
 #include <lbm/core/Shape.hpp>
 #include <lbm/core/base_types.hpp>
 #include <lbm/core/misc.hpp>
+#include <lbm/core/subdomain_tags.hpp>
 #include <lbm/exceptions/Unreachable.hpp>
 
 //
@@ -32,6 +33,16 @@
 #include <vector>
 
 namespace lbm::D2Q9 {
+  using lbm::core::Bottom;
+  using lbm::core::bottom;
+  using lbm::core::Boundary_Tag2;
+  using lbm::core::Left;
+  using lbm::core::left;
+  using lbm::core::Right;
+  using lbm::core::right;
+  using lbm::core::Top;
+  using lbm::core::top;
+
   using lbm::core::Boundary_Condition;
   using lbm::core::Boundary_ID;
   using lbm::core::Dynamic_MD_Array;
