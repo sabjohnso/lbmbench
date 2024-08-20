@@ -339,6 +339,16 @@ namespace lbm::D2Q9 {
       return nodes_[next_time_index()];
     }
 
+    Nodes &
+    get_current_nodes() {
+      return nodes_[current_time_index()];
+    }
+
+    Nodes &
+    get_next_nodes() {
+      return nodes_[next_time_index()];
+    }
+
     size_type
     current_time_index() const {
       return time_step_ % 2;

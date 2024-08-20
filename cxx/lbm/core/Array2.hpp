@@ -68,6 +68,7 @@ namespace lbm::core {
         index_ += offset;
         return *this;
       }
+
       Generic_Boundary_Iterator &
       operator-=(size_type offset) {
         return *this += -offset;
