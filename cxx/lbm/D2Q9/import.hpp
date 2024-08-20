@@ -32,14 +32,13 @@
 #include <vector>
 
 namespace lbm::D2Q9 {
-  using lbm::core::Array;
   using lbm::core::Boundary_Condition;
   using lbm::core::Boundary_ID;
-  using lbm::core::Dynamic_Array;
+  using lbm::core::Dynamic_MD_Array;
   using lbm::core::Euclidean;
-  using lbm::core::Fixed_Array;
   using lbm::core::Fixed_Euclidean;
   using lbm::core::Fixed_Lexical;
+  using lbm::core::Fixed_MD_Array;
   using lbm::core::I_State;
   using lbm::core::Inlet;
   using lbm::core::Input;
@@ -47,6 +46,7 @@ namespace lbm::D2Q9 {
   using lbm::core::json;
   using lbm::core::JSON_Convertible;
   using lbm::core::Lexical;
+  using lbm::core::MD_Array;
   using lbm::core::Outlet;
   using lbm::core::Pressure_Drop;
   using lbm::core::Shape;

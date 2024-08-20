@@ -18,7 +18,7 @@ namespace lbm::core {
 
     static constexpr data_type extents{{Ns...}};
 
-    using Index = Fixed_Array_Index<degree>;
+    using Index = Fixed_MD_Array_Index<degree>;
 
     static constexpr data_type strides = [] {
       const auto recur = [](auto recur, size_type stride, same_as<size_type> auto... strides) {

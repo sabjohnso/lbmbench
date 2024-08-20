@@ -16,10 +16,10 @@
 namespace lbm::core {
 
   template <class T, class Order>
-  class Fixed_Array;
+  class Fixed_MD_Array;
 
   template <class T, size_type... N>
-  class Fixed_Array<T, Fixed_Lexical<N...>> : public JSON_Convertible {
+  class Fixed_MD_Array<T, Fixed_Lexical<N...>> : public JSON_Convertible {
   public:
     using Value_Type = T;
     using Reference = T &;
@@ -31,15 +31,15 @@ namespace lbm::core {
     static constexpr size_type storage_size = (N * ...);
     using Storage = std::array<T, storage_size>;
 
-    constexpr Fixed_Array() = default;
-    constexpr explicit Fixed_Array(T init) { std::fill(cbegin(storage_), cend(storage_), init); }
+    constexpr Fixed_MD_Array() = default;
+    constexpr explicit Fixed_MD_Array(T init) { std::fill(cbegin(storage_), cend(storage_), init); }
 
-    constexpr Fixed_Array(T x1, T x2, same_as<T> auto... xs)
+    constexpr Fixed_MD_Array(T x1, T x2, same_as<T> auto... xs)
         : storage_{{x1, x2, xs...}} {
       static_assert(2 + sizeof...(xs) == size());
     }
 
-    Fixed_Array &
+    Fixed_MD_Array &
     fill(Value_Type x) {
       using std::fill;
       fill(std::begin(storage_), std::end(storage_), x);
@@ -70,32 +70,32 @@ namespace lbm::core {
     operator()(size_type i, size_type j, integral auto... ks) const {
       static_assert(2 + sizeof...(ks) == degree);
       static_assert(Order::degree == degree);
-      assert(Order::storage_index(Fixed_Array_Index<degree>(i, j, size_type(ks)...)) <
+      assert(Order::storage_index(Fixed_MD_Array_Index<degree>(i, j, size_type(ks)...)) <
              storage_size);
-      return storage_[Order::storage_index(Fixed_Array_Index<degree>(i, j, size_type(ks)...))];
+      return storage_[Order::storage_index(Fixed_MD_Array_Index<degree>(i, j, size_type(ks)...))];
     }
 
     Reference
     operator()(size_type i, size_type j, integral auto... ks) {
       static_assert(2 + sizeof...(ks) == degree);
       static_assert(Order::degree == degree);
-      return storage_[Order::storage_index(Fixed_Array_Index(i, j, size_type(ks)...))];
+      return storage_[Order::storage_index(Fixed_MD_Array_Index(i, j, size_type(ks)...))];
     }
 
     constexpr Const_Reference
     at(size_type i, size_type j, integral auto... ks) const {
       static_assert(2 + sizeof...(ks) == degree);
       static_assert(Order::degree == degree);
-      assert(Order::storage_index(Fixed_Array_Index<degree>(i, j, size_type(ks)...)) <
+      assert(Order::storage_index(Fixed_MD_Array_Index<degree>(i, j, size_type(ks)...)) <
              storage_size);
-      return storage_[Order::storage_index(Fixed_Array_Index<degree>(i, j, size_type(ks)...))];
+      return storage_[Order::storage_index(Fixed_MD_Array_Index<degree>(i, j, size_type(ks)...))];
     }
 
     Reference
     at(size_type i, size_type j, integral auto... ks) {
       static_assert(2 + sizeof...(ks) == degree);
       static_assert(Order::degree == degree);
-      return storage_[Order::storage_index(Fixed_Array_Index(i, j, size_type(ks)...))];
+      return storage_[Order::storage_index(Fixed_MD_Array_Index(i, j, size_type(ks)...))];
     }
 
     auto
@@ -133,13 +133,13 @@ namespace lbm::core {
     }
 
     friend bool
-    operator==(const Fixed_Array &x, const Fixed_Array &y) {
+    operator==(const Fixed_MD_Array &x, const Fixed_MD_Array &y) {
       return transform_reduce(
           std::begin(x), std::end(x), std::begin(y), true, logical_and{}, equal_to{});
     }
 
     friend bool
-    operator!=(const Fixed_Array &x, const Fixed_Array &y) {
+    operator!=(const Fixed_MD_Array &x, const Fixed_MD_Array &y) {
       return !(x == y);
     }
 

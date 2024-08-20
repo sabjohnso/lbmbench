@@ -14,15 +14,43 @@ namespace lbm::D2Q9 {
     using Lattice_Spacing = T;
     using Time_Step = size_type;
     using Node_Type = Node<T>;
-    using Nodes = Array<Node_Type, 2>;
+    using Nodes = MD_Array<Node_Type, 2>;
     using Obstacle_List = vector<size_type>;
-    using Bounceback_Lists = Fixed_Array<Dynamic_Array<size_type>, Fixed_Lexical<3, 3>>;
+    using Bounceback_Lists = Fixed_MD_Array<Dynamic_MD_Array<size_type>, Fixed_Lexical<3, 3>>;
 
     static constexpr array<array<size_type, 2>, 8> neighbor_offsets{
         // clang-format off
       {{-1, -1}, {0, -1}, {1, -1},
        {-1,  0},          {1,  0},
        {-1,  1}, {0,  1}, {1,  1}}
+        // clang-format on
+    };
+
+    static constexpr array<array<size_type, 2>, 3> left_internal_offsets{
+        // clang-format off
+      {{1, -1},
+       {1,  0},
+       {1,  1}}
+        // clang-format on
+    };
+
+    static constexpr array<array<size_type, 2>, 3> right_internal_offsets{
+        // clang-format off
+      {{-1, -1},
+       {-1,  0},
+       {-1,  1}}
+        // clang-format on
+    };
+
+    static constexpr array<array<size_type, 2>, 3> bottom_internal_offsets{
+        // clang-format off
+      {{-1, 1}, {0,  1}, {1,  1}}
+        // clang-format on
+    };
+
+    static constexpr array<array<size_type, 2>, 3> top_internal_offsets{
+        // clang-format off
+      {{-1, -1}, {0, -1}, {1, -1}}
         // clang-format on
     };
 
@@ -134,10 +162,77 @@ namespace lbm::D2Q9 {
     }
 
     function<void()>
+    make_wall_boundary(Boundary_ID boundary) {
+      const auto internal_offsets = get_internal_offsets(boundary);
+      return [=, this] {
+        auto &nodes = get_next_nodes();
+        for_each(nodes.begin(boundary), nodes.end(boundary), [=, this](auto &node) {
+          const auto [i, j] = node.indices();
+          for_each(std::cbegin(internal_offsets), std::cend(internal_offsets), [&](auto offsets) {
+            const auto &[ioffset, joffset] = offsets;
+            const auto &interior_node = nodes(i + ioffset, j + joffset);
+            node(ioffset, joffset) = interior_node(-ioffset, joffset);
+          });
+        });
+      };
+    }
+
+    auto
+    get_internal_offsets(Boundary_ID boundary) {
+      using enum Boundary_ID;
+      switch (boundary) {
+      case Left:
+        return left_internal_offsets;
+      case Right:
+        return right_internal_offsets;
+      case Bottom:
+        return bottom_internal_offsets;
+      case Top:
+        return top_internal_offsets;
+      case Back:
+        unreachable_code(source_location::current());
+      case Front:
+        unreachable_code(source_location::current());
+      }
+      unreachable_code(source_location::current());
+    }
+
+    function<void()>
+    make_symmetry_boundary(auto /*internal_offsets*/) {
+      return [=, this] {};
+    }
+
+    function<void()>
+    make_periodic_boundary() {}
+
+    function<void()>
+    make_inlet_boundary() {}
+
+    function<void()>
+    make_outlet_boundary() {}
+
+    function<void()>
+    make_pressure_drop_boundary() {}
+
+    function<void()>
     make_left_boundary_function(Input input) {
       Boundary_Condition bc = input.boundary(Boundary_ID::Left);
       if (holds_alternative<Wall>(bc)) {
-        return [] {};
+
+        // This could be general enough for all wall boundaries if
+        // an iterator  and offsets were provided.
+        // This does not handle the corners.
+
+        return [this] {
+          constexpr size_type i = 0;
+          Nodes &nodes = get_next_nodes();
+          for (size_type j = 1; j < nym1_; ++j) {
+            for (auto ijoffset : left_internal_offsets) {
+              const auto [ioffset, joffset] = ijoffset;
+              nodes(i, j)(ioffset, joffset) = nodes(i + ioffset, j + joffset)(-ioffset, -joffset);
+            }
+          }
+        };
       } else if (holds_alternative<Symmetry>(bc)) {
         return [] {};
       } else if (holds_alternative<Inlet>(bc)) {
@@ -212,6 +307,16 @@ namespace lbm::D2Q9 {
       boundary_functions_[Right]();
       boundary_functions_[Bottom]();
       boundary_functions_[Top]();
+    }
+
+    Nodes &
+    get_current_nodes() {
+      return nodes_[current_time_index()];
+    }
+
+    Nodes &
+    get_next_nodes() {
+      return nodes_[next_time_index()];
     }
 
     size_type

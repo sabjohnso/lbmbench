@@ -14,10 +14,10 @@
 #include <sstream>
 
 namespace lbm::core::testing {
-  TEST_CASE("Array") {
+  TEST_CASE("MD_Array") {
     constexpr size_type nx = 2;
     constexpr size_type ny = 3;
-    Array<double, 2> array{Lexical{Shape{nx, ny}}};
+    MD_Array<double, 2> array{Lexical{Shape{nx, ny}}};
 
     SECTION("element access") {
       for (size_type i = 0; i < nx; ++i) {
@@ -37,14 +37,14 @@ namespace lbm::core::testing {
 
     SECTION("conversion to and from JSON") {
       nlohmann::json json_array = array;
-      Array<double, 2> array_from_json = json_array;
+      MD_Array<double, 2> array_from_json = json_array;
       CHECK(array == array_from_json);
     }
 
     SECTION("conversion to and from text") {
       std::stringstream ss;
       ss << array;
-      Array<double, 2> array_from_text{};
+      MD_Array<double, 2> array_from_text{};
       ss >> array_from_text;
     }
   }

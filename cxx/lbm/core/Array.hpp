@@ -9,7 +9,7 @@
 namespace lbm::core {
 
   template <class T, size_type N, class Order_Type = Lexical<N>>
-  class Array {
+  class MD_Array {
 
   public:
     using value_type = T;
@@ -22,13 +22,13 @@ namespace lbm::core {
 
     using Order = Order_Type;
 
-    Array() = default;
-    Array(Order order, T init = T{})
+    MD_Array() = default;
+    MD_Array(Order order, T init = T{})
         : order_{std::move(order)}
         , values_(order_.total_size(), init) {}
 
     friend bool
-    operator<=>(const Array &, const Array &) = default;
+    operator<=>(const MD_Array &, const MD_Array &) = default;
 
     const_reference
     operator()(integral auto i, integral auto j, integral auto... ks) const {
@@ -123,7 +123,7 @@ namespace lbm::core {
     }
 
     friend void
-    to_json(json &j, const Array &array) {
+    to_json(json &j, const MD_Array &array) {
       j = json::object();
       j["Array"] = json::object();
       j["Array"]["order"] = array.order_;
@@ -131,7 +131,7 @@ namespace lbm::core {
     }
 
     friend void
-    from_json(const json &j, Array &array) {
+    from_json(const json &j, MD_Array &array) {
       array.order_ = j["Array"]["order"];
       array.values_.resize(j["Array"]["values"].size());
       copy(std::begin(j["Array"]["values"]),
@@ -140,12 +140,12 @@ namespace lbm::core {
     }
 
     friend ostream &
-    operator<<(ostream &os, const Array &array) {
+    operator<<(ostream &os, const MD_Array &array) {
       return os << json(array);
     }
 
     friend istream &
-    operator>>(istream &is, Array &array) {
+    operator>>(istream &is, MD_Array &array) {
       array = json::parse(is);
       return is;
     }
