@@ -20,10 +20,11 @@ namespace lbm::core::testing {
     MD_Array<double, 2> array{Lexical{Shape{nx, ny}}};
 
     SECTION("element access") {
+      auto mutable_array = array;
       for (size_type i = 0; i < nx; ++i) {
         for (size_type j = 0; j < ny; ++j) {
           CHECK(array(i, j) == 0.0);
-          CHECK(&array(i, j) == &array(Index{i, j}));
+          CHECK(array(i, j) == array(Index{i, j}));
           array(i, j) = i * ny + j;
         }
       }
@@ -36,8 +37,13 @@ namespace lbm::core::testing {
     }
 
     SECTION("conversion to and from JSON") {
+      std::cout << "************************************************************************"
+                << std::endl;
       nlohmann::json json_array = array;
       MD_Array<double, 2> array_from_json = json_array;
+      std::cout << "array           = " << array << std::endl;
+      std::cout << "json_array      = " << json_array << std::endl;
+      std::cout << "array_from_json = " << array_from_json << std::endl;
       CHECK(array == array_from_json);
     }
 

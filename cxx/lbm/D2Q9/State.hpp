@@ -14,9 +14,17 @@ namespace lbm::D2Q9 {
     using Lattice_Spacing = T;
     using Time_Step = size_type;
     using Node_Type = Node<T>;
-    using Nodes = MD_Array<Node_Type, 2>;
+    using Nodes = Array2<Node_Type>;
     using Obstacle_List = vector<size_type>;
     using Bounceback_Lists = Fixed_MD_Array<Dynamic_MD_Array<size_type>, Fixed_Lexical<3, 3>>;
+
+    static constexpr array<array<size_type, 2>, 9> classes{
+        // clang-format off
+      {{-1, -1}, {0, -1}, {1, -1},
+       {-1,  0}, {0,  0}, {1,  0},
+       {-1,  1}, {0,  1}, {1,  1}}
+        // clang-format on
+    };
 
     static constexpr array<array<size_type, 2>, 8> neighbor_offsets{
         // clang-format off
@@ -57,31 +65,37 @@ namespace lbm::D2Q9 {
     State() = default;
 
     State(Input input)
-        : nx_{input.nnodes(0)}
-        , ny_{input.nnodes(1)}
-        , nxm1_{nx_ - 1}
-        , nym1_{ny_ - 1}
-        , order_{Shape{nx_, ny_}}
-        , lattice_spacing_(input.lattice_spacing())
-        , nodes_{{Nodes{order_}, Nodes{order_}}} {
-
-      initialize_nodes(input);
+        : input_{input} {
+      initialize();
+      initialize_nodes();
       initialize_bounceback_lists();
-      initialize_boundary_functions(input);
+      initialize_boundary_functions();
+    }
+
+    void
+    initialize() {
+      nx_ = input_.nnodes(0);
+      ny_ = input_.nnodes(1);
+      nxm1_ = nx_ - 1;
+      nym1_ = ny_ - 1;
+      order_ = Shape{nx_, ny_};
+      lattice_spacing_ = input_.lattice_spacing();
+      nodes_ = {{Nodes{order_}, Nodes{order_}}};
     }
 
     void
     step() override {
       stream();
       collide();
-      reset_boundaries();
+      set_boundaries();
       ++time_step_;
     }
 
     friend bool
     operator==(const State &state0, const State &state1) {
+      return json(state0) == json(state1);
       return state0.time_step_ == state1.time_step_ &&
-             state0.nodes_[state0.time_step_ % 2] == state1.nodes_[state1.time_step_ % 2];
+             state0.get_current_nodes() == state1.get_current_nodes();
     }
 
     friend bool
@@ -91,14 +105,14 @@ namespace lbm::D2Q9 {
 
   private:
     void
-    initialize_nodes(Input input) {
+    initialize_nodes() {
       auto &nodes = nodes_[current_time_index()];
       for_each(std::begin(nodes),
                std::end(nodes),
                [&, this, index = size_type(0)](Node_Type &node) mutable {
                  const auto coord = node_coord(index);
-                 node.init(input.density(coord), input.velocity(coord));
-                 if (input.is_obstacle(coord)) {
+                 node.init(input_.density(coord), input_.velocity(coord));
+                 if (input_.is_obstacle(coord)) {
                    obstacles_.push_back(index);
                  }
                  ++index;
@@ -153,14 +167,12 @@ namespace lbm::D2Q9 {
     }
 
     void
-    initialize_boundary_functions(Input input) {
+    initialize_boundary_functions() {
       using enum Boundary_ID;
-      boundary_functions_[Left] = make_left_boundary_function(input);
-      boundary_functions_[Right] = make_right_boundary_function(input);
-      boundary_functions_[Bottom] = make_left_boundary_function(input);
-      boundary_functions_[Top] = make_left_boundary_function(input);
     }
 
+    // The wall boundary node should have particle densities that correspond
+    // to retro-reflection on the boundary.
     template <Boundary_Tag2 Boundary>
     function<void()>
     make_wall_boundary(Boundary) {
@@ -174,6 +186,118 @@ namespace lbm::D2Q9 {
           });
         });
       };
+    }
+
+    // The symmetry boundary node should have particle densities that match the
+    // interior node for the mirrored velocity classes. The boundary condition is
+    // set one-to-one between the boundary and interior nodes.
+    //
+    // Like specular reflection on the boundary.
+    template <Boundary_Tag2 Boundary>
+    function<void()>
+    make_symmetry_boundary(Boundary) {
+      const auto internal_offsets = get_internal_offsets(Boundary{});
+      return [=, this] {
+        auto nodes = get_next_nodes();
+        forall(nodes.begin(Boundary{}), nodes.end(Boundary{}), [this](auto node) {
+          if constexpr (same_as<Boundary, Left>) {
+            for (size_type i = -1; i < 2; ++i) {
+              for (size_type j = -1; j < 2; ++j) {
+                node(0, 0)(i, j) = node(1, 0)(-i, j);
+              }
+            }
+          } else if constexpr (same_as<Boundary, Right>) {
+            for (size_type i = -1; i < 2; ++i) {
+              for (size_type j = -1; j < 2; ++j) {
+                node(0, 0)(i, j) = node(-1, 0)(-i, j);
+              }
+            }
+          } else if constexpr (same_as<Boundary, Bottom>) {
+            for (size_type i = -1; i < 2; ++i) {
+              for (size_type j = -1; j < 2; ++j) {
+                node(0, 0)(i, j) = node(-1, 0)(-i, j);
+              }
+            }
+          } else if constexpr (same_as<Boundary, Top>) {
+            for (size_type i = -1; i < 2; ++i) {
+              for (size_type j = -1; j < 2; ++j) {
+                node(0, 0)(i, j) = node(-1, 0)(-i, j);
+              }
+            }
+          }
+        });
+      };
+    }
+
+    // For periodic boundaries, the node values from the other side of the
+    // domain must be copied.
+    template <Boundary_Tag2 Boundary>
+    function<void()>
+    make_periodic_boundary(Boundary) {
+      return [this] {
+        auto &nodes = get_next_nodes();
+
+        if constexpr (same_as<Boundary, Left> || same_as<Boundary, Right>) {
+          forall(
+              nodes.begin(left), nodes.end(left), nodes.begin(right), [](auto node1, auto node2) {
+                node1(0, 0) = node2(-1, 0);
+                node2(0, 0) = node1(1, 0);
+              });
+
+        } else if constexpr (same_as<Boundary, Bottom> || same_as<Boundary, Top>) {
+          forall(
+              nodes.begin(bottom), nodes.end(bottom), nodes.begin(top), [](auto node1, auto node2) {
+                node1(0, 0) = node2(-1, 0);
+                node2(0, 0) = node1(1, 0);
+              });
+        }
+      };
+    }
+
+    // For an inlet boundary, the particle  class densities are computed
+    // according to the defined velocity and density with the addition of
+    // bounceback for the non-equilibrium parts of the adjacent cells.
+    //
+    // Notes:
+    // ------
+    //
+    // This will need to compute the equilibrium of the constant velocity and
+    // density.  That should be done once at the start of the program.
+    //
+    // This will need to compute the equilibrium on the cells adjacent to
+    // the boundary to enable the bounceback of the nonequilibrium portion to
+    // be computed.  Naively implemented, this would compute the equilibrium
+    // three times.
+    template <Boundary_Tag2 Boundary>
+    function<void()>
+    make_inlet_boundary(Boundary) {
+      return [] {};
+    }
+
+    template <Boundary_Tag2 Boundary>
+    static constexpr Fixed_Euclidean<T, 2>
+    inward_normal(Boundary) {
+      if constexpr (same_as<Boundary, Left>) {
+        return {1, 0};
+      } else if constexpr (same_as<Boundary, Right>) {
+        return {-1, 0};
+      } else if constexpr (same_as<Boundary, Bottom>) {
+        return {0, 1};
+      } else if constexpr (same_as<Boundary, Top>) {
+        return {0, -1};
+      }
+    }
+
+    // Outlet boundaries should be nonreflecting
+    function<void()>
+    make_outlet_boundary() {
+      return [] {};
+    }
+
+    // Pressure drop boundaries will involve two boundaries, similar to periodic
+    function<void()>
+    make_pressure_drop_boundary() {
+      return [] {};
     }
 
     template <Boundary_Tag2 Boundary>
@@ -193,120 +317,20 @@ namespace lbm::D2Q9 {
       }
     }
 
-    function<void()>
-    make_symmetry_boundary(auto /*internal_offsets*/) {
-      return [=, this] {};
-    }
-
-    function<void()>
-    make_periodic_boundary() {}
-
-    function<void()>
-    make_inlet_boundary() {}
-
-    function<void()>
-    make_outlet_boundary() {}
-
-    function<void()>
-    make_pressure_drop_boundary() {}
-
-    function<void()>
-    make_left_boundary_function(Input input) {
-      Boundary_Condition bc = input.boundary(Boundary_ID::Left);
-      if (holds_alternative<Wall>(bc)) {
-
-        // This could be general enough for all wall boundaries if
-        // an iterator  and offsets were provided.
-        // This does not handle the corners.
-
-        return [this] {
-          constexpr size_type i = 0;
-          Nodes &nodes = get_next_nodes();
-          for (size_type j = 1; j < nym1_; ++j) {
-            for (auto ijoffset : left_internal_offsets) {
-              const auto [ioffset, joffset] = ijoffset;
-              nodes(i, j)(ioffset, joffset) = nodes(i + ioffset, j + joffset)(-ioffset, -joffset);
-            }
-          }
-        };
-      } else if (holds_alternative<Symmetry>(bc)) {
-        return [] {};
-      } else if (holds_alternative<Inlet>(bc)) {
-        return [] {};
-      } else if (holds_alternative<Outlet>(bc)) {
-        return [] {};
-      } else if (holds_alternative<Pressure_Drop>(bc)) {
-        return [] {};
-      } else {
-        unreachable_code(source_location::current());
-      }
-    }
-
-    function<void()>
-    make_right_boundary_function(Input input) {
-      Boundary_Condition bc = input.boundary(Boundary_ID::Right);
-      if (holds_alternative<Wall>(bc)) {
-        return [] {};
-      } else if (holds_alternative<Symmetry>(bc)) {
-        return [] {};
-      } else if (holds_alternative<Inlet>(bc)) {
-        return [] {};
-      } else if (holds_alternative<Outlet>(bc)) {
-        return [] {};
-      } else if (holds_alternative<Pressure_Drop>(bc)) {
-        return [] {};
-      } else {
-        unreachable_code(source_location::current());
-      }
-    }
-
-    function<void()>
-    make_bottom_boundary_function(Input input) {
-      Boundary_Condition bc = input.boundary(Boundary_ID::Bottom);
-      if (holds_alternative<Wall>(bc)) {
-        return [] {};
-      } else if (holds_alternative<Symmetry>(bc)) {
-        return [] {};
-      } else if (holds_alternative<Inlet>(bc)) {
-        return [] {};
-      } else if (holds_alternative<Outlet>(bc)) {
-        return [] {};
-      } else if (holds_alternative<Pressure_Drop>(bc)) {
-        return [] {};
-      } else {
-        unreachable_code(source_location::current());
-      }
-    }
-
-    function<void()>
-    make_top_boundary_function(Input input) {
-      Boundary_Condition bc = input.boundary(Boundary_ID::Top);
-      if (holds_alternative<Wall>(bc)) {
-        return [] {};
-      } else if (holds_alternative<Symmetry>(bc)) {
-        return [] {};
-      } else if (holds_alternative<Inlet>(bc)) {
-        return [] {};
-      } else if (holds_alternative<Outlet>(bc)) {
-        return [] {};
-      } else if (holds_alternative<Pressure_Drop>(bc)) {
-        return [] {};
-      } else {
-        unreachable_code(source_location::current());
-      }
-    }
-
     void
-    reset_boundaries() {
-      using enum Boundary_ID;
-      boundary_functions_[Left]();
-      boundary_functions_[Right]();
-      boundary_functions_[Bottom]();
-      boundary_functions_[Top]();
+    set_boundaries() {
+      for_each(std::begin(boundary_functions_),
+               std::end(boundary_functions_),
+               [](auto &boundary_function) { boundary_function(); });
     }
 
     Nodes &
     get_current_nodes() {
+      return nodes_[current_time_index()];
+    }
+
+    const Nodes &
+    get_current_nodes() const {
       return nodes_[current_time_index()];
     }
 
@@ -327,19 +351,17 @@ namespace lbm::D2Q9 {
 
     void
     stream() {
-      const auto &prev_nodes = nodes_[time_step_ % 2];
-      auto &nodes = nodes_[(time_step_ + 1) % 2];
-      for (size_type i = 1; i < nxm1_; ++i) {
-        for (size_type j = 1; j < nym1_; ++i) {
-          for_each(
-              std::begin(neighbor_offsets), std::end(neighbor_offsets), [&](const auto &offsets) {
-                const auto &[ioffset, joffset] = offsets;
-                const size_type ineigh = i + ioffset;
-                const size_type jneigh = j + joffset;
-                nodes(i, j)(-ioffset, -joffset) = prev_nodes(ineigh, jneigh)(-ioffset, -joffset);
-              });
-        }
-      }
+      const auto &current_nodes = get_current_nodes();
+      auto &next_nodes = get_next_nodes();
+      forall(current_nodes.begin(interior),
+             current_nodes.end(interior),
+             next_nodes.begin(interior),
+             [](auto current_node, auto next_node) {
+               for_each(classes.begin(), classes.end(), [&](auto offsets) {
+                 const auto &[i, j] = offsets;
+                 next_node(0, 0)(i, j) = current_node(-i, -j)(i, j);
+               });
+             });
     }
 
     void
@@ -351,18 +373,26 @@ namespace lbm::D2Q9 {
     json
     get_json() const override {
       json j = json::object();
+      j["input"] = input_;
       j["timeStep"] = time_step_;
-      j["nodes"] = nodes_[time_step_ % 2];
+      j["nodes"] = get_current_nodes();
       return j;
     }
 
     void
     set_json(const json &j) override {
-      time_step_ = j["timeStep"];
-      nodes_[time_step_ % 2] = j["nodes"];
-      nodes_[(time_step_ + 1) % 2] = j["nodes"];
-    }
+      assert(j.contains("/input"_json_pointer));
+      assert(j.contains("/timeStep"_json_pointer));
+      assert(j.contains("/nodes"_json_pointer));
 
+      input_ = j["input"];
+      initialize();
+
+      time_step_ = j["timeStep"];
+      auto &nodes = get_current_nodes();
+      nodes = j["nodes"];
+    }
+    Input input_{};
     size_type nx_{};
     size_type ny_{};
     size_type nxm1_{};
@@ -373,7 +403,7 @@ namespace lbm::D2Q9 {
     Time_Step time_step_{};
     Obstacle_List obstacles_{};
     Bounceback_Lists bounceback_lists_{};
-    unordered_map<Boundary_ID, function<void()>> boundary_functions_{};
+    vector<function<void()>> boundary_functions_{};
   };
 
 } // end of namespace lbm::D2Q9

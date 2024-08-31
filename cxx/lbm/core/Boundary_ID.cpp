@@ -7,22 +7,22 @@ namespace lbm::core {
     using enum Boundary_ID;
     switch (id) {
     case Left:
-      j = "Left";
+      j = "left";
       break;
     case Right:
-      j = "Right";
+      j = "right";
       break;
     case Bottom:
-      j = "Bottom";
+      j = "bottom";
       break;
     case Top:
-      j = "Top";
+      j = "top";
       break;
     case Front:
-      j = "Front";
+      j = "front";
       break;
     case Back:
-      j = "Back";
+      j = "back";
       break;
     }
   }
@@ -30,17 +30,17 @@ namespace lbm::core {
   void
   from_json(const json &j, Boundary_ID &id) {
     using enum Boundary_ID;
-    if (j == "Left") {
+    if (j == "left") {
       id = Left;
-    } else if (j == "Right") {
+    } else if (j == "right") {
       id = Right;
-    } else if (j == "Bottom") {
+    } else if (j == "bottom") {
       id = Bottom;
-    } else if (j == "Top") {
+    } else if (j == "top") {
       id = Top;
-    } else if (j == "Front") {
+    } else if (j == "front") {
       id = Front;
-    } else if (j == "Back") {
+    } else if (j == "back") {
       id = Back;
     }
   }

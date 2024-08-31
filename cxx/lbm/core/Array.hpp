@@ -3,15 +3,16 @@
 //
 // ... LBM Bench header files
 //
+#include <lbm/core/JSON_Convertible.hpp>
 #include <lbm/core/Lexical.hpp>
 #include <lbm/core/base_types.hpp>
 
 namespace lbm::core {
 
   template <class T, size_type N, class Order_Type = Lexical<N>>
-  class MD_Array {
-
+  class MD_Array : public vector<T> {
   public:
+    using Base = vector<T>;
     using value_type = T;
     using reference = T &;
     using const_reference = const T &;
@@ -24,119 +25,26 @@ namespace lbm::core {
 
     MD_Array() = default;
     MD_Array(Order order, T init = T{})
-        : order_{std::move(order)}
-        , values_(order_.total_size(), init) {}
+        : Base(order.total_size(), init)
+        , order_{std::move(order)} {}
 
-    friend bool
-    operator<=>(const MD_Array &, const MD_Array &) = default;
+    friend void
+    from_json(const json &j, MD_Array &array) {
+      assert(j.contains("order"));
+      array.order_ = j["order"];
 
-    const_reference
-    operator()(integral auto i, integral auto j, integral auto... ks) const {
-      static_assert(2 + sizeof...(ks) == N);
-      return values_[order_.storage_index(Index{i, j, ks...})];
-    }
-
-    reference
-    operator()(integral auto i, integral auto j, integral auto... ks) {
-      static_assert(2 + sizeof...(ks) == N);
-      return values_[order_.storage_index(Index_Type{i, j, ks...})];
-    }
-
-    const_reference
-    operator()(const Index_Type &index) const {
-      return values_[order_.storage_index(index)];
-    }
-
-    reference
-    operator()(const Index_Type &index) {
-      return values_[order_.storage_index(index)];
-    }
-
-    size_type
-    size() const {
-      return order_.size();
-    }
-
-    size_type
-    size(size_type idim) const {
-      return order_.size(idim);
-    }
-
-    iterator
-    begin() {
-      return values_.begin();
-    }
-
-    iterator
-    end() {
-      return values_.end();
-    }
-
-    const_iterator
-    begin() const {
-      return values_.begin();
-    }
-
-    const_iterator
-    end() const {
-      return values_.end();
-    }
-
-    const_iterator
-    cbegin() const {
-      return begin();
-    }
-
-    const_iterator
-    cend() const {
-      return end();
-    }
-
-    iterator
-    rbegin() {
-      return values_.rbegin();
-    }
-
-    iterator
-    rend() {
-      return values_.rend();
-    }
-
-    const_iterator
-    rbegin() const {
-      return values_.rbegin();
-    }
-
-    const_iterator
-    rend() const {
-      return values_.rend();
-    }
-
-    const_iterator
-    crbegin() const {
-      return rbegin();
-    }
-
-    const_iterator
-    crend() const {
-      return rend();
+      assert(j.contains("values"));
+      array.clear();
+      array.reserve(std::size(j["values"]));
+      copy(std::cbegin(j["values"]), std::cend(j["values"]), back_inserter(array));
     }
 
     friend void
     to_json(json &j, const MD_Array &array) {
       j = json::object();
-      j["Array"] = json::object();
-      j["Array"]["order"] = array.order_;
-      j["Array"]["values"] = array.values_;
-    }
-
-    friend void
-    from_json(const json &j, MD_Array &array) {
-      array.order_ = j["Array"]["order"];
-      array.values_.resize(j["Array"]["values"].size());
-      copy(std::begin(j["Array"]["values"]),
-           std::end(j["Array"]["values"]),
-           std::begin(array.values_));
+      j["order"] = array.order_;
+      j["values"] = json::array();
+      copy(std::cbegin(array), std::cend(array), back_inserter(j["values"]));
     }
 
     friend ostream &
@@ -150,9 +58,43 @@ namespace lbm::core {
       return is;
     }
 
+    friend bool
+    operator<=>(const MD_Array &, const MD_Array &) = default;
+
+    const_reference
+    operator()(integral auto i, integral auto j, integral auto... ks) const {
+      static_assert(2 + sizeof...(ks) == N);
+      return Base::operator[](order_.storage_index(Index{i, j, ks...}));
+    }
+
+    reference
+    operator()(integral auto i, integral auto j, integral auto... ks) {
+      static_assert(2 + sizeof...(ks) == N);
+      return Base::operator[](order_.storage_index(Index_Type{i, j, ks...}));
+    }
+
+    const_reference
+    operator()(const Index_Type &index) const {
+      return Base::operator[](order_.storage_index(index));
+    }
+
+    reference
+    operator()(const Index_Type &index) {
+      return Base::operator[](order_.storage_index(index));
+    }
+
+    size_type
+    size() const {
+      return order_.size();
+    }
+
+    size_type
+    size(size_type idim) const {
+      return order_.size(idim);
+    }
+
   private:
     Order order_{};
-    vector<T> values_{};
   };
 
 } // namespace lbm::core

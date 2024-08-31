@@ -51,6 +51,13 @@ def make_command_line_parser(prog):
         Otherwise, it is an error if the output file
         already exists""",
     )
+
+    parser.add_argument(
+        "--test-jobs",
+        type=int,
+        default=1,
+        help="The number of jobs to use when running the tests",
+    )
     return parser
 
 
@@ -66,47 +73,87 @@ def validate_input(config):
 
 
 def run(config):
+    input_data = read_input_data(config)
+    output_data = make_output_data(config, input_data)
+    write_output_data(config, output_data)
+
+
+def read_input_data(config):
     with open(config.filename, "r", encoding="utf-8") as inp:
-        input_data = json.load(inp)
-    output_data = {
-        "version": 6,
-        "cmakeMinimumRequired": {"major": 3, "minor": 21, "patch": 0},
-        "configurePresets": [
-            make_configure_preset(config, compiler) for compiler in input_data
-        ]
-        + [make_devel_configure_preset(config, compiler) for compiler in input_data],
-        "buildPresets": (
-            [{"name": "baseBuild", "jobs": 16, "configurePreset": "default"}]
-            + [make_build_preset(compiler["name"]) for compiler in input_data]
-            + [
-                make_build_preset(compiler["name"] + "-devel")
-                for compiler in input_data
-            ]
-        ),
-        "testPresets": (
-            [
-                {
-                    "name": "baseTest",
-                    "output": {"outputOnFailure": True},
-                    "configurePreset": "default",
-                    "execution": {"jobs": 16},
-                }
-            ]
-            + [make_test_preset(compiler["name"]) for compiler in input_data]
-            + [make_test_preset(compiler["name"] + "-devel") for compiler in input_data]
-        ),
-        "workflowPresets": [
-            make_workflow_preset(compiler["name"]) for compiler in input_data
-        ]
-        + [
-            make_workflow_preset(compiler["name"] + "-devel") for compiler in input_data
-        ],
-    }
+        return json.load(inp)
+
+
+def write_output_data(config, output_data):
     if config.stdout:
         print(json.dumps(output_data))
     else:
         with open(config.output_file, "w", encoding="utf-8") as out:
             json.dump(output_data, out, indent=4)
+
+
+def make_output_data(config, input_data):
+    return {
+        "version": 6,
+        "cmakeMinimumRequired": {"major": 3, "minor": 21, "patch": 0},
+        "configurePresets": make_configure_presets(config, input_data),
+        "buildPresets": make_build_presets(config, input_data),
+        "testPresets": make_test_presets(config, input_data),
+        "workflowPresets": make_workflow_presets(config, input_data),
+    }
+
+
+def make_configure_presets(config, input_data):
+    return [make_configure_preset(config, compiler) for compiler in input_data]
+
+
+def make_build_presets(config, input_data):
+    return (
+        [{"name": "baseBuild", "jobs": 16, "configurePreset": "default"}]
+        + [
+            make_build_preset(compiler["name"], "", "Release")
+            for compiler in input_data
+        ]
+        + [
+            make_build_preset(compiler["name"], "-devel", "RelWithDebInfo")
+            for compiler in input_data
+        ]
+    )
+
+
+def make_build_preset(workflow_name, suffix, configuration):
+    return {
+        "name": workflow_name + suffix,
+        "inherits": "baseBuild",
+        "configuration": configuration,
+        "configurePreset": workflow_name,
+    }
+
+
+def make_test_presets(config, input_data):
+    return (
+        [
+            {
+                "name": "baseTest",
+                "output": {"outputOnFailure": True},
+                "configurePreset": "default",
+                "execution": {"jobs": config.test_jobs},
+            }
+        ]
+        + [make_test_preset(compiler["name"], "", "Release") for compiler in input_data]
+        + [
+            make_test_preset(compiler["name"], "-devel", "RelWithDebInfo")
+            for compiler in input_data
+        ]
+    )
+
+
+def make_test_preset(workflow_name, suffix, configuration):
+    return {
+        "name": workflow_name + suffix,
+        "inherits": "baseTest",
+        "configuration": configuration,
+        "configurePreset": workflow_name,
+    }
 
 
 def make_configure_preset(config, compiler):
@@ -116,27 +163,40 @@ def make_configure_preset(config, compiler):
         "hidden": False,
         "binaryDir": binary_directory(config, compiler),
         "cacheVariables": {"CMAKE_BUILD_TYPE": "Release"},
-        "environment": {
-            "COMPILER_ROOT": compiler["root"],
-            "PATH": "$env{COMPILER_ROOT}/bin:$penv{PATH}",
-            "LIBRARY_PATH": "$env{COMPILER_ROOT}/lib:$env{COMPILER_ROOT}/lib64:$penv{LIBRARY_PATH}",
-            "LD_LIBRARY_PATH": "$env{COMPILER_ROOT}/lib:$env{COMPILER_ROOT}/lib64:$penv{LD_LIBRARY_PATH}",
-            "CPATH": "$env{COMPILER_ROOT}/lib",
-            "CC": "$env{COMPILER_ROOT}/bin/" + compiler["cc"],
-            "CXX": "$env{COMPILER_ROOT}/bin/" + compiler["cxx"],
-        },
+        "environment": (
+            {
+                "PATH": f"{compiler['root']}/bin:" + "$penv{PATH}",
+                "LIBRARY_PATH": f"{compiler['root']}/lib:{compiler['root']}/lib64:"
+                + "$penv{LIBRARY_PATH}",
+                "LD_LIBRARY_PATH": f"{compiler['root']}/lib:{compiler['root']}/lib64:"
+                + "$penv{LIBRARY_PATH}",
+                "CPATH": f"{compiler['root']}/include" + "$penv{CPATH}",
+                "CC": compiler["cc"],
+                "CXX": compiler["cxx"],
+            }
+            if "addPaths" in compiler and compiler["addPaths"]
+            else {
+                "CC": f"{compiler['root']}/bin/{compiler['cc']}",
+                "CXX": f"{compiler['root']}/bin/{compiler['cxx']}",
+            }
+        ),
     }
 
 
-def make_devel_configure_preset(config, compiler):
+def make_workflow_presets(config, input_data):
+    return [make_workflow_preset(compiler["name"], "") for compiler in input_data] + [
+        make_workflow_preset(compiler["name"], "-devel") for compiler in input_data
+    ]
+
+
+def make_workflow_preset(workflow_name, suffix):
     return {
-        "name": compiler["name"] + "-devel",
-        "inherits": compiler["name"],
-        "hidden": False,
-        "binaryDir": devel_binary_directory(config, compiler),
-        "cacheVariables": {
-            "CMAKE_BUILD_TYPE": "RelWithDebInfo",
-        },
+        "name": workflow_name + suffix,
+        "steps": [
+            {"type": "configure", "name": workflow_name},
+            {"type": "build", "name": workflow_name + suffix},
+            {"type": "test", "name": workflow_name + suffix},
+        ],
     }
 
 
@@ -152,33 +212,6 @@ def binary_directory(config, compiler):
     return "${sourceDir}/build" + (
         "-" + compiler["name"] if not config.shared_build_directory else ""
     )
-
-
-def make_build_preset(workflow_name):
-    return {
-        "name": workflow_name,
-        "inherits": "baseBuild",
-        "configurePreset": workflow_name,
-    }
-
-
-def make_test_preset(workflow_name):
-    return {
-        "name": workflow_name,
-        "inherits": "baseTest",
-        "configurePreset": workflow_name,
-    }
-
-
-def make_workflow_preset(workflow_name):
-    return {
-        "name": workflow_name,
-        "steps": [
-            {"type": "configure", "name": workflow_name},
-            {"type": "build", "name": workflow_name},
-            {"type": "test", "name": workflow_name},
-        ],
-    }
 
 
 MISSING_INPUT_ERROR = """

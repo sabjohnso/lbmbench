@@ -3,13 +3,16 @@
 //
 // ... LBM Bench header files
 //
+#include <lbm/core/JSON_Convertible.hpp>
 #include <lbm/core/base_types.hpp>
 #include <lbm/core/import.hpp>
 
 namespace lbm::core {
 
   template <size_type N>
-  class Shape : public array<size_type, N> {
+  class Shape
+      : public JSON_Convertible
+      , array<size_type, N> {
   public:
     using Base = array<size_type, N>;
     constexpr Shape() = default;
@@ -18,27 +21,8 @@ namespace lbm::core {
       static_assert(2 + sizeof...(ns) == N);
     }
 
-    friend void
-    to_json(json &j, const Shape &shape) {
-      j = json::object();
-      j["Shape"] = static_cast<const Base &>(shape);
-    }
-
-    friend void
-    from_json(const json &j, Shape &shape) {
-      static_cast<Base &>(shape) = j["Shape"];
-    }
-
-    friend ostream &
-    operator<<(ostream &os, const Shape &shape) {
-      return os << json(shape);
-    }
-
-    friend istream &
-    operator>>(istream &is, Shape &shape) {
-      shape = json::parse(is);
-      return is;
-    }
+    using Base::operator[];
+    using Base::at;
 
     static constexpr size_type
     degree() {
@@ -48,6 +32,20 @@ namespace lbm::core {
     size_type
     total_size() const {
       return reduce(Base::begin(), Base::end(), size_type(1), multiplies{});
+    }
+
+  private:
+    json
+    get_json() const override {
+      json j = json::object();
+      j["Shape"] = json::array();
+      copy(Base::cbegin(), Base::cend(), back_inserter(j["Shape"]));
+      return j;
+    }
+
+    void
+    set_json(json const &j) override {
+      copy(std::cbegin(j["Shape"]), std::cend(j["Shape"]), Base::begin());
     }
   };
 

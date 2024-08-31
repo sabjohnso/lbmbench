@@ -21,6 +21,7 @@
 #include <concepts>
 #include <functional>
 #include <iostream>
+#include <iterator>
 #include <numeric>
 #include <source_location>
 #include <sstream>
@@ -55,6 +56,7 @@ namespace lbm::core {
   using std::transform_reduce;
 
   // from functional
+  using std::copy;
   using std::equal_to;
   using std::function;
   using std::logical_and;
@@ -86,6 +88,9 @@ namespace lbm::core {
 
   // from functional
   using std::multiplies;
+
+  // from iterator
+  using std::back_inserter;
 
   // from numeric
   using std::accumulate;

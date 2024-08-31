@@ -28,7 +28,7 @@ namespace lbm::D2Q9::testing {
     constexpr double v0 = 3.0;
     constexpr double width = 200.0;
     constexpr double height = 100.0;
-    constexpr double lattice_spacing = 5.0;
+    constexpr double lattice_spacing = 50.0;
     constexpr double inlet_density = 1.0;
     constexpr double inlet_speed = 4.0;
     constexpr double outlet_density = 1.0;
@@ -57,6 +57,7 @@ namespace lbm::D2Q9::testing {
 
     SECTION("Conversion to and from JSON") {
       json json_state = state;
+
       State<double> state_from_json = json_state;
       CHECK(state == state_from_json);
     }

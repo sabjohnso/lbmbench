@@ -67,12 +67,12 @@ namespace lbm::D2Q9 {
       return storage_(i + 1, j + 1);
     }
 
-    friend bool
+    friend constexpr bool
     operator==(const Velocity_Distribution &vd1, const Velocity_Distribution &vd2) {
       return vd1.storage_ == vd2.storage_;
     }
 
-    friend bool
+    friend constexpr bool
     operator!=(const Velocity_Distribution &vd1, const Velocity_Distribution &vd2) {
       return !(vd1 == vd2);
     }
@@ -96,6 +96,11 @@ namespace lbm::D2Q9 {
     constexpr Velocity
     velocity() const {
       return momentum() / density();
+    }
+
+    constexpr Velocity_Distribution
+    nonequilibrium() const {
+      return equilibrium(density(), velocity()) - *this;
     }
 
     void
@@ -241,6 +246,36 @@ namespace lbm::D2Q9 {
     friend constexpr Velocity_Distribution
     operator/(const Velocity_Distribution &f, Value_Type s) {
       return Velocity_Distribution{f.storage_ / s};
+    }
+
+    auto
+    begin() {
+      return storage_.begin();
+    }
+
+    auto
+    end() {
+      return storage_.end();
+    }
+
+    auto
+    begin() const {
+      return storage_.begin();
+    }
+
+    auto
+    end() const {
+      return storage_.end();
+    }
+
+    auto
+    cbegin() const {
+      return begin();
+    }
+
+    auto
+    cend() const {
+      return end();
     }
 
   private:

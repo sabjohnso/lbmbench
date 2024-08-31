@@ -48,5 +48,12 @@ namespace lbm::core::testing {
       REQUIRE_THAT(dist_velocity[0], Catch::Matchers::WithinAbs(velocity[0], 1.0E-12));
       REQUIRE_THAT(dist_velocity[1], Catch::Matchers::WithinAbs(velocity[1], 1.0E-12));
     }
+
+    SECTION("Compute nonequilibrium part") {
+      constexpr auto nedist = dist.nonequilibrium();
+      for_each(nedist.begin(), nedist.end(), [](auto f) {
+        REQUIRE_THAT(f, Catch::Matchers::WithinAbs(0.0, 1.0E-12));
+      });
+    }
   }
 } // namespace lbm::core::testing

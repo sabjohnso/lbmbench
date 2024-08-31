@@ -27,14 +27,14 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         build_type: [Release]
-        c_compiler: [gcc, clang]
+        c_compiler: [gcc, clang-15]
         include:
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
           - os: ubuntu-latest
-            c_compiler: clang
-            cpp_compiler: clang++
+            c_compiler: clang-15
+            cpp_compiler: clang++-15
 
     steps:
     - uses: actions/checkout@v4
@@ -49,6 +49,7 @@ jobs:
       run : |
         sudo apt-get update
         sudo apt-get install libboost-program-options-dev
+        sudo apt-get install clang-15
 
     - name: Configure CMake
       # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.

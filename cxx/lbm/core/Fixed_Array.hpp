@@ -39,6 +39,22 @@ namespace lbm::core {
       static_assert(2 + sizeof...(xs) == size());
     }
 
+    friend constexpr Fixed_MD_Array
+    operator+(const Fixed_MD_Array &xs, const Fixed_MD_Array &ys) {
+      return [&]<std::size_t... i>(index_sequence<i...>) {
+        return Fixed_MD_Array{xs[i] + ys[i]...};
+      }
+      (make_index_sequence<storage_size>());
+    }
+
+    friend constexpr Fixed_MD_Array
+    operator-(const Fixed_MD_Array &xs, const Fixed_MD_Array &ys) {
+      return [&]<std::size_t... i>(index_sequence<i...>) {
+        return Fixed_MD_Array{xs[i] - ys[i]...};
+      }
+      (make_index_sequence<storage_size>());
+    }
+
     Fixed_MD_Array &
     fill(Value_Type x) {
       using std::fill;

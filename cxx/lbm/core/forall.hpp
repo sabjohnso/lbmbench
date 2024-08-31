@@ -28,8 +28,8 @@ namespace lbm::core {
    * not the dereferenced value, and accepts to ranges.
    */
   template <class Input_Iter1, class Input_Iter2, class Binary_Function>
-  Unary_Function
-  forall(Input_Iter first1, Input_Iter last1, Input_Iter first2, Binary_Function func) {
+  Binary_Function
+  forall(Input_Iter1 first1, Input_Iter1 last1, Input_Iter2 first2, Binary_Function func) {
     while (first1 != last1) {
       func(first1++, first2++);
     }

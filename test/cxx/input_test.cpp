@@ -91,7 +91,7 @@ namespace lbm::core::testing {
     }
 
     SECTION("Conversion to and from JSON") {
-
+      std::cout << json(input).dump(4) << std::endl;
       json json_input = input;
       Input input_from_json = json_input;
       CHECK(input == input_from_json);

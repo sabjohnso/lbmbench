@@ -2,26 +2,26 @@
     {
         "name" : "gcc-10",
         "root" : "/usr",
-        "cc" : "gcc-10",
-        "cxx" : "g++-10"
+        "cc" : "/usr/bin/gcc-10",
+        "cxx" : "/usr/bin/g++-10"
     },
     {
         "name" : "gcc-11",
         "root" : "/usr",
-        "cc" : "gcc-11",
-        "cxx" : "g++-11"
+        "cc" : "/usr/bin/gcc-11",
+        "cxx" : "/usr/bin/g++-11"
     },
     {
         "name" : "gcc-12",
         "root" : "/usr",
-        "cc" : "gcc-12",
-        "cxx" : "g++-12"
+        "cc" : "/usr/bin/gcc-12",
+        "cxx" : "/usr/bin/g++-12"
     },
     {
         "name" : "gcc-13",
         "root" : "$penv{HOME}/.local/opt/gcc/13.3.0",
-        "cc" : "gcc",
-        "cxx" : "g++"
+        "cc" : "/home/sbj/.local/opt/gcc/13.3.0/bin/gcc",
+        "cxx" : "/home/sbj/.local/opt/gcc/13.3.0/bin/g++"
     },
     {
         "name" : "clang-11",
@@ -32,38 +32,25 @@
     {
         "name" : "clang-12",
         "root" : "/usr",
-        "cc" : "clang-12",
-        "cxx" : "clang++-12"
+        "cc" : "/usr/bin/clang-12",
+        "cxx" : "/usr/bin/clang++-12"
     },
     {
         "name" : "clang-13",
         "root" : "/usr",
-        "cc" : "clang-13",
-        "cxx" : "clang++-13"
+        "cc" : "/usr/bin/clang-13",
+        "cxx" : "/usr/bin/clang++-13"
     },
     {
         "name" : "clang-14",
         "root" : "/usr",
-        "cc" : "clang-14",
-        "cxx" : "clang++-14"
+        "cc" : "/usr/bin/clang-14",
+        "cxx" : "/usr/bin/clang++-14"
     },
     {
         "name" : "clang-15",
         "root" : "/usr",
-        "cc" : "clang-15",
-        "cxx" : "clang++-15"
-    },
-    {
-        "name" : "clang-17",
-        "root" : "$penv{HOME}/.local/opt/llvm/17.0.6",
-        "cc" : "clang",
-        "cxx" : "clang++"
-    },
-    {
-        "name" : "clang-18",
-        "root" : "$penv{HOME}/.local/opt/llvm/18.1.4",
-        "cc" : "clang",
-        "cxx" : "clang++"
+        "cc" : "/usr/bin/clang-15",
+        "cxx" : "/usr/bin/clang++-15"
     }
-
 ]

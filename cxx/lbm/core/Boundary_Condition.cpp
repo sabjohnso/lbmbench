@@ -99,6 +99,9 @@ namespace lbm::core {
 
   void
   Wall::set_json(const json &j) {
+    assert(j.contains("/wall"_json_pointer));
+    assert(j.contains("/wall/boundary"_json_pointer));
+
     boundary_ = j["wall"]["boundary"];
   }
 
@@ -126,13 +129,17 @@ namespace lbm::core {
   json
   Symmetry::get_json() const {
     json j = json::object();
-    j["symmetry"] = boundary_;
+    j["symmetry"] = json::object();
+    j["symmetry"]["boundary"] = boundary_;
     return j;
   }
 
   void
   Symmetry::set_json(const json &j) {
-    boundary_ = j["symmetry"];
+    assert(j.contains("/symmetry"_json_pointer));
+    assert(j.contains("/symmetry/boundary"_json_pointer));
+
+    boundary_ = j["symmetry"]["boundary"];
   }
 
   //
@@ -173,13 +180,21 @@ namespace lbm::core {
   json
   Inlet::get_json() const {
     json j = json::object();
+    j["inlet"] = json::object();
     j["inlet"]["boundary"] = boundary_;
-    j["inlet"]["inletSpeed"] = speed_;
+    j["inlet"]["density"] = density_;
+    j["inlet"]["speed"] = speed_;
+
     return j;
   }
 
   void
   Inlet::set_json(const json &j) {
+    assert(j.contains("/inlet"_json_pointer));
+    assert(j.contains("/inlet/boundary"_json_pointer));
+    assert(j.contains("/inlet/density"_json_pointer));
+    assert(j.contains("/inlet/speed"_json_pointer));
+
     boundary_ = j["inlet"]["boundary"];
     density_ = j["inlet"]["density"];
     speed_ = j["inlet"]["speed"];
@@ -232,8 +247,13 @@ namespace lbm::core {
 
   void
   Outlet::set_json(const json &j) {
+    assert(j.contains("/outlet"_json_pointer));
+    assert(j.contains("/outlet/boundary"_json_pointer));
+    assert(j.contains("/outlet/density"_json_pointer));
+    assert(j.contains("/outlet/speed"_json_pointer));
+
     boundary_ = j["outlet"]["boundary"];
-    density_ = j["outlet"]["dentity"];
+    density_ = j["outlet"]["density"];
     speed_ = j["outlet"]["speed"];
   }
 
@@ -271,6 +291,9 @@ namespace lbm::core {
 
   void
   Pressure_Drop::set_json(const json &j) {
+    assert(j.contains("/pressureDrop/boundary"_json_pointer));
+    assert(j.contains("/pressureDrop/value"_json_pointer));
+
     boundary_ = j["pressureDrop"]["boundary"];
     value_ = j["pressureDrop"]["value"];
   }

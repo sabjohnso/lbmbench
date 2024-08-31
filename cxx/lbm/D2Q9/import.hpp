@@ -4,6 +4,7 @@
 // ... LBM Bench header files
 //
 #include <lbm/core/Array.hpp>
+#include <lbm/core/Array2.hpp>
 #include <lbm/core/Boundary_Condition.hpp>
 #include <lbm/core/Boundary_ID.hpp>
 #include <lbm/core/Dynamic_Array.hpp>
@@ -16,6 +17,7 @@
 #include <lbm/core/Lexical.hpp>
 #include <lbm/core/Shape.hpp>
 #include <lbm/core/base_types.hpp>
+#include <lbm/core/forall.hpp>
 #include <lbm/core/misc.hpp>
 #include <lbm/core/subdomain_tags.hpp>
 #include <lbm/exceptions/Unreachable.hpp>
@@ -36,6 +38,8 @@ namespace lbm::D2Q9 {
   using lbm::core::Bottom;
   using lbm::core::bottom;
   using lbm::core::Boundary_Tag2;
+  using lbm::core::Interior;
+  using lbm::core::interior;
   using lbm::core::Left;
   using lbm::core::left;
   using lbm::core::Right;
@@ -43,6 +47,7 @@ namespace lbm::D2Q9 {
   using lbm::core::Top;
   using lbm::core::top;
 
+  using lbm::core::Array2;
   using lbm::core::Boundary_Condition;
   using lbm::core::Boundary_ID;
   using lbm::core::Dynamic_MD_Array;
