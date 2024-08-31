@@ -63,6 +63,10 @@ namespace lbm::core {
       constexpr double density = 1.0;
       constexpr double speed = 3.0;
       Boundary_Condition boundary_condition{Inlet{south, density, speed}};
+      std::cout << "************************************************************************\n";
+      std::cout << boundary_condition << std::endl;
+      std::cout << "************************************************************************\n";
+
       SECTION("Conversion to and from json") {
         json json_boundary_condition = boundary_condition;
         std::cout << json_boundary_condition << std::endl;
