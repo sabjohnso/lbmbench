@@ -3,8 +3,8 @@
 //
 // ... LBM Bench header files
 //
-#include <lbm/core/Array.hpp>
 #include <lbm/core/Boundary_ID.hpp>
+#include <lbm/core/MD_Array.hpp>
 #include <lbm/core/import.hpp>
 #include <lbm/core/subdomain_tags.hpp>
 
