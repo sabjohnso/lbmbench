@@ -12,7 +12,6 @@
 namespace lbm::core::testing {
 
   TEST_CASE("Node Array") {
-    using enum Boundary_ID;
     constexpr size_type nx = 4;
     constexpr size_type ny = 5;
     constexpr size_type nxm1 = nx - 1;

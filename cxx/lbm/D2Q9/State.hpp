@@ -167,9 +167,7 @@ namespace lbm::D2Q9 {
     }
 
     void
-    initialize_boundary_functions() {
-      using enum Boundary_ID;
-    }
+    initialize_boundary_functions() {}
 
     // The wall boundary node should have particle densities that correspond
     // to retro-reflection on the boundary.
