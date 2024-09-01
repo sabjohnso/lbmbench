@@ -1,27 +1,29 @@
+//
+// ... LBM Bench header files
+//
 #include <lbm/core/Boundary_ID.hpp>
 
 namespace lbm::core {
 
   void
   to_json(json &j, Boundary_ID id) {
-    using enum Boundary_ID;
     switch (id) {
-    case Left:
+    case Boundary_ID::Left:
       j = "left";
       break;
-    case Right:
+    case Boundary_ID::Right:
       j = "right";
       break;
-    case Bottom:
+    case Boundary_ID::Bottom:
       j = "bottom";
       break;
-    case Top:
+    case Boundary_ID::Top:
       j = "top";
       break;
-    case Front:
+    case Boundary_ID::Front:
       j = "front";
       break;
-    case Back:
+    case Boundary_ID::Back:
       j = "back";
       break;
     }
@@ -29,19 +31,18 @@ namespace lbm::core {
 
   void
   from_json(const json &j, Boundary_ID &id) {
-    using enum Boundary_ID;
     if (j == "left") {
-      id = Left;
+      id = Boundary_ID::Left;
     } else if (j == "right") {
-      id = Right;
+      id = Boundary_ID::Right;
     } else if (j == "bottom") {
-      id = Bottom;
+      id = Boundary_ID::Bottom;
     } else if (j == "top") {
-      id = Top;
+      id = Boundary_ID::Top;
     } else if (j == "front") {
-      id = Front;
+      id = Boundary_ID::Front;
     } else if (j == "back") {
-      id = Back;
+      id = Boundary_ID::Back;
     }
   }
 

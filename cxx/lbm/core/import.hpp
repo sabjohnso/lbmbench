@@ -5,7 +5,6 @@
 //
 #include <lbm/exceptions/Bad_Float_Type.hpp>
 #include <lbm/exceptions/Bad_Kernel_Name.hpp>
-#include <lbm/exceptions/Unreachable.hpp>
 
 //
 // ... Third-party header files
@@ -23,7 +22,6 @@
 #include <iostream>
 #include <iterator>
 #include <numeric>
-#include <source_location>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -41,7 +39,7 @@ namespace lbm::core {
 
   using lbm::exceptions::Bad_Float_Type;
   using lbm::exceptions::Bad_Kernel_Name;
-  using lbm::exceptions::unreachable_code;
+  // using lbm::exceptions::Source_Location;
 
   // from utility
   using std::index_sequence;
@@ -114,9 +112,6 @@ namespace lbm::core {
   using std::common_type_t;
   using std::is_default_constructible_v;
   using std::remove_cvref_t;
-
-  // from source_location
-  using std::source_location;
 
   // from memory
   using std::make_shared;

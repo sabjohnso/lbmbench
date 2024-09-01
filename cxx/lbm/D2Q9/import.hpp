@@ -20,7 +20,6 @@
 #include <lbm/core/forall.hpp>
 #include <lbm/core/misc.hpp>
 #include <lbm/core/subdomain_tags.hpp>
-#include <lbm/exceptions/Unreachable.hpp>
 
 //
 // ... Standard header files
@@ -29,7 +28,6 @@
 #include <array>
 #include <concepts>
 #include <functional>
-#include <source_location>
 #include <unordered_map>
 #include <utility>
 #include <vector>
@@ -72,8 +70,6 @@ namespace lbm::D2Q9 {
   using lbm::core::unroll_horizontally;
   using lbm::core::Wall;
 
-  using lbm::exceptions::unreachable_code;
-
   using std::array;
   using std::copy;
   using std::for_each;
@@ -82,7 +78,6 @@ namespace lbm::D2Q9 {
   using std::index_sequence;
   using std::make_index_sequence;
   using std::same_as;
-  using std::source_location;
   using std::unordered_map;
   using std::vector;
 

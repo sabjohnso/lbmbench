@@ -15,9 +15,9 @@
 
 namespace lbm::core {
   TEST_CASE("Boundary Condition") {
-    using enum Boundary_ID;
+
     SECTION("Wall") {
-      Boundary_ID west = Left;
+      Boundary_ID west = Boundary_ID::Left;
       Boundary_Condition boundary_condition{Wall{west}};
 
       SECTION("Conversion to and from json") {
@@ -37,7 +37,7 @@ namespace lbm::core {
     }
 
     SECTION("Symmetry") {
-      Boundary_ID north = Top;
+      Boundary_ID north = Boundary_ID::Top;
       Boundary_Condition boundary_condition{Symmetry{north}};
 
       SECTION("Conversion to and from json") {
@@ -59,13 +59,10 @@ namespace lbm::core {
     }
 
     SECTION("Inlet") {
-      constexpr Boundary_ID south = Bottom;
+      constexpr Boundary_ID south = Boundary_ID::Bottom;
       constexpr double density = 1.0;
       constexpr double speed = 3.0;
       Boundary_Condition boundary_condition{Inlet{south, density, speed}};
-      std::cout << "************************************************************************\n";
-      std::cout << boundary_condition << std::endl;
-      std::cout << "************************************************************************\n";
 
       SECTION("Conversion to and from json") {
         json json_boundary_condition = boundary_condition;
@@ -86,7 +83,7 @@ namespace lbm::core {
     }
 
     SECTION("Outlet") {
-      constexpr Boundary_ID south = Bottom;
+      constexpr Boundary_ID south = Boundary_ID::Bottom;
       constexpr double density = 1.0;
       constexpr double speed = 3.0;
       Boundary_Condition boundary_condition{Outlet{south, density, speed}};
@@ -115,7 +112,7 @@ namespace lbm::core {
     }
 
     SECTION("Pressure Drop") {
-      Boundary_ID east = Right;
+      Boundary_ID east = Boundary_ID::Right;
       Boundary_Condition boundary_condition{Pressure_Drop{east, 3.0}};
 
       SECTION("Conversion to and from json") {
