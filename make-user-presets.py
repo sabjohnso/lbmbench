@@ -117,6 +117,10 @@ def make_build_presets(config, input_data):
             make_build_preset(compiler["name"], "-devel", "RelWithDebInfo")
             for compiler in input_data
         ]
+        + [
+            make_build_preset(compiler["name"], "-debug", "Debug")
+            for compiler in input_data
+        ]
     )
 
 
@@ -142,6 +146,10 @@ def make_test_presets(config, input_data):
         + [make_test_preset(compiler["name"], "", "Release") for compiler in input_data]
         + [
             make_test_preset(compiler["name"], "-devel", "RelWithDebInfo")
+            for compiler in input_data
+        ]
+        + [
+            make_test_preset(compiler["name"], "-debug", "Debug")
             for compiler in input_data
         ]
     )
@@ -184,9 +192,11 @@ def make_configure_preset(config, compiler):
 
 
 def make_workflow_presets(config, input_data):
-    return [make_workflow_preset(compiler["name"], "") for compiler in input_data] + [
-        make_workflow_preset(compiler["name"], "-devel") for compiler in input_data
-    ]
+    return (
+        [make_workflow_preset(compiler["name"], "") for compiler in input_data]
+        + [make_workflow_preset(compiler["name"], "-devel") for compiler in input_data]
+        + [make_workflow_preset(compiler["name"], "-debug") for compiler in input_data]
+    )
 
 
 def make_workflow_preset(workflow_name, suffix):
