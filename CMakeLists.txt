@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.30)
 
 option(lbmbench_BUILD_TESTING "Build the lbmbench tests" ON)
+option(lbmbench_BUILD_EXAMPLES "Build the lbmbench examples" OFF)
+
 option(lbmbench_USE_MPI "Build LBM benchmarks with MPI support" OFF)
 option(lbmbench_USE_THREADS "Build LBM benchmarks with multithreading support" OFF)
 option(lbmbench_USE_OPENMP "Build LBM benchmarks with OpenMP support" OFF)
@@ -15,6 +17,8 @@ option(lbmbench_USE_FIXED64 "Build LBM benchmarks with 64bit fixed-point support
 option(lbmbench_USE_FIXED32 "Build LBM benchmarks with 32bit fixed-point support" ON)
 option(lbmbench_USE_FIXED16 "Build LBM benchmarks with 16bit fixed-point support" ON)
 
+option(lbmbench_USE_VTK "Build LBM visualization with VTK" ON)
+
 if(lbmbench_USE_CUDA)
   project(lbmbench VERSION 0.1.0 LANGUAGES C CXX CUDA)
 else()
@@ -25,7 +29,7 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-set(lbmbench_CXX_FEATURES cxx_std_20)
+set(lbmbench_CXX_FEATURES cxx_std_23)
 
 include(GNUInstallDirs)
 set(lbmbench_INSTALL_BINDIR ${CMAKE_INSTALL_BINDIR})
@@ -43,6 +47,10 @@ if(lbmbench_BUILD_TESTING)
   if(BUILD_TESTING)
     add_subdirectory(test)
   endif()
+endif()
+
+if(lbmbench_BUILD_EXAMPLES)
+  add_subdirectory(examples)
 endif()
 
 install(EXPORT lbmbench_EXPORTS

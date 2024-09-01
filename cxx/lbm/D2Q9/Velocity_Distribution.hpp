@@ -18,7 +18,7 @@ namespace lbm::D2Q9 {
     using Reference = T &;
     using Const_Reference = const T &;
     using Density = Value_Type;
-    using Storage = Fixed_Array<Value_Type, Fixed_Lexical<3, 3>>;
+    using Storage = Fixed_MD_Array<Value_Type, Fixed_Lexical<3, 3>>;
     using Velocity = Fixed_Euclidean<Value_Type, 2>;
     using Momentum = Fixed_Euclidean<Value_Type, 2>;
 
@@ -31,7 +31,7 @@ namespace lbm::D2Q9 {
     static constexpr T three_halves = T(3) / T(2);
 
     // clang-format off
-    static constexpr Fixed_Array<T, Fixed_Lexical<3,3>> weights = {
+    static constexpr Fixed_MD_Array<T, Fixed_Lexical<3,3>> weights = {
       one_36th, one_9th,   one_36th,
       one_9th,  four_9ths, one_9th,
       one_36th, one_9th,   one_36th
@@ -39,7 +39,7 @@ namespace lbm::D2Q9 {
     // clang-format on
 
     // clang-format off
-    static constexpr  Fixed_Array<Velocity, Fixed_Lexical<3, 3>>
+    static constexpr  Fixed_MD_Array<Velocity, Fixed_Lexical<3, 3>>
     discrete_velocities =
     {Velocity{-1, -1}, Velocity{0, -1}, Velocity{1, -1},
      Velocity{-1,  0}, Velocity{0,  0}, Velocity{1,  0},
@@ -67,12 +67,12 @@ namespace lbm::D2Q9 {
       return storage_(i + 1, j + 1);
     }
 
-    friend bool
+    friend constexpr bool
     operator==(const Velocity_Distribution &vd1, const Velocity_Distribution &vd2) {
       return vd1.storage_ == vd2.storage_;
     }
 
-    friend bool
+    friend constexpr bool
     operator!=(const Velocity_Distribution &vd1, const Velocity_Distribution &vd2) {
       return !(vd1 == vd2);
     }
@@ -96,6 +96,11 @@ namespace lbm::D2Q9 {
     constexpr Velocity
     velocity() const {
       return momentum() / density();
+    }
+
+    constexpr Velocity_Distribution
+    nonequilibrium() const {
+      return equilibrium(density(), velocity()) - *this;
     }
 
     void
@@ -241,6 +246,36 @@ namespace lbm::D2Q9 {
     friend constexpr Velocity_Distribution
     operator/(const Velocity_Distribution &f, Value_Type s) {
       return Velocity_Distribution{f.storage_ / s};
+    }
+
+    auto
+    begin() {
+      return storage_.begin();
+    }
+
+    auto
+    end() {
+      return storage_.end();
+    }
+
+    auto
+    begin() const {
+      return storage_.begin();
+    }
+
+    auto
+    end() const {
+      return storage_.end();
+    }
+
+    auto
+    cbegin() const {
+      return begin();
+    }
+
+    auto
+    cend() const {
+      return end();
     }
 
   private:

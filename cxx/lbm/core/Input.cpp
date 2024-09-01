@@ -76,6 +76,18 @@ namespace lbm::core {
     return lattice_.lattice_spacing();
   }
 
+  Boundary_Condition
+  Input::boundary(Boundary_ID id) const {
+    Boundary_Condition bc = Wall{id};
+    for (auto input_bc : boundary_conditions_) {
+      if (input_bc.boundary() == id) {
+        bc = input_bc;
+        break;
+      }
+    }
+    return bc;
+  }
+
   bool
   operator==(const Input &inp0, const Input &inp1) {
     // clang-format off

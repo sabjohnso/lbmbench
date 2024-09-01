@@ -21,11 +21,11 @@
 namespace lbm::core::testing {
   using namespace std::literals;
 
-  TEST_CASE("Fixed Array Index") {
+  TEST_CASE("Fixed Multidimensional Array Index") {
 
     constexpr size_type a{3};
     constexpr size_type b{4};
-    constexpr Fixed_Array_Index idx{a, b};
+    constexpr Fixed_MD_Array_Index idx{a, b};
 
     SECTION("array access") {
 
@@ -42,14 +42,14 @@ namespace lbm::core::testing {
     SECTION("conversion to and from JSON") {
       nlohmann::json expected{{"FixedArrayIndex", {a, b}}};
       nlohmann::json json_idx = idx;
-      Fixed_Array_Index<2> idx_from_json(expected);
+      Fixed_MD_Array_Index<2> idx_from_json(expected);
 
       CHECK(json_idx == expected);
       CHECK(idx_from_json == idx);
     }
 
     SECTION("conversion to and from strings") {
-      Fixed_Array_Index<2> idx_from_string{};
+      Fixed_MD_Array_Index<2> idx_from_string{};
       std::stringstream ss;
       ss << idx;
       ss >> idx_from_string;

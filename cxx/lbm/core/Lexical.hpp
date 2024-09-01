@@ -61,7 +61,7 @@ namespace lbm::core {
     friend void
     to_json(json &j, const Lexical &order) {
       j = json::object();
-      j["Lexical"] = order.shape_;
+      j["Lexical"] = json(order.shape_);
     }
 
     friend void

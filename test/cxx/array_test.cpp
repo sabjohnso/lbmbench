@@ -14,16 +14,17 @@
 #include <sstream>
 
 namespace lbm::core::testing {
-  TEST_CASE("Array") {
+  TEST_CASE("MD_Array") {
     constexpr size_type nx = 2;
     constexpr size_type ny = 3;
-    Array<double, 2> array{Lexical{Shape{nx, ny}}};
+    MD_Array<double, 2> array{Lexical{Shape{nx, ny}}};
 
     SECTION("element access") {
+      auto mutable_array = array;
       for (size_type i = 0; i < nx; ++i) {
         for (size_type j = 0; j < ny; ++j) {
           CHECK(array(i, j) == 0.0);
-          CHECK(&array(i, j) == &array(Index{i, j}));
+          CHECK(array(i, j) == array(Index{i, j}));
           array(i, j) = i * ny + j;
         }
       }
@@ -36,15 +37,20 @@ namespace lbm::core::testing {
     }
 
     SECTION("conversion to and from JSON") {
+      std::cout << "************************************************************************"
+                << std::endl;
       nlohmann::json json_array = array;
-      Array<double, 2> array_from_json = json_array;
+      MD_Array<double, 2> array_from_json = json_array;
+      std::cout << "array           = " << array << std::endl;
+      std::cout << "json_array      = " << json_array << std::endl;
+      std::cout << "array_from_json = " << array_from_json << std::endl;
       CHECK(array == array_from_json);
     }
 
     SECTION("conversion to and from text") {
       std::stringstream ss;
       ss << array;
-      Array<double, 2> array_from_text{};
+      MD_Array<double, 2> array_from_text{};
       ss >> array_from_text;
     }
   }

@@ -36,9 +36,9 @@ namespace lbm {
   using core::JSON_Convertible;
 
   using core::Array;
-  using core::Fixed_Array;
-  using core::Fixed_Array_Index;
   using core::Fixed_Lexical;
+  using core::Fixed_MD_Array;
+  using core::Fixed_MD_Array_Index;
   using core::Index;
   using core::integer;
   using core::json;

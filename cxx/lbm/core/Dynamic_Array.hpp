@@ -9,7 +9,7 @@
 namespace lbm::core {
 
   template <class T>
-  class Dynamic_Array
+  class Dynamic_MD_Array
       : public vector<T>
       , public JSON_Convertible {
   public:

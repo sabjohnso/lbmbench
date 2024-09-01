@@ -15,6 +15,7 @@ macro(lbmbench_add_test test_name)
 endmacro()
 
 lbmbench_add_test(array)
+lbmbench_add_test(array2)
 lbmbench_add_test(boundary_condition)
 lbmbench_add_test(boundary_id)
 lbmbench_add_test(bounding_box)
