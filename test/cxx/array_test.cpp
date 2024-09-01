@@ -1,7 +1,7 @@
 //
 // ... LBM Bench header files
 //
-#include <lbm/core/Array.hpp>
+#include <lbm/core/MD_Array.hpp>
 
 //
 // ... Testing header files

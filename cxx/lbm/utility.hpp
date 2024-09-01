@@ -3,7 +3,6 @@
 //
 // ... LBM Bench header files
 //
-#include <lbm/core/Array.hpp>
 #include <lbm/core/Boundary_Condition.hpp>
 #include <lbm/core/Boundary_ID.hpp>
 #include <lbm/core/Bounding_Box.hpp>
@@ -19,6 +18,7 @@
 #include <lbm/core/JSON_Convertible.hpp>
 #include <lbm/core/Lattice.hpp>
 #include <lbm/core/Lexical.hpp>
+#include <lbm/core/MD_Array.hpp>
 #include <lbm/core/Obstacle.hpp>
 #include <lbm/core/Shape.hpp>
 #include <lbm/core/Vector.hpp>
