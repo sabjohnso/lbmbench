@@ -22,6 +22,7 @@
 #include <iostream>
 #include <iterator>
 #include <numeric>
+#include <optional>
 #include <sstream>
 #include <stdexcept>
 #include <string>
@@ -76,6 +77,9 @@ namespace lbm::core {
   // from iostream
   using std::istream;
   using std::ostream;
+
+  // from optional
+  using std::optional;
 
   // from sstream
   using std::ostringstream;
