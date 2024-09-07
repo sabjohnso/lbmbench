@@ -19,10 +19,10 @@ namespace lbm::core {
     ndims() const;
 
     size_type
-    nnodes() const;
+    ncells() const;
 
     size_type
-    nnodes(size_type idim) const;
+    ncells(size_type idim) const;
 
     double
     extent(size_type idim) const;

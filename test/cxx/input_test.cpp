@@ -86,8 +86,18 @@ namespace lbm::core::testing {
 
     SECTION("Shape") {
       CHECK(input.ndims() == 2);
-      CHECK(input.nnodes(0) == std::ceil(width / lattice_spacing));
-      CHECK(input.nnodes(1) == std::ceil(height / lattice_spacing));
+      CHECK(input.ncells(0) == std::ceil(width / lattice_spacing));
+      CHECK(input.ncells(1) == std::ceil(height / lattice_spacing));
+    }
+
+    SECTION("Boundary Conditions") {
+      SECTION("Left") {}
+
+      SECTION("Right") {}
+
+      SECTION("Bottom") {}
+
+      SECTION("Top") {}
     }
 
     SECTION("Conversion to and from JSON") {

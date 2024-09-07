@@ -22,9 +22,9 @@ namespace lbm::core::testing {
 
     SECTION("Values") {
       CHECK(lattice.ndims() == 2);
-      CHECK(lattice.nnodes(0) == width / lattice_spacing);
-      CHECK(lattice.nnodes(1) == height / lattice_spacing);
-      CHECK(lattice.nnodes() == lattice.nnodes(0) * lattice.nnodes(1));
+      CHECK(lattice.ncells(0) == width / lattice_spacing);
+      CHECK(lattice.ncells(1) == height / lattice_spacing);
+      CHECK(lattice.ncells() == lattice.ncells(0) * lattice.ncells(1));
       CHECK(lattice.extent(0) == width);
       CHECK(lattice.extent(1) == height);
     }
@@ -53,10 +53,10 @@ namespace lbm::core::testing {
 
     SECTION("Values") {
       CHECK(lattice.ndims() == 3);
-      CHECK(lattice.nnodes(0) == width / lattice_spacing);
-      CHECK(lattice.nnodes(1) == height / lattice_spacing);
-      CHECK(lattice.nnodes(2) == depth / lattice_spacing);
-      CHECK(lattice.nnodes() == lattice.nnodes(0) * lattice.nnodes(1) * lattice.nnodes(2));
+      CHECK(lattice.ncells(0) == width / lattice_spacing);
+      CHECK(lattice.ncells(1) == height / lattice_spacing);
+      CHECK(lattice.ncells(2) == depth / lattice_spacing);
+      CHECK(lattice.ncells() == lattice.ncells(0) * lattice.ncells(1) * lattice.ncells(2));
       CHECK(lattice.extent(0) == width);
       CHECK(lattice.extent(1) == height);
       CHECK(lattice.extent(2) == depth);

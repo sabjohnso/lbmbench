@@ -47,13 +47,13 @@ namespace lbm::core {
   }
 
   size_type
-  Input::nnodes() const {
-    return lattice_.nnodes();
+  Input::ncells() const {
+    return lattice_.ncells();
   }
 
   size_type
-  Input::nnodes(size_type idim) const {
-    return lattice_.nnodes(idim);
+  Input::ncells(size_type idim) const {
+    return lattice_.ncells(idim);
   }
 
   double

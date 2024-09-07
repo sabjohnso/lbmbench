@@ -1,7 +1,7 @@
 //
 // ... LBM Bench header files
 //
-#include <lbm/D2Q9/Node.hpp>
+#include <lbm/D2Q9/Cell.hpp>
 
 //
 // ... Testing header files
@@ -14,21 +14,21 @@
 #include <sstream>
 
 namespace lbm::D2Q9::testing {
-  TEST_CASE("Node") {
-    Node<double> node{};
+  TEST_CASE("Cell") {
+    Cell<double> cell{};
 
     SECTION("Conversion to and from JSON") {
-      json json_node = node;
-      Node<double> node_from_json = json_node;
-      CHECK(node == node_from_json);
+      json json_cell = cell;
+      Cell<double> cell_from_json = json_cell;
+      CHECK(cell == cell_from_json);
     }
 
     SECTION("Conversion to and from text") {
       std::stringstream ss{};
-      ss << node;
-      Node<double> node_from_text{};
-      ss >> node_from_text;
-      CHECK(node == node_from_text);
+      ss << cell;
+      Cell<double> cell_from_text{};
+      ss >> cell_from_text;
+      CHECK(cell == cell_from_text);
     }
   }
 
