@@ -41,6 +41,18 @@ namespace lbm::core {
   template <class T>
   concept Boundary_Tag3 = Boundary_Tag2<T> || same_as<Back, T> || same_as<Front, T>;
 
+  template <Boundary_Tag3 Boundary>
+  using Lower_Boundary = std::conditional_t<
+      same_as<Boundary, Left> || same_as<Boundary, Right>,
+      Left,
+      std::conditional_t<same_as<Boundary, Bottom> || same_as<Boundary, Top>, Bottom, Back>>;
+
+  template <Boundary_Tag3 Boundary>
+  using Upper_Boundary = std::conditional_t<
+      same_as<Boundary, Left> || same_as<Boundary, Right>,
+      Right,
+      std::conditional_t<same_as<Boundary, Bottom> || same_as<Boundary, Top>, Top, Front>>;
+
   //
   // ... Corners 2D
   //

@@ -3,7 +3,7 @@
 //
 // ... LBM Bench header files
 //
-#include <lbm/D2Q9/Node.hpp>
+#include <lbm/D2Q9/Cell.hpp>
 #include <lbm/D2Q9/import.hpp>
 
 namespace lbm::D2Q9 {
@@ -13,8 +13,8 @@ namespace lbm::D2Q9 {
   public:
     using Lattice_Spacing = T;
     using Time_Step = size_type;
-    using Node_Type = Node<T>;
-    using Nodes = Array2<Node_Type>;
+    using Cell_Type = Cell<T>;
+    using Cells = Array2<Cell_Type>;
     using Obstacle_List = vector<size_type>;
     using Bounceback_Lists = Fixed_MD_Array<Dynamic_MD_Array<size_type>, Fixed_Lexical<3, 3>>;
 
@@ -67,27 +67,28 @@ namespace lbm::D2Q9 {
     State(Input input)
         : input_{input} {
       initialize();
-      initialize_nodes();
+      initialize_cells();
       initialize_bounceback_lists();
       initialize_boundary_functions();
     }
 
     void
     initialize() {
-      nx_ = input_.nnodes(0);
-      ny_ = input_.nnodes(1);
+      nx_ = input_.ncells(0) + 2; // add 2 for ghost cells on the boundary
+      ny_ = input_.ncells(1) + 2;
       nxm1_ = nx_ - 1;
       nym1_ = ny_ - 1;
       order_ = Shape{nx_, ny_};
       lattice_spacing_ = input_.lattice_spacing();
-      nodes_ = {{Nodes{order_}, Nodes{order_}}};
+      cells_ = {{Cells{order_}, Cells{order_}}};
     }
 
     void
     step() override {
       stream();
       collide();
-      set_boundaries();
+      set_bounce_back_cells();
+      set_boundary_cells();
       ++time_step_;
     }
 
@@ -95,7 +96,7 @@ namespace lbm::D2Q9 {
     operator==(const State &state0, const State &state1) {
       return json(state0) == json(state1);
       return state0.time_step_ == state1.time_step_ &&
-             state0.get_current_nodes() == state1.get_current_nodes();
+             state0.get_current_cells() == state1.get_current_cells();
     }
 
     friend bool
@@ -105,13 +106,13 @@ namespace lbm::D2Q9 {
 
   private:
     void
-    initialize_nodes() {
-      auto &nodes = nodes_[current_time_index()];
-      for_each(std::begin(nodes),
-               std::end(nodes),
-               [&, this, index = size_type(0)](Node_Type &node) mutable {
-                 const auto coord = node_coord(index);
-                 node.init(input_.density(coord), input_.velocity(coord));
+    initialize_cells() {
+      auto &cells = cells_[current_time_index()];
+      for_each(std::begin(cells),
+               std::end(cells),
+               [&, this, index = size_type(0)](Cell_Type &cell) mutable {
+                 const auto coord = cell_coord(index);
+                 cell.init(input_.density(coord), input_.velocity(coord));
                  if (input_.is_obstacle(coord)) {
                    obstacles_.push_back(index);
                  }
@@ -120,7 +121,7 @@ namespace lbm::D2Q9 {
     }
 
     Euclidean
-    node_coord(const size_type index) {
+    cell_coord(const size_type index) {
       const auto [i, j] = order_.array_index(index);
       return {i * lattice_spacing_, j * lattice_spacing_};
     }
@@ -134,7 +135,7 @@ namespace lbm::D2Q9 {
 
     void
     initialize_bounceback_list_obstacle(size_type index) {
-      const auto &nodes = nodes_[0];
+      const auto &cells = cells_[0];
       const auto ijobst = order_.array_index(index);
 
       // Note: [clang] structured binding encounters errors using
@@ -150,7 +151,7 @@ namespace lbm::D2Q9 {
             const auto &[ioffset, joffset] = offsets;
             const size_type i = iobst + ioffset;
             const size_type j = jobst + joffset;
-            if (interior_indices(i, j) && !nodes(i, j).is_obstacle()) {
+            if (interior_indices(i, j) && !cells(i, j).is_obstacle()) {
               bounceback_lists_(ioffset + 1, joffset + 1).push_back(order_.storage_index(i, j));
             }
           });
@@ -169,26 +170,26 @@ namespace lbm::D2Q9 {
     void
     initialize_boundary_functions() {}
 
-    // The wall boundary node should have particle densities that correspond
+    // The wall boundary cell should have particle densities that correspond
     // to retro-reflection on the boundary.
     template <Boundary_Tag2 Boundary>
     function<void()>
     make_wall_boundary(Boundary) {
       const auto internal_offsets = get_internal_offsets(Boundary{});
       return [=, this] {
-        auto &nodes = get_next_nodes();
-        forall(nodes.begin(Boundary{}), nodes.end(Boundary{}), [=, this](auto node) {
+        auto &cells = get_next_cells();
+        forall(cells.begin(Boundary{}), cells.end(Boundary{}), [=, this](auto cell) {
           for_each(std::cbegin(internal_offsets), std::cend(internal_offsets), [&](auto offsets) {
             const auto &[i, j] = offsets;
-            node(0, 0)(i, j) = node(i, j)(-i, -j);
+            cell(0, 0)(i, j) = cell(i, j)(-i, -j);
           });
         });
       };
     }
 
-    // The symmetry boundary node should have particle densities that match the
-    // interior node for the mirrored velocity classes. The boundary condition is
-    // set one-to-one between the boundary and interior nodes.
+    // The symmetry boundary cell should have particle densities that match the
+    // interior cell for the mirrored velocity classes. The boundary condition is
+    // set one-to-one between the boundary and interior cells.
     //
     // Like specular reflection on the boundary.
     template <Boundary_Tag2 Boundary>
@@ -196,30 +197,30 @@ namespace lbm::D2Q9 {
     make_symmetry_boundary(Boundary) {
       const auto internal_offsets = get_internal_offsets(Boundary{});
       return [=, this] {
-        auto nodes = get_next_nodes();
-        forall(nodes.begin(Boundary{}), nodes.end(Boundary{}), [this](auto node) {
+        auto cells = get_next_cells();
+        forall(cells.begin(Boundary{}), cells.end(Boundary{}), [this](auto cell) {
           if constexpr (same_as<Boundary, Left>) {
             for (size_type i = -1; i < 2; ++i) {
               for (size_type j = -1; j < 2; ++j) {
-                node(0, 0)(i, j) = node(1, 0)(-i, j);
+                cell(0, 0)(i, j) = cell(1, 0)(-i, j);
               }
             }
           } else if constexpr (same_as<Boundary, Right>) {
             for (size_type i = -1; i < 2; ++i) {
               for (size_type j = -1; j < 2; ++j) {
-                node(0, 0)(i, j) = node(-1, 0)(-i, j);
+                cell(0, 0)(i, j) = cell(-1, 0)(-i, j);
               }
             }
           } else if constexpr (same_as<Boundary, Bottom>) {
             for (size_type i = -1; i < 2; ++i) {
               for (size_type j = -1; j < 2; ++j) {
-                node(0, 0)(i, j) = node(-1, 0)(-i, j);
+                cell(0, 0)(i, j) = cell(-1, 0)(-i, j);
               }
             }
           } else if constexpr (same_as<Boundary, Top>) {
             for (size_type i = -1; i < 2; ++i) {
               for (size_type j = -1; j < 2; ++j) {
-                node(0, 0)(i, j) = node(-1, 0)(-i, j);
+                cell(0, 0)(i, j) = cell(-1, 0)(-i, j);
               }
             }
           }
@@ -227,26 +228,26 @@ namespace lbm::D2Q9 {
       };
     }
 
-    // For periodic boundaries, the node values from the other side of the
+    // For periodic boundaries, the cell values from the other side of the
     // domain must be copied.
     template <Boundary_Tag2 Boundary>
     function<void()>
     make_periodic_boundary(Boundary) {
       return [this] {
-        auto &nodes = get_next_nodes();
+        auto &cells = get_next_cells();
 
         if constexpr (same_as<Boundary, Left> || same_as<Boundary, Right>) {
           forall(
-              nodes.begin(left), nodes.end(left), nodes.begin(right), [](auto node1, auto node2) {
-                node1(0, 0) = node2(-1, 0);
-                node2(0, 0) = node1(1, 0);
+              cells.begin(left), cells.end(left), cells.begin(right), [](auto cell1, auto cell2) {
+                cell1(0, 0) = cell2(-1, 0);
+                cell2(0, 0) = cell1(1, 0);
               });
 
         } else if constexpr (same_as<Boundary, Bottom> || same_as<Boundary, Top>) {
           forall(
-              nodes.begin(bottom), nodes.end(bottom), nodes.begin(top), [](auto node1, auto node2) {
-                node1(0, 0) = node2(-1, 0);
-                node2(0, 0) = node1(1, 0);
+              cells.begin(bottom), cells.end(bottom), cells.begin(top), [](auto cell1, auto cell2) {
+                cell1(0, 0) = cell2(-1, 0);
+                cell2(0, 0) = cell1(1, 0);
               });
         }
       };
@@ -316,30 +317,33 @@ namespace lbm::D2Q9 {
     }
 
     void
-    set_boundaries() {
+    set_bounce_back_cells() {}
+
+    void
+    set_boundary_cells() {
       for_each(std::begin(boundary_functions_),
                std::end(boundary_functions_),
                [](auto &boundary_function) { boundary_function(); });
     }
 
-    Nodes &
-    get_current_nodes() {
-      return nodes_[current_time_index()];
+    Cells &
+    get_current_cells() {
+      return cells_[current_time_index()];
     }
 
-    const Nodes &
-    get_current_nodes() const {
-      return nodes_[current_time_index()];
+    const Cells &
+    get_current_cells() const {
+      return cells_[current_time_index()];
     }
 
-    Nodes &
-    get_next_nodes() {
-      return nodes_[next_time_index()];
+    Cells &
+    get_next_cells() {
+      return cells_[next_time_index()];
     }
 
-    const Nodes &
-    get_next_nodes() const {
-      return nodes_[next_time_index()];
+    const Cells &
+    get_next_cells() const {
+      return cells_[next_time_index()];
     }
 
     size_type
@@ -354,23 +358,23 @@ namespace lbm::D2Q9 {
 
     void
     stream() {
-      const auto &current_nodes = get_current_nodes();
-      auto &next_nodes = get_next_nodes();
-      forall(current_nodes.begin(interior),
-             current_nodes.end(interior),
-             next_nodes.begin(interior),
-             [](auto current_node, auto next_node) {
+      const auto &current_cells = get_current_cells();
+      auto &next_cells = get_next_cells();
+      forall(current_cells.begin(interior),
+             current_cells.end(interior),
+             next_cells.begin(interior),
+             [](auto current_cell, auto next_cell) {
                for_each(classes.begin(), classes.end(), [&](auto offsets) {
                  const auto &[i, j] = offsets;
-                 next_node(0, 0)(i, j) = current_node(-i, -j)(i, j);
+                 next_cell(0, 0)(i, j) = current_cell(-i, -j)(i, j);
                });
              });
     }
 
     void
     collide() {
-      auto &nodes = nodes_[(time_step_ + 1) % 2];
-      for_each(std::begin(nodes), std::end(nodes), [&](auto &node) { node.collide(); });
+      auto &cells = cells_[(time_step_ + 1) % 2];
+      for_each(std::begin(cells), std::end(cells), [&](auto &cell) { cell.collide(); });
     }
 
     json
@@ -378,7 +382,7 @@ namespace lbm::D2Q9 {
       json j = json::object();
       j["input"] = input_;
       j["timeStep"] = time_step_;
-      j["nodes"] = get_current_nodes();
+      j["cells"] = get_current_cells();
       return j;
     }
 
@@ -386,15 +390,19 @@ namespace lbm::D2Q9 {
     set_json(const json &j) override {
       assert(j.contains("/input"_json_pointer));
       assert(j.contains("/timeStep"_json_pointer));
-      assert(j.contains("/nodes"_json_pointer));
+      assert(j.contains("/cells"_json_pointer));
 
       input_ = j["input"];
       initialize();
 
       time_step_ = j["timeStep"];
-      auto &nodes = get_current_nodes();
-      nodes = j["nodes"];
+      auto &cells = get_current_cells();
+      cells = j["cells"];
     }
+
+    void
+    validate_boundary_conditions() {}
+
     Input input_{};
     size_type nx_{};
     size_type ny_{};
@@ -402,7 +410,7 @@ namespace lbm::D2Q9 {
     size_type nym1_{};
     Lexical<2> order_{};
     Lattice_Spacing lattice_spacing_{};
-    array<Nodes, 2> nodes_{};
+    array<Cells, 2> cells_{};
     Time_Step time_step_{};
     Obstacle_List obstacles_{};
     Bounceback_Lists bounceback_lists_{};

@@ -9,11 +9,11 @@
 namespace lbm::D2Q9 {
 
   /**
-   * @brief A node in the the lattice holding the velocity, density and
+   * @brief A cell in the the lattice holding the velocity, density and
    * velocity distribution.
    */
   template <class T>
-  class Node final : public JSON_Convertible {
+  class Cell final : public JSON_Convertible {
     using Value_Type = T;
     using Reference = T &;
     using Const_Reference = const T &;
@@ -23,8 +23,16 @@ namespace lbm::D2Q9 {
     using Inverse_Time_Scale = typename Velocity_Distribution<T>::Inverse_Time_Scale;
 
   public:
-    Node() = default;
-    Node(Velocity_Distribution<T> classes, bool obstacle = false)
+    static constexpr array<array<size_type, 2>, 9> classes{
+        // clang-format off
+      {{-1, -1}, {0, -1}, {1, -1},
+       {-1,  0}, {0,  0}, {1,  0},
+       {-1,  1}, {0,  1}, {1,  1}}
+        // clang-format on
+    };
+
+    Cell() = default;
+    Cell(Velocity_Distribution<T> classes, bool obstacle = false)
         : velocity_distribution_(classes)
         , obstacle_{obstacle} {}
 
@@ -68,15 +76,15 @@ namespace lbm::D2Q9 {
     }
 
     friend bool
-    operator==(const Node &node1, const Node &node2) {
-      return (node1.velocity_distribution_ == node2.velocity_distribution_) &&
-             (node1.velocity_ == node2.velocity_) && //
-             (node1.density_ == node2.density_);
+    operator==(const Cell &cell1, const Cell &cell2) {
+      return (cell1.velocity_distribution_ == cell2.velocity_distribution_) &&
+             (cell1.velocity_ == cell2.velocity_) && //
+             (cell1.density_ == cell2.density_);
     }
 
     friend bool
-    operator!=(const Node &node1, const Node &node2) {
-      return !(node1 == node2);
+    operator!=(const Cell &cell1, const Cell &cell2) {
+      return !(cell1 == cell2);
     }
 
   private:

@@ -10,7 +10,7 @@
 
 namespace lbm::D2Q9::testing {
 
-  TEST_CASE("Node Array") {
+  TEST_CASE("Cell Array") {
     using enum Boundary_ID;
     constexpr size_type nx = 2;
     constexpr size_type ny = 3;
