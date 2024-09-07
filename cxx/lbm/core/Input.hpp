@@ -59,7 +59,7 @@ namespace lbm::core {
     double
     lattice_spacing() const;
 
-    Boundary_Condition
+    optional<Boundary_Condition>
     boundary(Boundary_ID id) const;
 
     friend bool
