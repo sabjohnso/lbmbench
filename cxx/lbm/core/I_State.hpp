@@ -4,6 +4,7 @@
 // ... LBM Bench header files
 //
 #include <lbm/core/JSON_Convertible.hpp>
+#include <lbm/core/base_types.hpp>
 
 namespace lbm::core {
 
@@ -11,6 +12,13 @@ namespace lbm::core {
   public:
     virtual void
     step() = 0;
+
+    void
+    step_n_times(size_type n) {
+      for (size_type i = 0; i < n; ++i) {
+        step();
+      }
+    }
 
     virtual ~I_State() {}
   };

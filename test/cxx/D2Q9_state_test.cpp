@@ -69,6 +69,18 @@ namespace lbm::D2Q9::testing {
       ss >> state_from_text;
       CHECK(state == state_from_text);
     }
+
+    SECTION("Step once") {
+      CHECK(state.time_step() == 0);
+      state.step();
+      CHECK(state.time_step() == 1);
+    }
+
+    SECTION("Step n times") {
+      CHECK(state.time_step() == 0);
+      state.step_n_times(10);
+      CHECK(state.time_step() == 10);
+    }
   }
 
 } // end of namespace lbm::D2Q9::testing

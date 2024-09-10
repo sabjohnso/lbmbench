@@ -4,6 +4,7 @@
 // ... LBM Bench header files
 //
 #include <lbm/D2Q9/Cell.hpp>
+#include <lbm/D2Q9/Grid.hpp>
 #include <lbm/D2Q9/import.hpp>
 
 namespace lbm::D2Q9 {
@@ -14,7 +15,7 @@ namespace lbm::D2Q9 {
     using Lattice_Spacing = T;
     using Time_Step = size_type;
     using Cell_Type = Cell<T>;
-    using Cells = Array2<Cell_Type>;
+    using Grid_Type = Grid<T>;
     using Obstacle_List = vector<size_type>;
     using Bounceback_Lists = Fixed_MD_Array<Dynamic_MD_Array<size_type>, Fixed_Lexical<3, 3>>;
 
@@ -80,7 +81,7 @@ namespace lbm::D2Q9 {
       nym1_ = ny_ - 1;
       order_ = Shape{nx_, ny_};
       lattice_spacing_ = input_.lattice_spacing();
-      cells_ = {{Cells{order_}, Cells{order_}}};
+      grids_ = {{Grid_Type{order_}, Grid_Type{order_}}};
     }
 
     void
@@ -90,6 +91,11 @@ namespace lbm::D2Q9 {
       set_bounce_back_cells();
       set_boundary_cells();
       ++time_step_;
+    }
+
+    Time_Step
+    time_step() const {
+      return time_step_;
     }
 
     friend bool
@@ -107,7 +113,7 @@ namespace lbm::D2Q9 {
   private:
     void
     initialize_cells() {
-      auto &cells = cells_[current_time_index()];
+      auto &cells = grids_[current_time_index()];
       for_each(std::begin(cells),
                std::end(cells),
                [&, this, index = size_type(0)](Cell_Type &cell) mutable {
@@ -123,7 +129,7 @@ namespace lbm::D2Q9 {
     Euclidean
     cell_coord(const size_type index) {
       const auto [i, j] = order_.array_index(index);
-      return {i * lattice_spacing_, j * lattice_spacing_};
+      return {(i - T{0.5}) * lattice_spacing_, (j - T{0.5}) * lattice_spacing_};
     }
 
     void
@@ -135,7 +141,7 @@ namespace lbm::D2Q9 {
 
     void
     initialize_bounceback_list_obstacle(size_type index) {
-      const auto &cells = cells_[0];
+      const auto &cells = grids_[0];
       const auto ijobst = order_.array_index(index);
 
       // Note: [clang] structured binding encounters errors using
@@ -326,24 +332,24 @@ namespace lbm::D2Q9 {
                [](auto &boundary_function) { boundary_function(); });
     }
 
-    Cells &
+    Grid_Type &
     get_current_cells() {
-      return cells_[current_time_index()];
+      return grids_[current_time_index()];
     }
 
-    const Cells &
+    const Grid_Type &
     get_current_cells() const {
-      return cells_[current_time_index()];
+      return grids_[current_time_index()];
     }
 
-    Cells &
+    Grid_Type &
     get_next_cells() {
-      return cells_[next_time_index()];
+      return grids_[next_time_index()];
     }
 
-    const Cells &
+    const Grid_Type &
     get_next_cells() const {
-      return cells_[next_time_index()];
+      return grids_[next_time_index()];
     }
 
     size_type
@@ -373,7 +379,7 @@ namespace lbm::D2Q9 {
 
     void
     collide() {
-      auto &cells = cells_[(time_step_ + 1) % 2];
+      auto &cells = grids_[(time_step_ + 1) % 2];
       for_each(std::begin(cells), std::end(cells), [&](auto &cell) { cell.collide(); });
     }
 
@@ -410,7 +416,7 @@ namespace lbm::D2Q9 {
     size_type nym1_{};
     Lexical<2> order_{};
     Lattice_Spacing lattice_spacing_{};
-    array<Cells, 2> cells_{};
+    array<Grid_Type, 2> grids_{};
     Time_Step time_step_{};
     Obstacle_List obstacles_{};
     Bounceback_Lists bounceback_lists_{};
