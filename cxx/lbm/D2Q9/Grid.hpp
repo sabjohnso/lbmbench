@@ -9,7 +9,7 @@
 namespace lbm::D2Q9 {
   using Offset = array<size_type, 2>;
 
-  constexpr array<Offset, 9> classes{
+  constexpr inline array<Offset, 9> classes{
       // clang-format off
     {{-1, -1}, {0, -1}, {1, -1},
      {-1,  0}, {0,  0}, {1,  0},
@@ -31,7 +31,7 @@ namespace lbm::D2Q9 {
   constexpr Internal_Offsets boundary_offsets{};
 
   template <>
-  constexpr Internal_Offsets boundary_offsets<Left>{
+  constexpr inline Internal_Offsets boundary_offsets<Left>{
       // clang-format off
     {{1, -1},
      {1,  0},
@@ -40,7 +40,7 @@ namespace lbm::D2Q9 {
   };
 
   template <>
-  constexpr Internal_Offsets boundary_offsets<Right>{
+  constexpr inline Internal_Offsets boundary_offsets<Right>{
       // clang-format off
       {{-1, -1},
        {-1,  0},
@@ -49,14 +49,14 @@ namespace lbm::D2Q9 {
   };
 
   template <>
-  constexpr Internal_Offsets boundary_offsets<Bottom>{
+  constexpr inline Internal_Offsets boundary_offsets<Bottom>{
       // clang-format off
       {{-1, 1}, {0,  1}, {1,  1}}
       // clang-format on
   };
 
   template <>
-  constexpr Internal_Offsets boundary_offsets<Top>{
+  constexpr inline Internal_Offsets boundary_offsets<Top>{
       // clang-format off
       {{-1, -1}, {0, -1}, {1, -1}}
       // clang-format on
@@ -65,6 +65,8 @@ namespace lbm::D2Q9 {
   template <class T>
   class Grid : public Array2<Cell<T>> {
   public:
+    using Base = Array2<Cell<T>>;
+    using Base::Base;
   };
 
 } // end of namespace lbm::D2Q9
